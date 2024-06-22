@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -26,34 +27,39 @@ public class User {
 
     @Setter
     @Getter
-    @Column(name = "username")
+    @Column(name = "username", length = 50)
     private String username;
 
     @Setter
     @Getter
-    @Column(name = "first_name")
+    @Column(name = "first_name", length = 50)
     private String firstName;
 
     @Setter
     @Getter
-    @Column(name = "last_name")
+    @Column(name = "last_name", length = 50)
     private String lastName;
 
     @Setter
     @Getter
-    @Column(name = "email")
+    @Column(name = "email", length = 50)
     private String email;
 
     @Setter
     @Getter
-    @Column(name = "bio")
+    @Column(name = "bio", length = 400)
     private String bio;
 
     @Setter
     @Getter
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "registered")
-    private Data registered;
+    private Date registered;
+
+    @Setter
+    @Getter
+    @Column(name = "password", length = 50)
+    private String password;
 
     @Setter
     @Getter

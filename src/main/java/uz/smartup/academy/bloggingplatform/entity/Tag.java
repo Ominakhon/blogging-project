@@ -18,7 +18,7 @@ public class Tag {
     @Setter
     private int id;
 
-    @Column
+    @Column(name = "title", length = 50)
     private String title;
 
     @Getter
