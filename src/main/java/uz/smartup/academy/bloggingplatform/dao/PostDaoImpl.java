@@ -3,6 +3,8 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jdk.jfr.Registered;
+import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Category;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Tag;
@@ -10,6 +12,7 @@ import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
 
+@Repository
 public class PostDaoImpl implements PostDao{
 
     private final EntityManager entityManager;
