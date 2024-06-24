@@ -9,20 +9,18 @@ import java.util.List;
 
 @Entity
 @Table(name = "tag")
+@Getter
+@Setter
 public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Getter
-    @Setter
     private int id;
 
     @Column(name = "title", length = 50)
     private String title;
 
-    @Getter
-    @Setter
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
             name = "tag_post",

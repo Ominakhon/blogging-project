@@ -7,6 +7,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "role")
 public class Role {
+
     @EmbeddedId
     private RoleKey id;
 
