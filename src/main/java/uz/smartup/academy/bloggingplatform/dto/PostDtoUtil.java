@@ -1,9 +1,11 @@
 package uz.smartup.academy.bloggingplatform.dto;
 
+import org.springframework.stereotype.Component;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.util.List;
 
+@Component
 public class PostDtoUtil {
 
     public Post toEntity(PostDto postDto) {
