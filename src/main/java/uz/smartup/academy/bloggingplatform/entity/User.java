@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -37,9 +38,9 @@ public class User {
     @Column(name = "bio", length = 400)
     private String bio;
 
-    @Temporal(TemporalType.TIMESTAMP)
+
     @Column(name = "registered")
-    private Date registered;
+    private LocalDate registered;
 
     @Column(name = "password", length = 50)
     private String password;
