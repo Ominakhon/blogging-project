@@ -29,6 +29,10 @@ public class Post {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt;
 
@@ -97,4 +101,8 @@ public class Post {
             tags.remove(tag);
     }
 
+    public enum Status {
+        DRAFT,
+        PUBLISHED
+    }
 }
