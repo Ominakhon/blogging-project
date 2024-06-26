@@ -44,5 +44,19 @@ public class PostApi {
         else throw new RuntimeException("Any comment doesn't exist yet");
     }
 
+    @GetMapping("/drafts")
+    public List<PostDto> getDraftPosts() {
+        List<PostDto> posts = postService.getDraftPost();
 
+        if(!posts.isEmpty()) return posts;
+        else throw new RuntimeException("Any post doesn't exist yet");
+    }
+
+    @GetMapping("/published")
+    public List<PostDto> getPublishedPosts() {
+        List<PostDto> posts = postService.getPublishedPost();
+
+        if(!posts.isEmpty()) return posts;
+        else throw new RuntimeException("Any post doesn't exist yet");
+    }
 }

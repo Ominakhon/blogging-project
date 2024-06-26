@@ -90,4 +90,26 @@ public class PostDaoImpl implements PostDao{
 
         return query.getResultList();
     }
+
+    @Override
+    public List<Post> findPostsByStatus(Post.Status status) {
+        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post p WHERE p.status = :status", Post.class);
+
+        query.setParameter("status", status);
+
+        return query.getResultList();
+    }
+
+
+    @Override
+    public List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId) {
+        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post p WHERE p.status = :status AND p.author.id = :authorId", Post.class);
+
+        query.setParameter("status", status);
+        query.setParameter("authorId", authorId);
+
+        return query.getResultList();
+    }
+
+
 }

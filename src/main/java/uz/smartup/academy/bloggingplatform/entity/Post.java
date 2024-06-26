@@ -99,6 +99,7 @@ public class Post {
     public void removeTag(Tag tag) {
         if(!tags.isEmpty())
             tags.remove(tag);
+
     }
 
     public enum Status {

@@ -80,4 +80,32 @@ public class PostServiceImpl implements PostService {
 
         return commentDtoUtil.toDTOs(comments);
     }
+
+    @Override
+    public List<PostDto> getDraftPost() {
+        List<Post> posts = dao.findPostsByStatus(Post.Status.DRAFT);
+
+        return dtoUtil.toDTOs(posts);
+    }
+
+    @Override
+    public List<PostDto> getPublishedPost() {
+        List<Post> posts = dao.findPostsByStatus(Post.Status.PUBLISHED);
+
+        return dtoUtil.toDTOs(posts);
+    }
+
+    @Override
+    public List<PostDto> getDraftPostsByAuthorId(int authorId) {
+        List<Post> posts = dao.findPostByStatusAndAuthorId(Post.Status.DRAFT, authorId);
+
+        return dtoUtil.toDTOs(posts);
+    }
+
+    @Override
+    public List<PostDto> getPublishedPostsByAuthorId(int authorId) {
+        List<Post> posts = dao.findPostByStatusAndAuthorId(Post.Status.PUBLISHED, authorId);
+
+        return dtoUtil.toDTOs(posts);
+    }
 }

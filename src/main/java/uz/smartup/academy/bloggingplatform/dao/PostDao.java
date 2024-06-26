@@ -24,6 +24,10 @@ public interface PostDao {
     List<Post> getPostsByAuthor(int authorId);
 
     List<Comment> getPostComments(int id);
+
+    List<Post> findPostsByStatus(Post.Status status);
+
+    List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId);
 }
 
 /*

@@ -27,4 +27,12 @@ public interface PostService {
     List<PostDto> getPostsByAuthor(int authorId);
 
     List<CommentDTO> getPostComments(int id);
+
+    List<PostDto> getDraftPost();
+
+    List<PostDto> getPublishedPost();
+
+    List<PostDto> getDraftPostsByAuthorId(int authorId);
+
+    List<PostDto> getPublishedPostsByAuthorId(int authorId);
 }
