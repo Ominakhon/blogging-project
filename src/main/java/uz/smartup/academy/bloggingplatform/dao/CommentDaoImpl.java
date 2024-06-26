@@ -32,6 +32,11 @@ public class CommentDaoImpl implements CommentDao{
     }
 
     @Override
+    public Comment getById(int id) {
+        return null;
+    }
+
+    @Override
     public Comment getComment(int id) {
         return entityManager.find(Comment.class, id);
     }

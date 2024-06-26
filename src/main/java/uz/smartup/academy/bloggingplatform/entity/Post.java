@@ -55,6 +55,12 @@ public class Post {
     )
     private List<Tag> tags;
 
+    @Transient
+    private long likesCount;
+
+    @Transient
+    private long commentsCount;
+
     public void addCategories(Category category) {
         if(categories.isEmpty())
             categories = new ArrayList<>();
