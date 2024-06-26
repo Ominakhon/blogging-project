@@ -36,7 +36,6 @@ public class UserApi {
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable int id){
         service.deleteUser(id);
-
     }
 
 }

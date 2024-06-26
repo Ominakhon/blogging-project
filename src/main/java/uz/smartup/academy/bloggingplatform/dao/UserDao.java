@@ -1,7 +1,5 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Repository;
 
 import uz.smartup.academy.bloggingplatform.entity.User;
 

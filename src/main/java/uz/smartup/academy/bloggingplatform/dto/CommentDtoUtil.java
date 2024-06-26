@@ -17,6 +17,7 @@ public class CommentDtoUtil {
         comment.setCreatedAt(LocalDate.now());
         return comment;
     }
+
     public CommentDTO toDto(Comment comment){
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setId(comment.getId());
@@ -24,6 +25,7 @@ public class CommentDtoUtil {
         commentDTO.setCreatedAt(comment.getCreatedAt());
         return commentDTO;
     }
+
     public List<CommentDTO> toDTOs(List<Comment> comments){
         return comments.stream().map(this::toDto).toList();
     }
@@ -31,3 +33,4 @@ public class CommentDtoUtil {
         return users.stream().map(this::toDto).toList();
     }
 }
+

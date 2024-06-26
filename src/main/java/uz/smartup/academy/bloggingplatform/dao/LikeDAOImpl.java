@@ -2,8 +2,10 @@ package uz.smartup.academy.bloggingplatform.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Like;
 
+@Repository
 public class LikeDAOImpl implements LikeDAO {
 
     private final EntityManager entityManager;

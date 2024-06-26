@@ -1,9 +1,6 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
-import uz.smartup.academy.bloggingplatform.entity.Category;
-import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.Tag;
-import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.util.List;
 
@@ -16,6 +13,8 @@ public interface PostDao {
 
     Post getById(int id);
 
+    List<Post> getAllPosts();
+
     List<Post> getPostsByTag(int tagId);
 
     List<Post> getPostsByCategory(int categoryId);
@@ -23,6 +22,8 @@ public interface PostDao {
     User getAuthorById(int id);
 
     List<Post> getPostsByAuthor(int authorId);
+
+    List<Comment> getPostComments(int id);
 }
 
 /*
