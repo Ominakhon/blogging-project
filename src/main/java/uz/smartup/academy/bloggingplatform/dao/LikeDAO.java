@@ -10,7 +10,7 @@ public interface LikeDAO {
 
     void delete(Like like);
 
-    int countByPostId(int postId);
+    long countByPostId(int postId);
 }
 
 
