@@ -63,4 +63,9 @@ public class LikeServiceImpl implements LikeService {
 
         likeDAO.delete(like);
     }
+
+    @Override
+    public int countLikesByPostId(int postId) {
+        return likeDAO.countByPostId(postId);
+    }
 }

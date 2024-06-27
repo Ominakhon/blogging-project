@@ -1,11 +1,13 @@
 package uz.smartup.academy.bloggingplatform.rest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.service.PostService;
 
 import java.util.List;
@@ -58,5 +60,11 @@ public class PostApi {
 
         if(!posts.isEmpty()) return posts;
         else throw new RuntimeException("Any post doesn't exist yet");
+    }
+
+    @GetMapping("/{postId}/like-count")
+    public ResponseEntity<Post> getPostWithLikeCount(@PathVariable int postId) {
+        Post post = postService.getPostWithLikeCount(postId);
+        return ResponseEntity.ok(post);
     }
 }

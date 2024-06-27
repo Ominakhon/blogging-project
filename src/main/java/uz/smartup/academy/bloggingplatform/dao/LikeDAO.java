@@ -9,6 +9,8 @@ public interface LikeDAO {
     void save(Like like);
 
     void delete(Like like);
+
+    int countByPostId(int postId);
 }
 
 

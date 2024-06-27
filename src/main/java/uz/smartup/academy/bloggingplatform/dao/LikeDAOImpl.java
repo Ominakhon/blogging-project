@@ -36,4 +36,12 @@ public class LikeDAOImpl implements LikeDAO {
     public void delete(Like like) {
         entityManager.remove(like);
     }
+
+    @Override
+    public int countByPostId(int postId) {
+        String query = "SELECT COUNT(l) FROM Like l WHERE l.post.id = :postId";
+        return entityManager.createQuery(query, Integer.class)
+                .setParameter("postId", postId)
+                .getSingleResult();
+    }
 }
