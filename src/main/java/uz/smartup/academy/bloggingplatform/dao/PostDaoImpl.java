@@ -5,10 +5,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jdk.jfr.Registered;
 import org.springframework.stereotype.Repository;
-import uz.smartup.academy.bloggingplatform.entity.Category;
-import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.Tag;
-import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.util.List;
 
@@ -44,6 +41,14 @@ public class PostDaoImpl implements PostDao{
     }
 
     @Override
+    public List<Post> getAllPosts() {
+        TypedQuery<Post> query = entityManager.createQuery("FROM Post", Post.class);
+
+        return query.getResultList();
+    }
+
+
+    @Override
     public List<Post> getPostsByTag(int tagId) {
         Tag tag = entityManager.find(Tag.class, tagId);
 
@@ -77,4 +82,34 @@ public class PostDaoImpl implements PostDao{
 
         return query.getResultList();
     }
+
+    @Override
+    public List<Comment> getPostComments(int id) {
+        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment post.id = :id", Comment.class);
+        query.setParameter("id", id);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Post> findPostsByStatus(Post.Status status) {
+        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post p WHERE p.status = :status", Post.class);
+
+        query.setParameter("status", status);
+
+        return query.getResultList();
+    }
+
+
+    @Override
+    public List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId) {
+        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post p WHERE p.status = :status AND p.author.id = :authorId", Post.class);
+
+        query.setParameter("status", status);
+        query.setParameter("authorId", authorId);
+
+        return query.getResultList();
+    }
+
+
 }

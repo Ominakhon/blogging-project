@@ -1,0 +1,44 @@
+package uz.smartup.academy.bloggingplatform.dao;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
+import uz.smartup.academy.bloggingplatform.entity.Category;
+
+import java.util.List;
+
+@Repository
+public class CategoryDaoImpl implements CategoryDao {
+    private final EntityManager entityManager;
+
+    public CategoryDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Override
+    public void save(Category category) {
+        entityManager.persist(category);
+    }
+
+    @Override
+    public void update(Category category) {
+        entityManager.merge(category);
+    }
+
+    @Override
+    public void delete(Category category) {
+        entityManager.remove(category);
+    }
+
+    @Override
+    public List<Category> getAllCategories() {
+        TypedQuery<Category> query = entityManager.createQuery("FROM Category",Category.class);
+        return query.getResultList();
+    }
+
+    @Override
+    public Category findCategoryById(int id) {
+        return entityManager.find(Category.class,id);
+    }
+}
+
