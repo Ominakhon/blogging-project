@@ -22,14 +22,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public void createCategory(Category category) {
+    public void createCategory(CategoryDto categoryDto) {
+        Category category=categoryDtoUtil.toEntity(categoryDto);
         categoryDao.save(category);
 
     }
 
     @Transactional
     @Override
-    public void update(Category category) {
+    public void update(CategoryDto categoryDto) {
+        Category category=categoryDtoUtil.toEntity(categoryDto);
         categoryDao.update(category);
     }
 
