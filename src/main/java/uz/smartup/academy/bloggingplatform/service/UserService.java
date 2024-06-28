@@ -9,18 +9,27 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserService {
+
     List<UserDTO> getAllUsers();
+
     UserDTO getUserById(int id);
+
     UserDTO getUserByUsername(String username);
+
     void updateUser(UserDTO userDTO);
+
     void deleteUser(int id);
-    void registerUser(UserDTO userDTO, Set<Role> roles);
-    List<PostDao> getAllPostsOfUser(int id);
-    public void addDraftPostByUserId(int userId, PostDto postDto);
-    public void addPublishedPostByUserId(int userId, PostDto postDto);
+
+    void registerUser(UserDTO userDTO, List<Role> roles);
+
+    List<PostDto> getAllPostsOfUser(int id);
+
+    void addDraftPostByUserId(int userId, PostDto postDto);
 
     public List<PostDto> userPublishedPosts(int userId);
+  
     public List<PostDto> userDraftPosts(int userId);
 
+    void addPublishedPostByUserId(int userId, PostDto postDto);
 
 }
