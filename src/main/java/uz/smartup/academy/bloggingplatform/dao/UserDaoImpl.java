@@ -74,7 +74,9 @@ public class UserDaoImpl implements UserDao{
                 "SELECT r FROM Role r WHERE r.id.username = :userName", Role.class);
         query.setParameter("userName", userName);
         return query.getResultList();
+    }
 
+    @Override
     public Set<Role> getUserRoles(int userId) {
         User user = getUserById(userId);
 
@@ -84,11 +86,5 @@ public class UserDaoImpl implements UserDao{
         return new HashSet<>(query.getResultList());
     }
 
-    @Override
-    public List<User> getALlUsers() {
-        TypedQuery<User> users = entityManager.createQuery("FROM User", User.class);
-        return users.getResultList();
-
-    }
 
 }

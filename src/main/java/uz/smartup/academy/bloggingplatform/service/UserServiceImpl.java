@@ -60,8 +60,6 @@ public class UserServiceImpl implements UserService {
         System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
         System.out.println(user);
         userDao.update(dtoUtil.userMergeEntity(user, userDTO));
-        User user = dtoUtil.toEntity(userDTO);
-        userDao.update(user);
     }
 
     @Transactional

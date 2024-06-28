@@ -26,7 +26,6 @@ public interface UserDao {
     List<Post> getUserAllPosts(int userId);
 
     List<Role> userFindByRoles(String userName);
-    List<User> getAllUsers();
 
     Set<Role> getUserRoles(int userId);
 
