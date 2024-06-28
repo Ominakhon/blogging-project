@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
 
         Post post = postDtoUtil.toEntity(postDto);
 
-        post.setStatus(Post.Status.DRAFT);
+        post.setStatus(Post.Status.PUBLISHED);
         post.setAuthor(user);
         post.setCreatedAt(LocalDate.now());
         postDao.save(post);
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<PostDto> userPublishedPosts(int userId) {
-        return postService.getPostsByAuthor(userId);
+        return postService.getPublishedPostsByAuthorId(userId);
     }
 
     @Override

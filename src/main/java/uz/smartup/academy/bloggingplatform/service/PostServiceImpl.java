@@ -101,12 +101,15 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> getDraftPostsByAuthorId(int authorId) {
         List<Post> posts = dao.findPostByStatusAndAuthorId(Post.Status.DRAFT, authorId);
 
+//        System.out.println(dtoUtil.toDTOs(posts));
         return dtoUtil.toDTOs(posts);
     }
 
     @Override
     public List<PostDto> getPublishedPostsByAuthorId(int authorId) {
         List<Post> posts = dao.findPostByStatusAndAuthorId(Post.Status.PUBLISHED, authorId);
+
+        System.out.println(dtoUtil.toDTOs(posts));
 
         return dtoUtil.toDTOs(posts);
     }
