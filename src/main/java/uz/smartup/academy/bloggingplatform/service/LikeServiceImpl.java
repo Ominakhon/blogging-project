@@ -37,14 +37,20 @@ public class LikeServiceImpl implements LikeService {
         User user = userDao.getUserById(userId);
         Post post = postDao.getById(postId);
 
-        if (likeDAO.findByUserAndPost(userId, postId) != null) {
-            throw new IllegalStateException("Post already liked");
+        Like like1 = likeDAO.findByUserAndPost(userId, postId);
+
+        if (like1 != null) {
+            likeDAO.delete(like1);
+            // throw new IllegalStateException("Post already liked");
+        }
+        else {
+            Like like = new Like();
+            like.setAuthor(user);
+            like.setPost(post);
+            likeDAO.save(like);
         }
 
-        Like like = new Like();
-        like.setAuthor(user);
-        like.setPost(post);
-        likeDAO.save(like);
+
     }
 
     @Override
