@@ -17,18 +17,18 @@ public class LikeServiceImpl implements LikeService {
     private final LikeDAO likeDAO;
     private final PostDao postDao;
     private final LikeDTOUtil likeDTOUtil;
-    private final UserService userService;
     private final UserDao userDao;
+    private final UserService userService;
 
 
     @Autowired
-    public LikeServiceImpl(LikeDAO likeDAO, PostDao postDao, LikeDTOUtil likeDTOUtil, UserService userService, UserDao userDao) {
+    public LikeServiceImpl(LikeDAO likeDAO, PostDao postDao, LikeDTOUtil likeDTOUtil, UserDao userDao, UserService userService) {
         this.likeDAO = likeDAO;
         this.postDao = postDao;
         this.likeDTOUtil = likeDTOUtil;
+        this.userDao = userDao;
         this.userService = userService;
 
-        this.userDao = userDao;
     }
 
 
@@ -66,6 +66,9 @@ public class LikeServiceImpl implements LikeService {
 
         likeDAO.delete(like);
     }
-}
 
-// xato tog'irlandi
+    @Override
+    public long countLikesByPostId(int postId) {
+        return 0;
+    }
+}

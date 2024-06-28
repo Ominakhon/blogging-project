@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Like;
 
+import java.util.List;
+
 @Repository
 public class LikeDAOImpl implements LikeDAO {
 
@@ -14,15 +16,15 @@ public class LikeDAOImpl implements LikeDAO {
         this.entityManager = entityManager;
     }
 
-    @Transactional
     @Override
+    @Transactional
     public Like findByUserAndPost(int userId, int postId) {
-//        Like like = entityManager.createQuery(
-//                "SELECT l FROM Like l WHERE l.author = :userId AND l.post = :userId", Like.class)
-//                .setParameter("author", )
-//                .setParameter("post", postId)
-//                .getSingleResult();
-        return null;
+        List<Like> likes = entityManager.createQuery(
+                        "SELECT l FROM Like l WHERE l.author.id = :userId AND l.post.id = :postId", Like.class)
+                .setParameter("userId", userId)
+                .setParameter("postId", postId)
+                .getResultList();
+        return likes.isEmpty() ? null : likes.get(0);
     }
 
     @Override
@@ -34,6 +36,18 @@ public class LikeDAOImpl implements LikeDAO {
     @Override
     @Transactional
     public void delete(Like like) {
-        entityManager.remove(like);
+        if (entityManager.contains(like)) {
+            entityManager.remove(like);
+        } else {
+            entityManager.remove(entityManager.merge(like));
+        }
+    }
+
+    @Override
+    public long countByPostId(int postId) {
+        String query = "SELECT COUNT(l) FROM Like l WHERE l.post.id = :postId";
+        return entityManager.createQuery(query, Long.class)
+                .setParameter("postId", postId)
+                .getSingleResult();
     }
 }
