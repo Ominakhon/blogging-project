@@ -31,7 +31,8 @@ public class UserDtoUtil {
         userDTO.setPhoto(user.getPhoto());
         userDTO.setBio(user.getBio());
         userDTO.setPassword(user.getPassword());
-        userDTO.setUsername(userDTO.getUsername());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setRegistered(user.getRegistered());
 
         return userDTO;
     }

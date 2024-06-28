@@ -2,6 +2,7 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 
 import org.springframework.web.bind.annotation.*;
+import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.UserService;
@@ -15,6 +16,7 @@ import java.util.Set;
 public class UserApi {
 
     private final UserService service;
+
 
     public UserApi(UserService service) {
         this.service = service;
@@ -38,14 +40,26 @@ public class UserApi {
         service.registerUser(userDTO, roles);
     }
 
-//    @PutMapping("/update")
-//    public void updateUser(@RequestBody UserDTO userDTO){
-//        service.updateUser(userDTO);
-//    }
+    @PutMapping("/update")
+    public void updateUser(@RequestBody UserDTO userDTO) {
+
+        service.updateUser(userDTO);
+    }
 
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable int id){
         service.deleteUser(id);
     }
 
+    @PostMapping("/{id}/addDraftPost")
+    public void addDraftPostToUser(@PathVariable("id") int id, @RequestBody PostDto postDto) {
+        if(postDto != null) service.addDraftPostByUserId(id, postDto);
+        else throw new RuntimeException("Cannot create post!");
+    }
+
+    @PostMapping("/{id}/addPublishedPost")
+    public void addPublishedPostToUser(@PathVariable("id") int id, @RequestBody PostDto postDto) {
+        if(postDto != null) service.addPublishedPostByUserId(id, postDto);
+        else throw new RuntimeException("Cannot create post!");
+    }
 }

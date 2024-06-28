@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -49,5 +50,6 @@ public class User {
     @JoinColumn(name = "username", referencedColumnName = "username", updatable = false)
     private Set<Role> roles;
 
-
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Post> posts;
 }

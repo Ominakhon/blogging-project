@@ -3,6 +3,7 @@ package uz.smartup.academy.bloggingplatform.dto;
 import lombok.Getter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Getter
 public class PostDto {
@@ -15,7 +16,7 @@ public class PostDto {
 
     private String content;
 
-    private Timestamp createdAt;
+    private LocalDate createdAt;
 
     private long likesCount;
 
@@ -39,7 +40,7 @@ public class PostDto {
 
         private String content;
 
-        private Timestamp createdAt;
+        private LocalDate createdAt;
 
         private long likesCount;
 
@@ -63,7 +64,7 @@ public class PostDto {
             return this;
         }
 
-        public Builder createdAt(Timestamp createdAt) {
+        public Builder createdAt(LocalDate createdAt) {
             this.createdAt = createdAt;
             return this;
         }
