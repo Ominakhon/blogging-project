@@ -53,13 +53,15 @@ public class UserServiceImpl implements UserService {
         return dtoUtil.toDTO(user);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateUser(UserDTO userDTO) {
         User user = userDao.getUserById(userDTO.getId());
         System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
         System.out.println(user);
         userDao.update(dtoUtil.userMergeEntity(user, userDTO));
+        User user = dtoUtil.toEntity(userDTO);
+        userDao.update(user);
     }
 
     @Transactional
@@ -69,6 +71,7 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
             userDao.delete(user);
         }
+        userDao.delete(user);
     }
 
     @Transactional
@@ -126,5 +129,15 @@ public class UserServiceImpl implements UserService {
 
         postDao.save(post);
         userDao.update(user);
+    }
+
+    @Override
+    public List<PostDto> userPublishedPosts(int userId) {
+        return postService.getPostsByAuthor(userId);
+    }
+
+    @Override
+    public List<PostDto> userDraftPosts(int userId) {
+        return postService.getDraftPostsByAuthorId(userId);
     }
 }

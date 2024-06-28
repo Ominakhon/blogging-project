@@ -41,9 +41,13 @@ public class UserApi {
         service.registerUser(userDTO, roles);
     }
 
+    @GetMapping("/{id}")
+    public UserDTO getUserById(@PathVariable("id") int id) {
+        return service.getUserById(id);
+    }
+
     @PutMapping("/update")
     public void updateUser(@RequestBody UserDTO userDTO) {
-
         service.updateUser(userDTO);
     }
 
@@ -62,5 +66,21 @@ public class UserApi {
     public void addPublishedPostToUser(@PathVariable("id") int id, @RequestBody PostDto postDto) {
         if(postDto != null) service.addPublishedPostByUserId(id, postDto);
         else throw new RuntimeException("Cannot create post!");
+    }
+
+    @GetMapping("/{id}/publishedPosts")
+    public List<PostDto> getUserPublishedPosts(@PathVariable("id") int id) {
+        List<PostDto> posts = service.userPublishedPosts(id);
+
+        if(!posts.isEmpty()) return posts;
+        else throw new RuntimeException("Empty!! Any post doesn't exist");
+    }
+
+    @GetMapping("/{id}/draftPosts")
+    public List<PostDto> getUserDraftPosts(@PathVariable("id") int id) {
+        List<PostDto> posts = service.userDraftPosts(id);
+
+        if(!posts.isEmpty()) return posts;
+        else throw new RuntimeException("Empty!! Any post doesn't exist");
     }
 }
