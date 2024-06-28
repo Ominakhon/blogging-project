@@ -12,12 +12,19 @@ public interface UserDao {
     void save(User user);
 
     List<User> getALlUsers();
+
     User getUserByUsername(String username);
+
     User getUserById(int id);
+
     void update(User user);
+
     void delete(User user);
 
     List<User> getAllUsers();
+
+    List<Role> userFindByRoles(String userName);
+
 
     Set<Role> getUserRoles(int userId);
 }

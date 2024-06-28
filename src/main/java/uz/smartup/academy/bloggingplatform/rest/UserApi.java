@@ -7,6 +7,7 @@ import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class UserApi {
 
     @PostMapping({"", "/"})
     public void registerUser(@RequestBody UserDTO userDTO){
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
 
         Role role = new Role();
         role.setRole("ROLE_VIEWER");

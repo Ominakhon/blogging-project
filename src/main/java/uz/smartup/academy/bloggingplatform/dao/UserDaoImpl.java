@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
     private final EntityManager entityManager;
 
     public UserDaoImpl(EntityManager entityManager) {
@@ -46,6 +46,15 @@ public class UserDaoImpl implements UserDao{
     @Override
     public List<User> getAllUsers() {
         return List.of();
+    }
+
+    @Override
+    public List<Role> userFindByRoles(String userName) {
+        TypedQuery<Role> query = entityManager.createQuery(
+                "SELECT r FROM Role r WHERE r.id.username = :userName", Role.class);
+        query.setParameter("userName", userName);
+
+        return query.getResultList();
     }
 
     @Override

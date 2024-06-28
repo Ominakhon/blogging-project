@@ -48,8 +48,8 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "username", referencedColumnName = "username", updatable = false)
-    private Set<Role> roles;
+    private List<Role> roles;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts;
 }

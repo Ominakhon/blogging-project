@@ -56,8 +56,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(UserDTO userDTO) {
-        User user = dtoUtil.toEntity(userDTO);
-        userDao.update(user);
+        User user = userDao.getUserById(userDTO.getId());
+        System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
+        System.out.println(user);
+        userDao.update(dtoUtil.userMergeEntity(user, userDTO));
     }
 
     @Transactional
@@ -69,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void registerUser(UserDTO userDTO, Set<Role> roles) {
+    public void registerUser(UserDTO userDTO, List<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
 
         for (Role role : roles) {
