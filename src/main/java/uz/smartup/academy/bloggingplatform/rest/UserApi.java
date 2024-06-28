@@ -3,9 +3,12 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 import org.springframework.web.bind.annotation.*;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/users")
@@ -25,11 +28,18 @@ public class UserApi {
 
     @PostMapping({"", "/"})
     public void registerUser(@RequestBody UserDTO userDTO){
-        service.registerUser(userDTO);
+        Set<Role> roles = new HashSet<>();
+
+        Role role = new Role();
+        role.setRole("ROLE_VIEWER");
+        role.setUsername(userDTO.getUsername());
+        roles.add(role);
+
+        service.registerUser(userDTO, roles);
     }
 
 //    @PutMapping("/update")
-//    public void updateUser( @RequestBody UserDTO userDTO){
+//    public void updateUser(@RequestBody UserDTO userDTO){
 //        service.updateUser(userDTO);
 //    }
 

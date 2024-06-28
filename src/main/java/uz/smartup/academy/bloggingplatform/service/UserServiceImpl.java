@@ -9,10 +9,12 @@ import uz.smartup.academy.bloggingplatform.dto.PostDtoUtil;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.dto.UserDtoUtil;
 import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.beans.Transient;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -63,10 +65,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void registerUser(UserDTO userDTO) {
+    public void registerUser(UserDTO userDTO, Set<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
-        userDao.save(user);
 
+        for (Role role : roles) {
+            role.setUsername(user.getUsername());
+        }
+//        String hashedPassword = passwordEncoder.encode(user.getPassword());
+//        user.setPassword(hashedPassword);
+        user.setRoles(roles);
+
+        userDao.save(user);
     }
 
     @Override
