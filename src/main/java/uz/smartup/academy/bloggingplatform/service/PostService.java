@@ -35,4 +35,7 @@ public interface PostService {
     List<PostDto> getDraftPostsByAuthorId(int authorId);
 
     List<PostDto> getPublishedPostsByAuthorId(int authorId);
+
+    Post getPostWithLikeCount(int postId);
+
 }

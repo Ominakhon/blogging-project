@@ -19,11 +19,13 @@ public class PostServiceImpl implements PostService {
 
     private final PostDtoUtil dtoUtil;
     private final CommentDtoUtil commentDtoUtil;
+    private final LikeService likeService;
 
-    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil) {
+    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService) {
         this.dao = dao;
         this.dtoUtil = dtoUtil;
         this.commentDtoUtil = commentDtoUtil;
+        this.likeService = likeService;
     }
 
     @Override
@@ -107,5 +109,13 @@ public class PostServiceImpl implements PostService {
         List<Post> posts = dao.findPostByStatusAndAuthorId(Post.Status.PUBLISHED, authorId);
 
         return dtoUtil.toDTOs(posts);
+    }
+
+    @Override
+    public Post getPostWithLikeCount(int postId) {
+        Post post = dtoUtil.toEntity(getById(postId));
+        long likeCount = likeService.countLikesByPostId(postId);
+        post.setLikesCount(likeCount);
+        return post;
     }
 }
