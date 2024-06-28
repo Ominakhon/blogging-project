@@ -1,9 +1,11 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
 
+import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface UserDao {
@@ -16,6 +18,8 @@ public interface UserDao {
     void delete(User user);
 
     List<User> getAllUsers();
+
+    Set<Role> getUserRoles(int userId);
 }
 
 /*

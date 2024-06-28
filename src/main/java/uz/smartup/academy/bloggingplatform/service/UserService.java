@@ -19,7 +19,8 @@ public interface UserService {
     public void addDraftPostByUserId(int userId, PostDto postDto);
     public void addPublishedPostByUserId(int userId, PostDto postDto);
 
-
+    public List<PostDto> userPublishedPosts(int userId);
+    public List<PostDto> userDraftPosts(int userId);
 
 
 }
