@@ -3,6 +3,8 @@ package uz.smartup.academy.bloggingplatform.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.time.LocalDate;
 

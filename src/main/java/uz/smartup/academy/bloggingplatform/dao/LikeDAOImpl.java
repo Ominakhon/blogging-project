@@ -2,8 +2,10 @@ package uz.smartup.academy.bloggingplatform.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Like;
 
+@Repository
 public class LikeDAOImpl implements LikeDAO {
 
     private final EntityManager entityManager;
@@ -15,12 +17,12 @@ public class LikeDAOImpl implements LikeDAO {
     @Transactional
     @Override
     public Like findByUserAndPost(int userId, int postId) {
-        Like like = entityManager.createQuery(
-                "SELECT l FROM Like l WHERE l.userId = :userId AND l.postId = :userId", Like.class)
-                .setParameter("userId", userId)
-                .setParameter("userId", postId)
-                .getSingleResult();
-        return like;
+//        Like like = entityManager.createQuery(
+//                "SELECT l FROM Like l WHERE l.author = :userId AND l.post = :userId", Like.class)
+//                .setParameter("author", )
+//                .setParameter("post", postId)
+//                .getSingleResult();
+        return null;
     }
 
     @Override

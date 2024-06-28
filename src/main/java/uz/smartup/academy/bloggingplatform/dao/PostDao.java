@@ -23,6 +23,8 @@ public interface PostDao {
     User getAuthorById(int id);
 
     List<Post> getPostsByAuthor(int authorId);
+
+
 }
 
 /*

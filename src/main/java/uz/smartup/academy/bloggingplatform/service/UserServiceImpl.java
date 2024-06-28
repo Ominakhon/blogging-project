@@ -2,29 +2,45 @@ package uz.smartup.academy.bloggingplatform.service;
 
 
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
-import uz.smartup.academy.bloggingplatform.dto.PostDtoUtil;
+import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.dto.UserDtoUtil;
 import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.repository.PostRepository;
+import uz.smartup.academy.bloggingplatform.repository.UserRepository;
 
-import java.beans.Transient;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final UserDtoUtil dtoUtil;
- //   private PostDtoUtil postDtoUtil;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil) {
         this.userDao = userDao;
         this.dtoUtil = dtoUtil;
-    //    this.postDtoUtil = postDtoUtil;
+    }
+
+    @Transactional
+    @Override
+    public void publishPostByAuthor(int userId, int postId) {
+        userDao.addPostToAuthor(userId, postId);
+
     }
 
     @Override
@@ -63,10 +79,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void registerUser(UserDTO userDTO) {
+    public void registerUser(UserDTO userDTO, Set<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
-        userDao.save(user);
 
+        for (Role role : roles) {
+            role.setUsername(user.getUsername());
+        }
+//        String hashedPassword = passwordEncoder.encode(user.getPassword());
+//        user.setPassword(hashedPassword);
+        user.setRoles(roles);
+
+        userDao.save(user);
     }
 
     @Override
@@ -74,10 +97,6 @@ public class UserServiceImpl implements UserService {
         return List.of();
     }
 
-    @Transactional
-    @Override
-    public List<PostDao> addPostToAuthor(int id, UserDTO userDTO) {
-        return List.of();
-    }
+
 
 }

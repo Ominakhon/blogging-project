@@ -3,6 +3,7 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
@@ -10,9 +11,13 @@ import java.util.List;
 @Repository
 public class UserDaoImpl implements UserDao{
     private final EntityManager entityManager;
+    private final PostDao postDao;
 
-    public UserDaoImpl(EntityManager entityManager) {
+
+    public UserDaoImpl(EntityManager entityManager, PostDao postDao) {
         this.entityManager = entityManager;
+        this.postDao = postDao;
+
     }
 
     @Override
@@ -41,8 +46,12 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return List.of();
+    public void addPostToAuthor(int postId, int authorId) {
+        Post post = postDao.getById(postId);
+        User author = entityManager.find(User.class, authorId);
+        author.addPostToAuthor(post);
+        update(author);
+
     }
 
     @Override
