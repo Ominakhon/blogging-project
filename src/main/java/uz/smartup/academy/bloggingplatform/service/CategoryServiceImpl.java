@@ -3,21 +3,25 @@ package uz.smartup.academy.bloggingplatform.service;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
+import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDtoUtil;
 import uz.smartup.academy.bloggingplatform.entity.Category;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.util.List;
 
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    private final PostDao postDao;
     private final CategoryDtoUtil categoryDtoUtil;
     private final CategoryDao categoryDao;
 
-    public CategoryServiceImpl(CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao) {
+    public CategoryServiceImpl(CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao,PostDao postDao) {
         this.categoryDtoUtil = categoryDtoUtil;
         this.categoryDao = categoryDao;
+        this.postDao=postDao;
     }
 
     @Transactional
@@ -32,6 +36,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void update(CategoryDto categoryDto) {
         Category category=categoryDtoUtil.toEntity(categoryDto);
+        List<Post> posts =postDao.getPostsByCategory(category.getId());
+        category.setPosts(posts);
         categoryDao.update(category);
     }
 
