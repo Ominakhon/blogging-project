@@ -56,23 +56,24 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void updateUser(UserDTO userDTO) {
-        User user = dtoUtil.toEntity(userDTO);
-        List<Post>posts = postDao.getPostsByAuthor(user.getId());
-        user.setPosts(posts);
-        userDao.update(user);
+        User user = userDao.getUserById(userDTO.getId());
+        System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
+        System.out.println(user);
+        userDao.update(dtoUtil.userMergeEntity(user, userDTO));
     }
 
     @Transactional
     @Override
     public void deleteUser(int id) {
         User user = userDao.getUserById(id);
-        userDao.delete(user);
-
+        if (user != null) {
+            userDao.delete(user);
+        }
     }
 
     @Transactional
     @Override
-    public void registerUser(UserDTO userDTO, Set<Role> roles) {
+    public void registerUser(UserDTO userDTO, List<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
 
         for (Role role : roles) {
@@ -86,23 +87,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<PostDao> getAllPostsOfUser(int id) {
-        return List.of();
+    @Transactional
+    public List<PostDto> getAllPostsOfUser(int id) {
+        List<Post> posts = userDao.getUserAllPosts(id);
+        return postDtoUtil.toDTOs(posts);
     }
 
 
     @Transactional
     @Override
     public void addDraftPostByUserId(int userId, PostDto postDto) {
+
         User user = userDao.getUserById(userId);
 
-        Post post = postDtoUtil.toEntity(postDto);
+        if (user != null) {
 
-        post.setStatus(Post.Status.DRAFT);
-        post.setAuthor(user);
-        post.setCreatedAt(LocalDate.now());
-        postDao.save(post);
-        userDao.update(user);
+            Post post = postDtoUtil.toEntity(postDto);
+
+            post.setAuthor(user);
+            post.setStatus(Post.Status.DRAFT);
+            post.setCreatedAt(LocalDate.now());
+
+            postDao.save(post);
+            userDao.update(user);
+        }
     }
 
     @Override
@@ -112,9 +120,10 @@ public class UserServiceImpl implements UserService {
 
         Post post = postDtoUtil.toEntity(postDto);
 
-        post.setStatus(Post.Status.DRAFT);
         post.setAuthor(user);
+        post.setStatus(Post.Status.PUBLISHED);
         post.setCreatedAt(LocalDate.now());
+
         postDao.save(post);
         userDao.update(user);
     }
