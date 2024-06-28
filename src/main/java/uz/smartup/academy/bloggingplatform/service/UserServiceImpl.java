@@ -36,11 +36,9 @@ public class UserServiceImpl implements UserService {
         this.dtoUtil = dtoUtil;
     }
 
-    @Transactional
     @Override
-    public void publishPostByAuthor(int userId, int postId) {
-        userDao.addPostToAuthor(userId, postId);
-
+    public List<PostDao> addPostToAuthor(int id, UserDTO userDTO) {
+        return List.of();
     }
 
     @Override

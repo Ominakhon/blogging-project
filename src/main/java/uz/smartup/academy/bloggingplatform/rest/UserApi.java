@@ -55,17 +55,7 @@ public class UserApi {
 
     }
 
-    @PostMapping("addPost/{authorId}/posts/{postId}")
-    public ResponseEntity<String> addPostToAuthor(
-            @PathVariable int authorId,
-            @PathVariable int postId) {
-                try {
-                    service.publishPostByAuthor(postId, authorId);
-                    return new ResponseEntity<>("Post added to author successfully", HttpStatus.OK);
-                } catch (Exception e) {
-                    return new ResponseEntity<>("Failed to add post to author: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-                }
-            }
+
      @GetMapping("getPosts/{userId}")
     public List<PostDao> getAllPostOfAuthor(@PathVariable int userId){
          return service.getAllPostsOfUser(userId);
