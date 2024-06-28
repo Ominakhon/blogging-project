@@ -53,12 +53,10 @@ public class UserServiceImpl implements UserService {
         return dtoUtil.toDTO(user);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateUser(UserDTO userDTO) {
         User user = dtoUtil.toEntity(userDTO);
-        List<Post>posts = postDao.getPostsByAuthor(user.getId());
-        user.setPosts(posts);
         userDao.update(user);
     }
 
@@ -67,7 +65,6 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int id) {
         User user = userDao.getUserById(id);
         userDao.delete(user);
-
     }
 
     @Transactional
@@ -117,5 +114,15 @@ public class UserServiceImpl implements UserService {
         post.setCreatedAt(LocalDate.now());
         postDao.save(post);
         userDao.update(user);
+    }
+
+    @Override
+    public List<PostDto> userPublishedPosts(int userId) {
+        return postService.getPostsByAuthor(userId);
+    }
+
+    @Override
+    public List<PostDto> userDraftPosts(int userId) {
+        return postService.getDraftPostsByAuthorId(userId);
     }
 }
