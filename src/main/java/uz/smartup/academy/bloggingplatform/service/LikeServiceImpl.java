@@ -18,19 +18,14 @@ public class LikeServiceImpl implements LikeService {
     private final PostDao postDao;
     private final LikeDTOUtil likeDTOUtil;
     private final UserDao userDao;
-    private final UserService userService;
-
 
     @Autowired
-    public LikeServiceImpl(LikeDAO likeDAO, PostDao postDao, LikeDTOUtil likeDTOUtil, UserDao userDao, UserService userService) {
+    public LikeServiceImpl(LikeDAO likeDAO, PostDao postDao, LikeDTOUtil likeDTOUtil, UserDao userDao) {
         this.likeDAO = likeDAO;
         this.postDao = postDao;
         this.likeDTOUtil = likeDTOUtil;
         this.userDao = userDao;
-        this.userService = userService;
-
     }
-
 
     @Override
     public LikeDTO findByUserAndPost(int userId, int postId) {
@@ -39,36 +34,39 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     public void addLike(int userId, int postId) {
-
         User user = userDao.getUserById(userId);
-
         Post post = postDao.getById(postId);
 
-        if (likeDAO.findByUserAndPost(userId, postId)==null) {
-            throw new IllegalStateException("Post already liked");
+        Like like1 = likeDAO.findByUserAndPost(userId, postId);
+
+        if (like1 != null) {
+            likeDAO.delete(like1);
+            // throw new IllegalStateException("Post already liked");
+        }
+        else {
+            Like like = new Like();
+            like.setAuthor(user);
+            like.setPost(post);
+            likeDAO.save(like);
         }
 
-        Like like = new Like();
-        like.setAuthor(user);
-        like.setPost(post);
-        likeDAO.save(like);
 
     }
 
     @Override
     public void removeLike(int userId, int postId) {
-
         User user = userDao.getUserById(userId);
-
         Post post = postDao.getById(postId);
 
         Like like = likeDAO.findByUserAndPost(userId, postId);
 
-        likeDAO.delete(like);
+        if (like != null) {
+            likeDAO.delete(like);
+        }
     }
 
     @Override
     public long countLikesByPostId(int postId) {
-        return 0;
+        return likeDAO.countByPostId(postId);
     }
 }

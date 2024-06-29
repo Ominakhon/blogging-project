@@ -3,21 +3,19 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
     private final EntityManager entityManager;
-    private final PostDao postDao;
 
-
-    public UserDaoImpl(EntityManager entityManager, PostDao postDao) {
+    public UserDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.postDao = postDao;
-
     }
 
     @Override
@@ -46,12 +44,27 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-    public void addPostToAuthor(int postId, int authorId) {
-        Post post = postDao.getById(postId);
-        User author = entityManager.find(User.class, authorId);
-        author.addPostToAuthor(post);
-        update(author);
+    public List<User> getAllUsers() {
+        return List.of();
+    }
 
+    @Override
+    public List<Role> userFindByRoles(String userName) {
+        TypedQuery<Role> query = entityManager.createQuery(
+                "SELECT r FROM Role r WHERE r.id.username = :userName", Role.class);
+        query.setParameter("userName", userName);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public Set<Role> getUserRoles(int userId) {
+        User user = getUserById(userId);
+
+        TypedQuery<Role> query = entityManager.createQuery("FROM Role r where r.id.username = :username", Role.class);
+        query.setParameter("username", user.getUsername());
+
+        return new HashSet<>(query.getResultList());
     }
 
     @Override
