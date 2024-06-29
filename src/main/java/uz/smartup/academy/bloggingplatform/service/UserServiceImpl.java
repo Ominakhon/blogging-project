@@ -139,7 +139,6 @@ public class UserServiceImpl implements UserService {
 
         post.addCategories(categoryDtoUtil.toEntity(categoryDto));
 
-        categoryDao.save(categoryDtoUtil.toEntity(categoryDto));
         postDao.update(post);
     }
 
@@ -153,5 +152,5 @@ public class UserServiceImpl implements UserService {
         return postService.getDraftPostsByAuthorId(userId);
     }
 
-    
+
 }

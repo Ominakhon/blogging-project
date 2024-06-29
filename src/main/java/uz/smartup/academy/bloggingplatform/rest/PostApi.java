@@ -67,4 +67,12 @@ public class PostApi {
         Post post = postService.getPostWithLikeCount(postId);
         return ResponseEntity.ok(post);
     }
+
+    @GetMapping("/categories/{categoryId}")
+    public List<PostDto> getPostsByCategory(@PathVariable("categoryId") int categoryId) {
+        List<PostDto> posts = postService.getPostsByCategory(categoryId);
+
+        if(posts.isEmpty()) throw new RuntimeException("sorry, posts don't exist yet");
+        else return posts;
+    }
 }

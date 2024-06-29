@@ -2,6 +2,7 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 
 import org.springframework.web.bind.annotation.*;
+import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
@@ -101,5 +102,15 @@ public class UserApi {
     @PutMapping("/{id}/posts/update")
     public void updatePost(@RequestBody PostDto postDto) {
         postService.update(postDto);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/categories/{categoryId}")
+    public void addCategoryToPost(@PathVariable("postId") int postId, @PathVariable("categoryId") int categoryId) {
+        service.addExistCategoriesToPost(categoryId, postId);
+    }
+
+    @PostMapping("/{userId}/posts/{postId}/categories")
+    public void addNewCategoryToPost(@PathVariable("postId") int postId, @RequestBody CategoryDto categoryDto) {
+        service.addNewCategoryToPost(categoryDto, postId);
     }
 }
