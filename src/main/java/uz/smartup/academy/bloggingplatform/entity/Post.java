@@ -1,0 +1,110 @@
+package uz.smartup.academy.bloggingplatform.entity;
+
+import jakarta.persistence.*;
+import java.sql.Timestamp;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "post")
+@Getter
+@Setter
+public class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "title", length = 255)
+    private String title;
+
+    @Lob
+    @Column(name = "photo")
+    private byte[] photo;
+
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Timestamp createdAt;
+
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "user_id")
+    private User author;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+        name = "category_post",
+        joinColumns = @JoinColumn(name = "post_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "tag_post",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private List<Tag> tags;
+
+    @Transient
+    private long likesCount;
+
+    @Transient
+    private long commentsCount;
+
+    public void addCategories(Category category) {
+        if(categories.isEmpty())
+            categories = new ArrayList<>();
+
+        categories.add(category);
+    }
+
+    public void addComments(Comment comment) {
+        if(comments.isEmpty())
+            comments = new ArrayList<>();
+
+        comments.add(comment);
+    }
+
+    public void removeComment(Comment comment) {
+        if(!comments.isEmpty())
+            comments.remove(comment);
+    }
+
+    public void removeCategory(Comment comment) {
+        if(!comments.isEmpty())
+            comments.remove(comment);
+    }
+
+    public void addTag(Tag tag) {
+        if(tags.isEmpty())
+            tags = new ArrayList<>();
+
+        tags.add(tag);
+    }
+
+    public void removeTag(Tag tag) {
+        if(!tags.isEmpty())
+            tags.remove(tag);
+
+    }
+
+    public enum Status {
+        DRAFT,
+        PUBLISHED
+    }
+}
