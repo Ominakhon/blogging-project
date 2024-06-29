@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.service.PostService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.util.ArrayList;
@@ -18,9 +19,12 @@ public class UserApi {
 
     private final UserService service;
 
+    private final PostService postService;
 
-    public UserApi(UserService service) {
+
+    public UserApi(UserService service, PostService postService) {
         this.service = service;
+        this.postService = postService;
     }
 
 
@@ -82,5 +86,20 @@ public class UserApi {
 
         if(!posts.isEmpty()) return posts;
         else throw new RuntimeException("Empty!! Any post doesn't exist");
+    }
+
+    @PutMapping("/{id}/posts/{postId}/toPublished")
+    public void switchDraftToPublished(@PathVariable("postId") int postId) {
+        postService.switchPostDraftToPublished(postId);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/toDraft")
+    public void switchPublishedToDraft(@PathVariable("postId") int postId) {
+        postService.switchPublishedToDraft(postId);
+    }
+
+    @PutMapping("/{id}/posts/update")
+    public void updatePost(@RequestBody PostDto postDto) {
+        postService.update(postDto);
     }
 }

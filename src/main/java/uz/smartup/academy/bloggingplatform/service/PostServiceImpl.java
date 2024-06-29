@@ -36,7 +36,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void update(Post post) {
+    public void update(PostDto postDto) {
+        Post post = dtoUtil.toEntity(postDto);
+
+        post.setComments(dao.getPostComments(post.getId()));
+        post.setAuthor(dao.getAuthorById(post.getId()));
+        post.setStatus(dao.findPostStatusById(post.getId()));
+
         dao.update(post);
     }
 
@@ -120,5 +126,27 @@ public class PostServiceImpl implements PostService {
         long likeCount = likeService.countLikesByPostId(postId);
         post.setLikesCount(likeCount);
         return post;
+    }
+
+
+
+    @Override
+    @Transactional
+    public void switchPostDraftToPublished(int id) {
+        Post post = dao.getById(id);
+
+        post.setStatus(Post.Status.PUBLISHED);
+
+        dao.update(post);
+    }
+
+    @Override
+    @Transactional
+    public void switchPublishedToDraft(int id) {
+        Post post = dao.getById(id);
+
+        post.setStatus(Post.Status.DRAFT);
+
+        dao.update(post);
     }
 }

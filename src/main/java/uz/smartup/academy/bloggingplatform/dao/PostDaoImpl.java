@@ -85,7 +85,7 @@ public class PostDaoImpl implements PostDao{
 
     @Override
     public List<Comment> getPostComments(int id) {
-        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment post.id = :id", Comment.class);
+        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment WHERE post.id = :id", Comment.class);
         query.setParameter("id", id);
 
         return query.getResultList();
@@ -112,6 +112,11 @@ public class PostDaoImpl implements PostDao{
         return query.getResultList();
     }
 
+    @Override
+    public Post.Status findPostStatusById(int postId) {
+        Post post = getById(postId);
+        return post.getStatus();
+    }
 
 
 }
