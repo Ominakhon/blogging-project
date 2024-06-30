@@ -9,16 +9,9 @@ import uz.smartup.academy.bloggingplatform.repository.UserRepository;
 
 import java.util.List;
 
+
 @Component
 public class CommentDtoUtil {
-
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
-
-    public CommentDtoUtil(UserRepository userRepository, PostRepository postRepository) {
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-    }
 
     public Comment toEntity(CommentDTO commentDTO){
         Comment comment = new Comment();
@@ -32,7 +25,9 @@ public class CommentDtoUtil {
     public CommentDTO toDto(Comment comment){
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setId(comment.getId());
+        commentDTO.setAuthorId(comment.getAuthor().getId());
         commentDTO.setContent(comment.getContent());
+        commentDTO.setPostId(comment.getPost().getId());
         commentDTO.setCreatedAt(comment.getCreatedAt());
         return commentDTO;
     }
@@ -40,8 +35,8 @@ public class CommentDtoUtil {
     public List<CommentDTO> toDTOs(List<Comment> comments){
         return comments.stream().map(this::toDto).toList();
     }
-    public List<CommentDTO> toEntities(List<Comment> users) {
-        return users.stream().map(this::toDto).toList();
+    public List<Comment> toEntities(List<CommentDTO> users) {
+        return users.stream().map(this::toEntity).toList();
     }
 }
 

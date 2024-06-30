@@ -5,10 +5,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
-import uz.smartup.academy.bloggingplatform.dto.PostDtoUtil;
-import uz.smartup.academy.bloggingplatform.dto.UserDTO;
-import uz.smartup.academy.bloggingplatform.dto.UserDtoUtil;
+import uz.smartup.academy.bloggingplatform.dto.*;
+import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
@@ -126,6 +124,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<PostDto> userDraftPosts(int userId) {
         return postService.getDraftPostsByAuthorId(userId);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserComment(int userId, int postId, Comment comment) {
+        userDao.updateUserComment(userId, postId, comment);
     }
 
 }
