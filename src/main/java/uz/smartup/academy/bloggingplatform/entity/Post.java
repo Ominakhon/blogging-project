@@ -41,7 +41,7 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User author;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -79,6 +79,7 @@ public class Post {
             comments = new ArrayList<>();
 
         comments.add(comment);
+        comment.setPost(this);
     }
 
     public void removeComment(Comment comment) {

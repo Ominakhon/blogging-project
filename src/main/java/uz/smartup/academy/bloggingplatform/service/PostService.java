@@ -38,4 +38,6 @@ public interface PostService {
 
     Post getPostWithLikeCount(int postId);
 
+    void addCommentToPost(int userId, int posIid, CommentDTO commentDTO);
+
 }

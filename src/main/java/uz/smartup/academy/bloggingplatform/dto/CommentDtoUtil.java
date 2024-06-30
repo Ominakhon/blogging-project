@@ -11,21 +11,21 @@ import java.util.List;
 
 @Component
 public class CommentDtoUtil {
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    PostRepository postRepository;
+
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
+
+    public CommentDtoUtil(UserRepository userRepository, PostRepository postRepository) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
+    }
 
     public Comment toEntity(CommentDTO commentDTO){
         Comment comment = new Comment();
         comment.setId(commentDTO.getId());
-        comment.setContent(commentDTO.getContent());
-        User author = userRepository.findById((int) commentDTO.getAuthorId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid author ID"));
-        comment.setAuthor(author);
-        Post post = postRepository.findById((int) commentDTO.getPostId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid post ID"));
-        comment.setPost(post);
+        comment.setContent(commentDTO.getContent());;
+        comment.setAuthor(comment.getAuthor());
+        comment.setPost(comment.getPost());
         return comment;
     }
 

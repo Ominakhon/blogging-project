@@ -127,4 +127,5 @@ public class UserServiceImpl implements UserService {
     public List<PostDto> userDraftPosts(int userId) {
         return postService.getDraftPostsByAuthorId(userId);
     }
+
 }

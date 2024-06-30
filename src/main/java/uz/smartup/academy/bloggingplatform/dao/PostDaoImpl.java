@@ -5,6 +5,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jdk.jfr.Registered;
 import org.springframework.stereotype.Repository;
+import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class PostDaoImpl implements PostDao{
     public PostDaoImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
 
     @Override
     public void save(Post post) {
@@ -83,7 +85,7 @@ public class PostDaoImpl implements PostDao{
 
     @Override
     public List<Comment> getPostComments(int id) {
-        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment post.id = :id", Comment.class);
+        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment WHERE post.id = :id", Comment.class);
         query.setParameter("id", id);
 
         return query.getResultList();
@@ -109,6 +111,7 @@ public class PostDaoImpl implements PostDao{
 
         return query.getResultList();
     }
+
 
 
 
