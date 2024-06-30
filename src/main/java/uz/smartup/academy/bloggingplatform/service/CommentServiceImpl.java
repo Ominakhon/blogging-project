@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDTO> getAllComments() {
         List<Comment> comments = commentDao.getComments();
-        return dtoUtil.toEntities(comments);
+        return dtoUtil.toDTOs(comments);
     }
     @Transactional
     @Override

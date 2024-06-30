@@ -1,6 +1,8 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
 
+import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
+import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -24,6 +26,8 @@ public interface UserDao {
     List<User> getAllUsers();
 
     List<Role> userFindByRoles(String userName);
+
+    void updateUserComment(int userId, int postId, Comment comment);
 
 
     Set<Role> getUserRoles(int userId);

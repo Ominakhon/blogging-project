@@ -3,8 +3,10 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 import org.springframework.web.bind.annotation.*;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
+import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.PostService;
@@ -94,5 +96,10 @@ public class UserApi {
         Post post = dao.getById(id);
         if(post != null) postService.delete(id);
         else throw new RuntimeException("Post with ID " + id + "doesn't exist");
+    }
+
+    @PutMapping("{userId}/updateComment/{postId}")
+    public void updateCommentsOfPost(@PathVariable int userId, @PathVariable int postId , @RequestBody Comment comment) {
+        service.updateUserComment(userId, postId, comment);
     }
 }
