@@ -3,11 +3,9 @@ package uz.smartup.academy.bloggingplatform.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import uz.smartup.academy.bloggingplatform.dao.PostDao;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -49,17 +47,19 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "username", referencedColumnName = "username", updatable = false)
-    private Set<Role> roles;
+    private List<Role> roles;
 
-    @OneToMany(mappedBy = "author", cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
     public void addPostToAuthor(Post post){
         if(posts == null) posts = new ArrayList<>();
         posts.add(post);
+        post.setAuthor(this);
     }
     public  void removeAuthorsPost(Post post){
         if(posts != null) posts.remove(post);
+        post.setAuthor(null);
     }
 
 
