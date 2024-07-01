@@ -70,9 +70,17 @@ public class PostApi {
         postService.addCommentToPost(userId, postId, comment);
     }
 
-    @GetMapping("/categories/{categoryId}")
-    public List<PostDto> getPostsByCategory(@PathVariable("categoryId") int categoryId) {
-        List<PostDto> posts = postService.getPostsByCategory(categoryId);
+    @GetMapping("/categories/{categoryTitle}")
+    public List<PostDto> getPostsByCategory(@PathVariable("categoryTitle") String  categoryTitle) {
+        List<PostDto> posts = postService.getPostsByCategory(categoryTitle);
+
+        if(posts.isEmpty()) throw new RuntimeException("sorry, posts don't exist yet");
+        else return posts;
+    }
+
+    @GetMapping("/tags/{tagTitle}")
+    public List<PostDto> getPostsByTag(@PathVariable("tagTitle") String tagTitle) {
+        List<PostDto> posts = postService.getPostsByTag(tagTitle);
 
         if(posts.isEmpty()) throw new RuntimeException("sorry, posts don't exist yet");
         else return posts;

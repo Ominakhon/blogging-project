@@ -40,4 +40,13 @@ public class TagDaoImpl implements TagDao{
     public Tag findTagById(int id) {
         return entityManager.find(Tag.class,id);
     }
+
+    @Override
+    public Tag findTagByTitle(String title) {
+        TypedQuery<Tag> query = entityManager.createQuery("FROM Tag WHERE title = :title", Tag.class);
+
+        query.setParameter("title", title);
+
+        return query.getSingleResult();
+    }
 }
