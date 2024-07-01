@@ -2,9 +2,13 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 
 import org.springframework.web.bind.annotation.*;
+import uz.smartup.academy.bloggingplatform.dao.PostDao;
+import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.entity.Comment;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.PostService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
@@ -19,9 +23,9 @@ import java.util.Set;
 public class UserApi {
 
     private final UserService service;
-
     private final PostService postService;
 
+    private final PostService postService;
 
     public UserApi(UserService service, PostService postService) {
         this.service = service;
@@ -88,6 +92,17 @@ public class UserApi {
         if(!posts.isEmpty()) return posts;
         else throw new RuntimeException("Empty!! Any post doesn't exist");
     }
+
+    @DeleteMapping("{id}/deletePost")
+    public void deletePost(@PathVariable int id, @RequestBody PostDao dao) {
+        Post post = dao.getById(id);
+        if(post != null) postService.delete(id);
+        else throw new RuntimeException("Post with ID " + id + "doesn't exist");
+    }
+
+    @PutMapping("{userId}/updateComment/{postId}")
+    public void updateCommentsOfPost(@PathVariable int userId, @PathVariable int postId , @RequestBody Comment comment) {
+        service.updateUserComment(userId, postId, comment);
 
     @PutMapping("/{id}/posts/{postId}/toPublished")
     public void switchDraftToPublished(@PathVariable("postId") int postId) {

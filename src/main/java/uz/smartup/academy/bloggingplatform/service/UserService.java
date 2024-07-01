@@ -1,9 +1,12 @@
 package uz.smartup.academy.bloggingplatform.service;
 
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
+import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
+
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 
 import java.util.List;
@@ -37,5 +40,5 @@ public interface UserService {
 
     List<PostDto> userDraftPosts(int userId);
 
-
+    void updateUserComment(int userId, int postId, Comment comment);
 }

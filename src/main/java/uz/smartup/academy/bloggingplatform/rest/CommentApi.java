@@ -22,9 +22,15 @@ public class CommentApi {
     public List<CommentDTO> getComments() {
        return service.getAllComments();
     }
-
-    @PostMapping({"", "/"})
-    public void addComment(@RequestBody CommentDTO comment) {
-        service.save(comment);
+    @DeleteMapping({"deleteComment/{commentId}"})
+    public void deleteComment(@PathVariable int commentId) {
+        service.deleteComment(commentId);
     }
+
+
+
+
+
+
+
 }
