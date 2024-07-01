@@ -72,8 +72,8 @@ create table `tag`(
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 create table `tag_post` (
-	`post_id` int not null unique,
-    `tag_id` int not null unique,
+	`post_id` int not null,
+    `tag_id` int not null,
     primary key(`post_id`, `tag_id`),
     foreign key(`post_id`) references `post` (`id`),
     foreign key(`tag_id`) references `tag` (`id`)
