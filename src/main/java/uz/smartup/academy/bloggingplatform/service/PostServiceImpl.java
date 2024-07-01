@@ -140,6 +140,7 @@ public class PostServiceImpl implements PostService {
         comment.setAuthor(user);
         post.addComments(comment);
         dao.save(post);
+    }
 
     @Override
     @Transactional
@@ -152,7 +153,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public void switchPublishedToDraft(int id) {
         Post post = dao.getById(id);
 
@@ -160,4 +160,5 @@ public class PostServiceImpl implements PostService {
 
         dao.update(post);
     }
+
 }
