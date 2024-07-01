@@ -2,6 +2,8 @@ package uz.smartup.academy.bloggingplatform.service;
 
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
+import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
+
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
@@ -26,16 +28,17 @@ public interface UserService {
 
     List<PostDao> getAllPostsOfUser(int id);
 
-    public void addDraftPostByUserId(int userId, PostDto postDto);
+    void addDraftPostByUserId(int userId, PostDto postDto);
 
-    public void addPublishedPostByUserId(int userId, PostDto postDto);
+    void addPublishedPostByUserId(int userId, PostDto postDto);
 
-    public List<PostDto> userPublishedPosts(int userId);
+    void addExistCategoriesToPost(int categoryId, int postId);
 
-    public List<PostDto> userDraftPosts(int userId);
+    void addNewCategoryToPost(CategoryDto categoryDto, int postId);
+
+    List<PostDto> userPublishedPosts(int userId);
+
+    List<PostDto> userDraftPosts(int userId);
 
     void updateUserComment(int userId, int postId, Comment comment);
-
-
-
 }

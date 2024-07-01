@@ -3,10 +3,13 @@ package uz.smartup.academy.bloggingplatform.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
+
 import uz.smartup.academy.bloggingplatform.entity.Comment;
+import uz.smartup.academy.bloggingplatform.entity.Category;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
@@ -23,14 +26,18 @@ public class UserServiceImpl implements UserService {
     private final PostDao postDao;
     private final PostDtoUtil postDtoUtil;
     private final PostService postService;
+    private final CategoryDtoUtil categoryDtoUtil;
+    private final CategoryDao categoryDao;
 
 
-    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService) {
+    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao) {
         this.userDao = userDao;
         this.dtoUtil = dtoUtil;
         this.postDao = postDao;
         this.postDtoUtil = postDtoUtil;
         this.postService = postService;
+        this.categoryDtoUtil = categoryDtoUtil;
+        this.categoryDao = categoryDao;
     }
 
     @Override
@@ -117,6 +124,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void addExistCategoriesToPost(int categoryId, int postId) {
+        Post post = postDao.getById(postId);
+        Category category = categoryDao.findCategoryById(categoryId);
+
+        post.addCategories(category);
+
+        postDao.update(post);
+    }
+
+    @Override
+    @Transactional
+    public void addNewCategoryToPost(CategoryDto categoryDto, int postId) {
+        Post post = postDao.getById(postId);
+
+        post.addCategories(categoryDtoUtil.toEntity(categoryDto));
+
+        postDao.update(post);
+    }
+
+    @Override
     public List<PostDto> userPublishedPosts(int userId) {
         return postService.getPublishedPostsByAuthorId(userId);
     }
@@ -126,10 +154,9 @@ public class UserServiceImpl implements UserService {
         return postService.getDraftPostsByAuthorId(userId);
     }
 
-    @Override
+  @Override
     @Transactional
     public void updateUserComment(int userId, int postId, Comment comment) {
         userDao.updateUserComment(userId, postId, comment);
     }
-
 }

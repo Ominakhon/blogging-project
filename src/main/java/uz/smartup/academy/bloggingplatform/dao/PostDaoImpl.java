@@ -112,6 +112,11 @@ public class PostDaoImpl implements PostDao{
         return query.getResultList();
     }
 
+    @Override
+    public Post.Status findPostStatusById(int postId) {
+        Post post = getById(postId);
+        return post.getStatus();
+    }
 
 
 
