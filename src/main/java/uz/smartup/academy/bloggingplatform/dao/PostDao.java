@@ -1,5 +1,6 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
+import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public interface PostDao {
 
     List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId);
 
-    Post.Status findPostStatusById(int postId);
+  Post.Status findPostStatusById(int postId);
 }
 
 /*
