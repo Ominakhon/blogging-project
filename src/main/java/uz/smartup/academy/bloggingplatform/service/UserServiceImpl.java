@@ -5,14 +5,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
+import uz.smartup.academy.bloggingplatform.dao.TagDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
 
-import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Category;
-import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,9 +25,12 @@ public class UserServiceImpl implements UserService {
     private final PostService postService;
     private final CategoryDtoUtil categoryDtoUtil;
     private final CategoryDao categoryDao;
+    private final CommentDtoUtil commentDtoUtil;
+    private final TagDao tagDao;
+    private final TagDtoUtil tagDtoUtil;
 
 
-    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao) {
+    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao, CommentDtoUtil commentDtoUtil, TagDao tagDao, TagDtoUtil tagDtoUtil) {
         this.userDao = userDao;
         this.dtoUtil = dtoUtil;
         this.postDao = postDao;
@@ -38,6 +38,9 @@ public class UserServiceImpl implements UserService {
         this.postService = postService;
         this.categoryDtoUtil = categoryDtoUtil;
         this.categoryDao = categoryDao;
+        this.commentDtoUtil = commentDtoUtil;
+        this.tagDao = tagDao;
+        this.tagDtoUtil = tagDtoUtil;
     }
 
     @Override
@@ -145,6 +148,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
+    public void addExistTagToPost(int tagId, int postId) {
+        Post post = postDao.getById(postId);
+        Tag tag = tagDao.findTagById(tagId);
+
+        post.addTag(tag);
+
+        postDao.update(post);
+    }
+
+    @Override
+    @Transactional
+    public void addNewTagToPost(TagDto tagDto, int postId) {
+        Post post = postDao.getById(postId);
+
+        post.addTag(tagDtoUtil.toEntity(tagDto));
+
+        postDao.update(post);
+    }
+
+    @Override
     public List<PostDto> userPublishedPosts(int userId) {
         return postService.getPublishedPostsByAuthorId(userId);
     }
@@ -156,7 +180,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
     @Transactional
-    public void updateUserComment(int userId, int postId, Comment comment) {
-        userDao.updateUserComment(userId, postId, comment);
+    public void updateUserComment(int userId, int postId, CommentDTO comment) {
+        Comment comment1 = commentDtoUtil.toEntity(comment);
+
+        userDao.updateUserComment(userId, postId, comment1);
     }
 }

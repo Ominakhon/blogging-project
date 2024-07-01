@@ -3,6 +3,7 @@ package uz.smartup.academy.bloggingplatform.service;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
+import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.CommentDtoUtil;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
@@ -16,17 +17,18 @@ import java.util.List;
 @Service
 public class PostServiceImpl implements PostService {
     private final PostDao dao;
-
+    private final UserDao userDao;
     private final PostDtoUtil dtoUtil;
     private final CommentDtoUtil commentDtoUtil;
     private final LikeService likeService;
 
 
-    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil) {
+    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil, UserDao userDao) {
         this.dao = dao;
         this.dtoUtil = dtoUtil;
         this.commentDtoUtil = commentDtoUtil;
         this.likeService = likeService;
+        this.userDao = userDao;
     }
 
     @Override
@@ -133,13 +135,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public void addCommentToPost(int userId, int postId, CommentDTO commentDTO) {
         Post post = dao.getById(postId);
+
         if (post == null)
             throw new IllegalArgumentException("Post not found with ID: " + postId);
-        User user = dao.getAuthorById(userId);
+
+        User user = userDao.getUserById(userId);
         Comment comment = commentDtoUtil.toEntity(commentDTO);
         comment.setAuthor(user);
         post.addComments(comment);
         dao.save(post);
+    }
 
     @Override
     @Transactional
@@ -152,7 +157,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public void switchPublishedToDraft(int id) {
         Post post = dao.getById(id);
 
@@ -160,4 +164,5 @@ public class PostServiceImpl implements PostService {
 
         dao.update(post);
     }
+
 }
