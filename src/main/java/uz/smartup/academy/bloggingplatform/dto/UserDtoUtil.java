@@ -47,8 +47,6 @@ public class UserDtoUtil {
         return users.stream().map(this::toDTO).toList();
     }
 
-
-
     public User userMergeEntity(User user, UserDTO userDTO) {
         //       user.setId(userDTO.getId());
         user.setFirstName(userDTO.getFirst_name());
@@ -61,5 +59,4 @@ public class UserDtoUtil {
         user.setRegistered(LocalDate.now());
         return user;
     }
-
 }

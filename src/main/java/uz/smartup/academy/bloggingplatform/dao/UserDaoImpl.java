@@ -3,8 +3,10 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
+
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl implements UserDao {
     private final EntityManager entityManager;
 
     public UserDaoImpl(EntityManager entityManager) {
@@ -68,7 +70,6 @@ public class UserDaoImpl implements UserDao{
     }
 
     @Override
-
     public List<Role> userFindByRoles(String userName) {
         TypedQuery<Role> query = entityManager.createQuery(
                 "SELECT r FROM Role r WHERE r.id.username = :userName", Role.class);
@@ -84,6 +85,13 @@ public class UserDaoImpl implements UserDao{
         query.setParameter("username", user.getUsername());
 
         return new HashSet<>(query.getResultList());
+
+    }
+
+    @Override
+    public List<User> getALlUsers() {
+        TypedQuery<User> users = entityManager.createQuery("FROM User", User.class);
+        return users.getResultList();
     }
 
 

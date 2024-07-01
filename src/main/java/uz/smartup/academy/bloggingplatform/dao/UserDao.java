@@ -29,6 +29,13 @@ public interface UserDao {
 
     Set<Role> getUserRoles(int userId);
 
+    List<User> getAllUsers();
+
+    List<Role> userFindByRoles(String userName);
+
+
+    Set<Role> getUserRoles(int userId);
+
 }
 
 /*

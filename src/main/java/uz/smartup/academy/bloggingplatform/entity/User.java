@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +51,14 @@ public class User {
     @JoinColumn(name = "username", referencedColumnName = "username", updatable = false)
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts;
+
+    public void addRole(Role role) {
+        if(roles.isEmpty()) {
+            roles = new ArrayList<>();
+        }
+
+        roles.add(role);
+    }
 }

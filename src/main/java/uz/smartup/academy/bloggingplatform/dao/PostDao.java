@@ -28,6 +28,8 @@ public interface PostDao {
     List<Post> findPostsByStatus(Post.Status status);
 
     List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId);
+
+    Post.Status findPostStatusById(int postId);
 }
 
 /*

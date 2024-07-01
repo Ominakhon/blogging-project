@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 @Getter
 public class PostDto {
@@ -80,4 +81,15 @@ public class PostDto {
 
     }
 
+    @Override
+    public String toString() {
+        return "PostDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", photo=" + Arrays.toString(photo) +
+                ", content='" + content + '\'' +
+                ", createdAt=" + createdAt +
+                ", likesCount=" + likesCount +
+                '}';
+    }
 }
