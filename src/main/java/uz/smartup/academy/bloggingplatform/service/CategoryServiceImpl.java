@@ -35,8 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void update(CategoryDto categoryDto) {
-        Category category=categoryDtoUtil.toEntity(categoryDto);
-        List<Post> posts =postDao.getPostsByCategory(category.getId());
+        Category category = categoryDtoUtil.toEntity(categoryDto);
+        List<Post> posts = postDao.getPostsByCategory(category);
         category.setPosts(posts);
         categoryDao.update(category);
     }

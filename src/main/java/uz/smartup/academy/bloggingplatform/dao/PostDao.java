@@ -16,9 +16,9 @@ public interface PostDao {
 
     List<Post> getAllPosts();
 
-    List<Post> getPostsByTag(int tagId);
+    List<Post> getPostsByTag(Tag tag);
 
-    List<Post> getPostsByCategory(int categoryId);
+    List<Post> getPostsByCategory(Category category);
 
     User getAuthorById(int id);
 

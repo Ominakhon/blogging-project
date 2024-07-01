@@ -2,7 +2,9 @@ package uz.smartup.academy.bloggingplatform.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
+import uz.smartup.academy.bloggingplatform.dao.TagDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.CommentDtoUtil;
@@ -21,14 +23,18 @@ public class PostServiceImpl implements PostService {
     private final PostDtoUtil dtoUtil;
     private final CommentDtoUtil commentDtoUtil;
     private final LikeService likeService;
+    private final CategoryDao categoryDao;
+    private final TagDao tagDao;
 
 
-    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil, UserDao userDao) {
+    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil, UserDao userDao, CategoryDao categoryDao, TagDao tagDao) {
         this.dao = dao;
         this.dtoUtil = dtoUtil;
         this.commentDtoUtil = commentDtoUtil;
         this.likeService = likeService;
         this.userDao = userDao;
+        this.categoryDao = categoryDao;
+        this.tagDao = tagDao;
     }
 
     @Override
@@ -63,16 +69,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> getAllPosts() {
         return dtoUtil.toDTOs(dao.getAllPosts());
-    }
-
-    @Override
-    public List<PostDto> getPostsByTag(int tagId) {
-        return dtoUtil.toDTOs(dao.getPostsByTag(tagId));
-    }
-
-    @Override
-    public List<PostDto> getPostsByCategory(int categoryId) {
-        return dtoUtil.toDTOs(dao.getPostsByCategory(categoryId));
     }
 
     @Override
@@ -163,6 +159,18 @@ public class PostServiceImpl implements PostService {
         post.setStatus(Post.Status.DRAFT);
 
         dao.update(post);
+    }
+
+    @Override
+    public List<PostDto> getPostsByCategory(String categoryTitle) {
+        List<Post> posts = dao.getPostsByCategory(categoryDao.findCategoryByTitle(categoryTitle));
+        return dtoUtil.toDTOs(posts);
+    }
+
+    @Override
+    public List<PostDto> getPostsByTag(String tagTitle) {
+        List<Post> posts = dao.getPostsByTag(tagDao.findTagByTitle(tagTitle));
+        return dtoUtil.toDTOs(posts);
     }
 
 }
