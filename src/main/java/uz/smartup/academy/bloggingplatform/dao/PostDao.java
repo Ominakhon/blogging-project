@@ -30,7 +30,7 @@ public interface PostDao {
 
     List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId);
 
-
+  Post.Status findPostStatusById(int postId);
 }
 
 /*

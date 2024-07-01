@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
+
 import java.util.List;
 import java.util.Set;
 
@@ -62,6 +64,11 @@ public class User {
         post.setAuthor(null);
     }
 
+   public void addRole(Role role) {
+        if(roles.isEmpty()) {
+            roles = new ArrayList<>();
+        }
 
-
+        roles.add(role);
+    }
 }
