@@ -3,16 +3,16 @@ package uz.smartup.academy.bloggingplatform.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
-import uz.smartup.academy.bloggingplatform.dto.PostDtoUtil;
-import uz.smartup.academy.bloggingplatform.dto.UserDTO;
-import uz.smartup.academy.bloggingplatform.dto.UserDtoUtil;
+import uz.smartup.academy.bloggingplatform.dto.*;
+import uz.smartup.academy.bloggingplatform.entity.Category;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
-import java.beans.Transient;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -21,12 +21,21 @@ public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
     private final UserDtoUtil dtoUtil;
- //   private PostDtoUtil postDtoUtil;
+    private final PostDao postDao;
+    private final PostDtoUtil postDtoUtil;
+    private final PostService postService;
+    private final CategoryDtoUtil categoryDtoUtil;
+    private final CategoryDao categoryDao;
 
-    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil) {
+
+    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao) {
         this.userDao = userDao;
         this.dtoUtil = dtoUtil;
-    //    this.postDtoUtil = postDtoUtil;
+        this.postDao = postDao;
+        this.postDtoUtil = postDtoUtil;
+        this.postService = postService;
+        this.categoryDtoUtil = categoryDtoUtil;
+        this.categoryDao = categoryDao;
     }
 
     @Override
@@ -47,12 +56,13 @@ public class UserServiceImpl implements UserService {
         return dtoUtil.toDTO(user);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void updateUser(UserDTO userDTO) {
-        User user = dtoUtil.toEntity(userDTO);
-        userDao.update(user);
-
+        User user = userDao.getUserById(userDTO.getId());
+        System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
+        System.out.println(user);
+        userDao.update(dtoUtil.userMergeEntity(user, userDTO));
     }
 
     @Transactional
@@ -60,12 +70,11 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int id) {
         User user = userDao.getUserById(id);
         userDao.delete(user);
-
     }
 
     @Transactional
     @Override
-    public void registerUser(UserDTO userDTO, Set<Role> roles) {
+    public void registerUser(UserDTO userDTO, List<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
 
         for (Role role : roles) {
@@ -83,12 +92,65 @@ public class UserServiceImpl implements UserService {
         return List.of();
     }
 
+
     @Transactional
     @Override
-    public List<PostDao> addPostToAuthor(int id, UserDTO userDTO) {
-        return List.of();
+    public void addDraftPostByUserId(int userId, PostDto postDto) {
+        User user = userDao.getUserById(userId);
+
+        Post post = postDtoUtil.toEntity(postDto);
+
+        post.setStatus(Post.Status.DRAFT);
+        post.setAuthor(user);
+        post.setCreatedAt(LocalDate.now());
+        postDao.save(post);
+        userDao.update(user);
     }
 
+    @Override
+    @Transactional
+    public void addPublishedPostByUserId(int userId, PostDto postDto) {
+        User user = userDao.getUserById(userId);
+
+        Post post = postDtoUtil.toEntity(postDto);
+
+        post.setStatus(Post.Status.PUBLISHED);
+        post.setAuthor(user);
+        post.setCreatedAt(LocalDate.now());
+        postDao.save(post);
+        userDao.update(user);
+    }
+
+    @Override
+    @Transactional
+    public void addExistCategoriesToPost(int categoryId, int postId) {
+        Post post = postDao.getById(postId);
+        Category category = categoryDao.findCategoryById(categoryId);
+
+        post.addCategories(category);
+
+        postDao.update(post);
+    }
+
+    @Override
+    @Transactional
+    public void addNewCategoryToPost(CategoryDto categoryDto, int postId) {
+        Post post = postDao.getById(postId);
+
+        post.addCategories(categoryDtoUtil.toEntity(categoryDto));
+
+        postDao.update(post);
+    }
+
+    @Override
+    public List<PostDto> userPublishedPosts(int userId) {
+        return postService.getPublishedPostsByAuthorId(userId);
+    }
+
+    @Override
+    public List<PostDto> userDraftPosts(int userId) {
+        return postService.getDraftPostsByAuthorId(userId);
+    }
 
 
 }

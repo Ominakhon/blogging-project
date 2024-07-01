@@ -44,6 +44,7 @@ CREATE TABLE `post` (
     `user_id` INT NOT NULL,
 	`photo` longblob,
     `title` VARCHAR(255) NOT NULL,
+    `status` enum('DRAFT', 'PUBLISHED'),
     `content` TEXT NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
@@ -51,21 +52,21 @@ CREATE TABLE `post` (
 
 -- Post Categories Table
 create table `category`(
-	`id` int not null unique,
+	`id` int not null unique AUTO_INCREMENT,
 	`title` varchar(50),
     primary key(`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 create table `category_post` (
-	`post_id` int not null unique,
-    `category_id` int not null unique,
+	`post_id` int not null,
+    `category_id` int not null,
     primary key(`post_id`, `category_id`),
     foreign key(`post_id`) references `post` (`id`),
     foreign key(`category_id`) references `category` (`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 create table `tag`(
-	`id` int not null unique,
+	`id` int not null unique AUTO_INCREMENT,
 	`title` varchar(50),
     primary key(`id`)
 )ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;

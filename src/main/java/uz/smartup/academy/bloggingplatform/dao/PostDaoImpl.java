@@ -85,7 +85,7 @@ public class PostDaoImpl implements PostDao{
 
     @Override
     public List<Comment> getPostComments(int id) {
-        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment post.id = :id", Comment.class);
+        TypedQuery<Comment> query = entityManager.createQuery("FROM Comment WHERE post.id = :id", Comment.class);
         query.setParameter("id", id);
 
         return query.getResultList();
@@ -103,12 +103,19 @@ public class PostDaoImpl implements PostDao{
 
     @Override
     public List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId) {
-        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post p WHERE p.status = :status AND p.author.id = :authorId", Post.class);
+        TypedQuery<Post> query = entityManager.createQuery(
+                "SELECT p FROM Post p WHERE p.status = :status AND p.author.id = :authorId", Post.class);
 
         query.setParameter("status", status);
         query.setParameter("authorId", authorId);
 
         return query.getResultList();
+    }
+
+    @Override
+    public Post.Status findPostStatusById(int postId) {
+        Post post = getById(postId);
+        return post.getStatus();
     }
 
 

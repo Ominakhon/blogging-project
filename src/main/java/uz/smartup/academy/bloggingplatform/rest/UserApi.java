@@ -2,10 +2,14 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 
 import org.springframework.web.bind.annotation.*;
+import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
+import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.service.PostService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,8 +20,12 @@ public class UserApi {
 
     private final UserService service;
 
-    public UserApi(UserService service) {
+    private final PostService postService;
+
+
+    public UserApi(UserService service, PostService postService) {
         this.service = service;
+        this.postService = postService;
     }
 
 
@@ -28,7 +36,7 @@ public class UserApi {
 
     @PostMapping({"", "/"})
     public void registerUser(@RequestBody UserDTO userDTO){
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
 
         Role role = new Role();
         role.setRole("ROLE_VIEWER");
@@ -38,14 +46,71 @@ public class UserApi {
         service.registerUser(userDTO, roles);
     }
 
-//    @PutMapping("/update")
-//    public void updateUser(@RequestBody UserDTO userDTO){
-//        service.updateUser(userDTO);
-//    }
+    @GetMapping("/{id}")
+    public UserDTO getUserById(@PathVariable("id") int id) {
+        return service.getUserById(id);
+    }
+
+    @PutMapping("/update")
+    public void updateUser(@RequestBody UserDTO userDTO) {
+        service.updateUser(userDTO);
+    }
 
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable int id){
         service.deleteUser(id);
     }
 
+    @PostMapping("/{id}/addDraftPost")
+    public void addDraftPostToUser(@PathVariable("id") int id, @RequestBody PostDto postDto) {
+        if(postDto != null) service.addDraftPostByUserId(id, postDto);
+        else throw new RuntimeException("Cannot create post!");
+    }
+
+    @PostMapping("/{id}/addPublishedPost")
+    public void addPublishedPostToUser(@PathVariable("id") int id, @RequestBody PostDto postDto) {
+        if(postDto != null) service.addPublishedPostByUserId(id, postDto);
+        else throw new RuntimeException("Cannot create post!");
+    }
+
+    @GetMapping("/{id}/publishedPosts")
+    public List<PostDto> getUserPublishedPosts(@PathVariable("id") int id) {
+        List<PostDto> posts = service.userPublishedPosts(id);
+
+        if(!posts.isEmpty()) return posts;
+        else throw new RuntimeException("Empty!! Any post doesn't exist");
+    }
+
+    @GetMapping("/{id}/draftPosts")
+    public List<PostDto> getUserDraftPosts(@PathVariable("id") int id) {
+        List<PostDto> posts = service.userDraftPosts(id);
+
+        if(!posts.isEmpty()) return posts;
+        else throw new RuntimeException("Empty!! Any post doesn't exist");
+    }
+
+    @PutMapping("/{id}/posts/{postId}/toPublished")
+    public void switchDraftToPublished(@PathVariable("postId") int postId) {
+        postService.switchPostDraftToPublished(postId);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/toDraft")
+    public void switchPublishedToDraft(@PathVariable("postId") int postId) {
+        postService.switchPublishedToDraft(postId);
+    }
+
+    @PutMapping("/{id}/posts/update")
+    public void updatePost(@RequestBody PostDto postDto) {
+        postService.update(postDto);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/categories/{categoryId}")
+    public void addCategoryToPost(@PathVariable("postId") int postId, @PathVariable("categoryId") int categoryId) {
+        service.addExistCategoriesToPost(categoryId, postId);
+    }
+
+    @PostMapping("/{userId}/posts/{postId}/categories")
+    public void addNewCategoryToPost(@PathVariable("postId") int postId, @RequestBody CategoryDto categoryDto) {
+        service.addNewCategoryToPost(categoryDto, postId);
+    }
 }
