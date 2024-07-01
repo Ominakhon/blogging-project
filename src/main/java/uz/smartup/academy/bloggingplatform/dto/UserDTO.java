@@ -9,6 +9,10 @@ import uz.smartup.academy.bloggingplatform.entity.Role;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import uz.smartup.academy.bloggingplatform.service.LikeService;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,4 +27,6 @@ public class UserDTO {
     private String username;
     private LocalDate registered;
     private List<Role> roles;
+    private List<Post> authorsPosts;
+
 }

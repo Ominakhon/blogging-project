@@ -1,10 +1,7 @@
 package uz.smartup.academy.bloggingplatform.rest;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
@@ -67,6 +64,11 @@ public class PostApi {
         Post post = postService.getPostWithLikeCount(postId);
         return ResponseEntity.ok(post);
     }
+  
+    @PostMapping("{postId}/addComment/{userId}")
+    public void addComment(@PathVariable int postId, @PathVariable int userId ,@RequestBody CommentDTO comment) {
+        postService.addCommentToPost(userId, postId, comment);
+    }
 
     @GetMapping("/categories/{categoryId}")
     public List<PostDto> getPostsByCategory(@PathVariable("categoryId") int categoryId) {
@@ -75,4 +77,5 @@ public class PostApi {
         if(posts.isEmpty()) throw new RuntimeException("sorry, posts don't exist yet");
         else return posts;
     }
+
 }

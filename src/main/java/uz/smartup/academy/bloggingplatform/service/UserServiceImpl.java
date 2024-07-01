@@ -7,6 +7,8 @@ import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
+
+import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Category;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
@@ -161,5 +163,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<PostDto> userDraftPosts(int userId) {
         return postService.getDraftPostsByAuthorId(userId);
+    }
+
+  @Override
+    @Transactional
+    public void updateUserComment(int userId, int postId, Comment comment) {
+        userDao.updateUserComment(userId, postId, comment);
     }
 }

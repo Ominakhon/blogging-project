@@ -7,6 +7,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +41,6 @@ public class User {
     @Column(name = "bio", length = 400)
     private String bio;
 
-
     @Column(name = "registered")
     private LocalDate registered;
 
@@ -51,10 +51,20 @@ public class User {
     @JoinColumn(name = "username", referencedColumnName = "username", updatable = false)
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
-    public void addRole(Role role) {
+    public void addPostToAuthor(Post post){
+        if(posts == null) posts = new ArrayList<>();
+        posts.add(post);
+        post.setAuthor(this);
+    }
+    public  void removeAuthorsPost(Post post){
+        if(posts != null) posts.remove(post);
+        post.setAuthor(null);
+    }
+
+   public void addRole(Role role) {
         if(roles.isEmpty()) {
             roles = new ArrayList<>();
         }

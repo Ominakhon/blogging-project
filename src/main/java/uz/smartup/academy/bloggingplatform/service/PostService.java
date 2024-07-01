@@ -37,8 +37,10 @@ public interface PostService {
     List<PostDto> getPublishedPostsByAuthorId(int authorId);
 
     Post getPostWithLikeCount(int postId);
+  
+    void addCommentToPost(int userId, int posIid, CommentDTO commentDTO);
 
-    void switchPostDraftToPublished(int id);
+  void switchPostDraftToPublished(int id);
 
     void switchPublishedToDraft(int id);
 

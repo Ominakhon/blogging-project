@@ -3,10 +3,10 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
-
+import uz.smartup.academy.bloggingplatform.entity.Comment;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -75,6 +75,15 @@ public class UserDaoImpl implements UserDao {
                 "SELECT r FROM Role r WHERE r.id.username = :userName", Role.class);
         query.setParameter("userName", userName);
         return query.getResultList();
+    }
+
+    @Override
+    public void updateUserComment(int userId, int postId, Comment comment) {
+        User user = getUserById(userId);
+        Post post = entityManager.find(Post.class, postId);
+        comment.setPost(post);
+        comment.setAuthor(user);
+        entityManager.merge(comment);
     }
 
     @Override

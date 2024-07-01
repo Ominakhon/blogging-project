@@ -21,7 +21,8 @@ public class PostServiceImpl implements PostService {
     private final CommentDtoUtil commentDtoUtil;
     private final LikeService likeService;
 
-    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService) {
+
+    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil) {
         this.dao = dao;
         this.dtoUtil = dtoUtil;
         this.commentDtoUtil = commentDtoUtil;
@@ -127,8 +128,18 @@ public class PostServiceImpl implements PostService {
         post.setLikesCount(likeCount);
         return post;
     }
-
-
+  
+    @Transactional
+    @Override
+    public void addCommentToPost(int userId, int postId, CommentDTO commentDTO) {
+        Post post = dao.getById(postId);
+        if (post == null)
+            throw new IllegalArgumentException("Post not found with ID: " + postId);
+        User user = dao.getAuthorById(userId);
+        Comment comment = commentDtoUtil.toEntity(commentDTO);
+        comment.setAuthor(user);
+        post.addComments(comment);
+        dao.save(post);
 
     @Override
     @Transactional
