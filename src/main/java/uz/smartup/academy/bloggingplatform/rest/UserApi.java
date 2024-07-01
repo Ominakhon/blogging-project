@@ -25,8 +25,6 @@ public class UserApi {
     private final UserService service;
     private final PostService postService;
 
-    private final PostService postService;
-
     public UserApi(UserService service, PostService postService) {
         this.service = service;
         this.postService = postService;
@@ -103,6 +101,7 @@ public class UserApi {
     @PutMapping("{userId}/updateComment/{postId}")
     public void updateCommentsOfPost(@PathVariable int userId, @PathVariable int postId , @RequestBody Comment comment) {
         service.updateUserComment(userId, postId, comment);
+    }
 
     @PutMapping("/{id}/posts/{postId}/toPublished")
     public void switchDraftToPublished(@PathVariable("postId") int postId) {
