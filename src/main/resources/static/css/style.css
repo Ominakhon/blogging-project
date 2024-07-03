@@ -78,8 +78,12 @@ section#Home .post {
     /* cursor: pointer; */
 }
 
-section#Home .post h2{
+section#Home .post a{
+    font-size: 40px;
+    font-weight: 600;
     cursor: pointer;
+    text-decoration: none;
+    color: black;
 }
 
 section#Home .post img{
@@ -141,8 +145,12 @@ section#News .post {
     /* padding-top: 25px; */
 }
 
-section#News .post h3 {
+section#News .post a {
     cursor: pointer;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
 }
 
 section#News .post img {
