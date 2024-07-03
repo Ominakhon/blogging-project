@@ -36,7 +36,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public void update(TagDto tagDto) {
         Tag tag=tagDtoUtil.toEntity(tagDto);
-        List<Post> posts =postDao.getPostsByTag(tag.getId());
+        List<Post> posts =postDao.getPostsByTag(tag);
         tag.setPosts(posts);
         tagDao.update(tag);
     }

@@ -10,4 +10,5 @@ public interface TagDao {
     void delete(Tag tag);
     List<Tag> getAllTags();
     Tag findTagById(int id);
+    Tag findTagByTitle(String title);
 }

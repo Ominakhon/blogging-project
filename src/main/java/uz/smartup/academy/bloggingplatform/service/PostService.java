@@ -18,10 +18,6 @@ public interface PostService {
 
     List<PostDto> getAllPosts();
 
-    List<PostDto> getPostsByTag(int tagId);
-
-    List<PostDto> getPostsByCategory(int categoryId);
-
     User getAuthorById(int id);
 
     List<PostDto> getPostsByAuthor(int authorId);
@@ -43,5 +39,9 @@ public interface PostService {
   void switchPostDraftToPublished(int id);
 
     void switchPublishedToDraft(int id);
+
+    List<PostDto> getPostsByCategory(String categoryTitle);
+
+    List<PostDto> getPostsByTag(String tagTitle);
 
 }
