@@ -12,6 +12,7 @@ import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -74,9 +75,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(int id) {
         User user = userDao.getUserById(id);
-        if (user != null) {
-            userDao.delete(user);
-        }
         userDao.delete(user);
     }
 
@@ -96,30 +94,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public List<PostDto> getAllPostsOfUser(int id) {
-        List<Post> posts = userDao.getUserAllPosts(id);
-        return postDtoUtil.toDTOs(posts);
+    public List<PostDao> getAllPostsOfUser(int id) {
+        return List.of();
     }
 
 
     @Transactional
     @Override
     public void addDraftPostByUserId(int userId, PostDto postDto) {
-
         User user = userDao.getUserById(userId);
 
-        if (user != null) {
+        Post post = postDtoUtil.toEntity(postDto);
 
-            Post post = postDtoUtil.toEntity(postDto);
-
-            post.setAuthor(user);
-            post.setStatus(Post.Status.DRAFT);
-            post.setCreatedAt(LocalDate.now());
-
-            postDao.save(post);
-            userDao.update(user);
-        }
+        post.setStatus(Post.Status.DRAFT);
+        post.setAuthor(user);
+        post.setCreatedAt(LocalDateTime.now());
+        postDao.save(post);
+        userDao.update(user);
     }
 
     @Override
@@ -131,13 +122,12 @@ public class UserServiceImpl implements UserService {
 
         post.setStatus(Post.Status.PUBLISHED);
         post.setAuthor(user);
-        post.setStatus(Post.Status.PUBLISHED);
-        post.setCreatedAt(LocalDate.now());
-
+        post.setCreatedAt(LocalDateTime.now());
         postDao.save(post);
         userDao.update(user);
     }
-  
+
+    @Override
     @Transactional
     public void addExistCategoriesToPost(int categoryId, int postId) {
         Post post = postDao.getById(postId);
