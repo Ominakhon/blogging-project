@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Getter
@@ -17,7 +18,7 @@ public class PostDto {
 
     private String content;
 
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     private long likesCount;
 
@@ -41,7 +42,7 @@ public class PostDto {
 
         private String content;
 
-        private LocalDate createdAt;
+        private LocalDateTime createdAt;
 
         private long likesCount;
 
@@ -65,7 +66,7 @@ public class PostDto {
             return this;
         }
 
-        public Builder createdAt(LocalDate createdAt) {
+        public Builder createdAt(LocalDateTime createdAt) {
             this.createdAt = createdAt;
             return this;
         }

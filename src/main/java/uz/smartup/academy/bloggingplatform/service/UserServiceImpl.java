@@ -12,6 +12,7 @@ import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
 
         post.setStatus(Post.Status.DRAFT);
         post.setAuthor(user);
-        post.setCreatedAt(LocalDate.now());
+        post.setCreatedAt(LocalDateTime.now());
         postDao.save(post);
         userDao.update(user);
     }
@@ -121,7 +122,7 @@ public class UserServiceImpl implements UserService {
 
         post.setStatus(Post.Status.PUBLISHED);
         post.setAuthor(user);
-        post.setCreatedAt(LocalDate.now());
+        post.setCreatedAt(LocalDateTime.now());
         postDao.save(post);
         userDao.update(user);
     }
