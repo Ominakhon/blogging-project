@@ -90,4 +90,28 @@ public class IndexController {
         return "redirect:/";
     }
 
+    @GetMapping("/categories/{categoryTitle}")
+    public String categoryPost(@PathVariable("categoryTitle") String categoryTitle, Model model) {
+        List<PostDto> posts = postService.getPostsByCategory(categoryTitle)
+                .stream()
+                .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
+                .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
+                .toList();
+
+        if(posts.size() > 20)
+            posts = posts.stream()
+                    .limit(20)
+                    .toList();
+
+        List<CategoryDto> categories = categoryService.getAllCategories();
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("topPost", posts.getFirst());
+        model.addAttribute("categories", categories);
+        model.addAttribute("categoryTitle", categoryTitle);
+
+        return "categoryPosts";
+
+    }
+
 }

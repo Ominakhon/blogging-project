@@ -1,8 +1,13 @@
 package uz.smartup.academy.bloggingplatform.service;
 
 
+
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.TagDao;
@@ -11,6 +16,8 @@ import uz.smartup.academy.bloggingplatform.dto.*;
 
 import uz.smartup.academy.bloggingplatform.entity.*;
 
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +25,10 @@ import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
+    @Value("classpath:static/css/photos/userPhoto.jpg")
+    private Resource defaultPhotoResource;
+
+    private byte[] defaultPhoto;
 
     private final UserDao userDao;
     private final UserDtoUtil dtoUtil;
@@ -44,6 +55,12 @@ public class UserServiceImpl implements UserService {
         this.tagDtoUtil = tagDtoUtil;
     }
 
+    @PostConstruct
+    public void init() throws IOException {
+        defaultPhoto = StreamUtils.copyToByteArray(defaultPhotoResource.getInputStream());
+        System.out.println("Default photo size: " + defaultPhoto.length); // Debugging line
+    }
+
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userDao.getALlUsers();
@@ -66,8 +83,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUser(UserDTO userDTO) {
         User user = userDao.getUserById(userDTO.getId());
-        System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
-        System.out.println(user);
+//        System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
+//        System.out.println(user);
         userDao.update(dtoUtil.userMergeEntity(user, userDTO));
     }
 
@@ -82,6 +99,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserDTO userDTO, List<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
+
+        if (user.getPhoto() == null || user.getPhoto().length == 0) {
+            user.setPhoto(defaultPhoto);
+        }
+
+        System.out.println("User photo size: " + user.getPhoto().length); // Debugging line
 
         for (Role role : roles) {
             role.setUsername(user.getUsername());
