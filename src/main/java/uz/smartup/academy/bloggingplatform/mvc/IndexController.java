@@ -166,7 +166,7 @@ public class IndexController {
     }
 
     @PostMapping("profile/{userId}/update")
-    public String updateUser(@PathVariable("userId") int userId,Model model, @ModelAttribute("user") UserDTO userDTO, RedirectAttributes attributes, @RequestParam(value = "photo", required = false) MultipartFile photo) throws IOException {
+    public String updateUser(@PathVariable("userId") int userId,Model model, @ModelAttribute("user") UserDTO userDTO, RedirectAttributes attributes, @RequestParam(value = "file", required = false) MultipartFile photo) throws IOException {
         try {
 //            System.out.println(userDTO.getId());
             UserDTO user = userService.getUserById(userId);
