@@ -13,7 +13,7 @@ import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.TagDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
-
+import java.util.Base64;
 import uz.smartup.academy.bloggingplatform.entity.*;
 
 
@@ -58,7 +58,15 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     public void init() throws IOException {
         defaultPhoto = StreamUtils.copyToByteArray(defaultPhotoResource.getInputStream());
-        System.out.println("Default photo size: " + defaultPhoto.length); // Debugging line
+//        System.out.println("Default photo size: " + defaultPhoto.length); // Debugging line
+    }
+
+    @Override
+    public String encodePhotoToBase64(byte[] photo) {
+        if (photo == null) {
+            return "";
+        }
+        return Base64.getEncoder().encodeToString(photo);
     }
 
     @Override
@@ -104,7 +112,7 @@ public class UserServiceImpl implements UserService {
             user.setPhoto(defaultPhoto);
         }
 
-        System.out.println("User photo size: " + user.getPhoto().length); // Debugging line
+//        System.out.println("User photo size: " + user.getPhoto().length); // Debugging line
 
         for (Role role : roles) {
             role.setUsername(user.getUsername());

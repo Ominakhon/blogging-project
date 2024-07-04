@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile edit</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+    <div class="container-fluid">
+        <div class="navbar-start">
+            <a class="navbar-brand" th:href="@{/}">
+                <div class="image">
+                    <img th:src="@{/css/photos/green.jpg}" alt="">
+                </div>
+                <h4>Green White News</h4>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="dropdown me-2">
+                <button class="btn dropdown-toggle text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Categories
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li th:each="category : ${categories}">
+                        <a class="dropdown-item text-success" th:href="@{categories/{categoryTitle}(categoryTitle=${category.title})}" th:text="${category.title}"> ></a>
+                    </li>
+                </ul>
+            </div>
+            <form class="d-flex me-auto">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <form action="" class="login d-flex" style="height: 60%;">
+                <button class="btn btn-primary me-2" type="button">Login</button>
+            </form>
+            <form action="" class="signup" style="height: 60%;">
+                <button class="btn btn-outline-success" type="button" style="height: 100%;">Signup</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<section id="EditForm">
+    <form th:action="@{/profile/{userId}/update(userId=${user.id})}" method="POST" class="userEditForm" th:object="${user}" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="put">
+
+        <div class="image">
+            <img th:src="'data:image/png;base64,' + ${base64EncodedPhoto}" alt="Profile Image">
+        </div>
+        <h5>Upload photo: </h5>
+        <input type="file" class="file" id="file" name="file">
+
+        <div class="fields">
+            <label class="form-label">Username: </label>
+            <input type="text" class="form-control" th:field="*{username}" placeholder="username">
+        </div>
+
+        <div class="fields">
+            <label class="form-label">First name: </label>
+            <input type="text" class="form-control" th:field="*{first_name}" placeholder="first name">
+        </div>
+
+        <div class="fields">
+            <label class="form-label">Last name: </label>
+            <input type="text" class="form-control" th:field="*{last_name}" placeholder="last name">
+        </div>
+
+        <div class="fields">
+            <label class="form-label">Bio: </label>
+            <input type="text" class="form-control" th:field="*{bio}" placeholder="bio">
+        </div>
+
+        <input type="submit" class="btn btn-success" value="save changes">
+
+    </form>
+</section>
+
+
+<section id="Contact">
+    <div class="contact">
+        <div class="image">
+            <img th:src="@{/css/photos/Group_4.png}" alt="Contact Image">
+        </div>
+        <div class="contacts">
+            <h3>Contacts</h3>
+            <li>
+                <a href="https://www.greenwhite.uz/">Official website</a>
+            </li>
+            <li>
+                <a href="mailto:abdullakhmirfayziev81@gmail.com">Gmail</a>
+            </li>
+            <li>
+                <a href="https://t.me/Mirfayziev_a">Telegram</a>
+            </li>
+            <li>
+                <a href="tel:+998991100810">Phone</a>
+            </li>
+        </div>
+    </div>
+    <div class="line"></div>
+    <div class="faq">
+        <p>Green White Solution 2024</p>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+
+</body>
+</html>
