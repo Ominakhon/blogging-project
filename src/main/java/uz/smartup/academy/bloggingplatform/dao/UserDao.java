@@ -31,14 +31,8 @@ public interface UserDao {
 
     Set<Role> getUserRoles(int userId);
 
-    List<User> getAllUsers();
-
-    List<Role> userFindByRoles(String userName);
-
     void updateUserComment(int userId, int postId, Comment comment);
 
-
-    Set<Role> getUserRoles(int userId);
 
 }
 
