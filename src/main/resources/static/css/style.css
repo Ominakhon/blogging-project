@@ -78,8 +78,12 @@ section#Home .post {
     /* cursor: pointer; */
 }
 
-section#Home .post h2{
+section#Home .post a{
+    font-size: 40px;
+    font-weight: 600;
     cursor: pointer;
+    text-decoration: none;
+    color: black;
 }
 
 section#Home .post img{
@@ -141,8 +145,12 @@ section#News .post {
     /* padding-top: 25px; */
 }
 
-section#News .post h3 {
+section#News .post a {
     cursor: pointer;
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 600;
+    color: black;
 }
 
 section#News .post img {
@@ -363,3 +371,82 @@ section#Comments .comments .comment h4{
     font-size: 17px;
     font-weight: 500;
 }
+
+section#Profile {
+    width: 92%;
+    margin: auto;
+    display: flex;
+    justify-content: space-around;
+}
+
+section#Profile .image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-bottom: 30px;
+}
+
+section#Profile .image img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+section#Profile .left-side .edit{
+    width: 200px;
+}
+
+section#Profile .left-side .edit button{
+    margin-top: 30px;
+    width: 100%;
+}
+
+section#Profile .userInfo {
+    border-radius: 30px;
+    border:2px solid rgb(0, 166, 81);
+    color:  rgb(0, 166, 81);
+    padding: 20px;
+}
+
+section#Profile .userInfo h3{
+    height: 20%;
+}
+
+section#EditForm {
+    width: 30%;
+    margin: auto;
+    border: 2px solid  rgb(0, 166, 81);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+section#EditForm .userEditForm {
+    width: 100%;
+}
+
+section#EditForm .userEditForm .image {
+    width: 200px;
+    height: 200px;
+    margin: auto;
+    border-radius: 50%;
+    margin-bottom: 30px;
+}
+
+section#EditForm .userEditForm .image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+section#EditForm .userEditForm .fields {
+    margin-top: 30px;
+}
+
+section#EditForm .userEditForm .btn {
+    margin-top: 30px;
+    width: 100%;
+}
+
+
+
+

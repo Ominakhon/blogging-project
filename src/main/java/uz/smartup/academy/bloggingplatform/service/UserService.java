@@ -37,6 +37,8 @@ public interface UserService {
 
     void addNewTagToPost(TagDto tagDto, int postId);
 
+    String encodePhotoToBase64(byte[] photo);
+
     List<PostDto> userPublishedPosts(int userId);
 
     List<PostDto> userDraftPosts(int userId);

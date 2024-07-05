@@ -31,6 +31,7 @@ public class PostDtoUtil {
                 .photo(post.getPhoto())
                 .createdAt(post.getCreatedAt())
                 .likesCount(post.getLikesCount())
+                .status(post.getStatus())
                 .build();
     }
 

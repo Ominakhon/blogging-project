@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home page</title>
+    <title>Profile page</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -15,7 +15,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container-fluid">
         <div class="navbar-start">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" th:href="@{/}">
                 <div class="image">
                     <img th:src="@{/css/photos/green.jpg}" alt="">
                 </div>
@@ -47,56 +47,46 @@
     </div>
 </nav>
 
-<section id="Home">
-    <div class="post">
-        <img th:src="@{css/photos/01.jpg}" alt="">
-        <div class="post_content">
-            <div class="date">
-                <i class="fa-solid fa-calendar-days"></i>
-                <h5 th:text="${#temporals.format(topPost.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
-            </div>
-            <a th:href="@{/posts/{postId}(postId=${topPost.id})}" th:text="${topPost.title}"></a>
-            <p th:text="${topPost.content}"></p>
-            <div class="like d-flex justify-content-start">
-                <form th:action="@{{postId}/likes/{userId}(postId=${topPost.id}, userId=${topPost.id})}" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${topPost.id}">
-                </form>
-                <h5 th:text="${topPost.likesCount}" ></h5>
-            </div>
+<section id="Profile">
+
+    <div class="left-side">
+        <div class="image">
+            <img th:src="'data:image/png;base64,' + ${base64EncodedPhoto}" alt="Profile Image">
         </div>
+
+        <form th:action="@{{userId}/uploadPhoto(userId=${user.id})}" class="upload" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_method" value="put">
+            <h5>Upload photo: </h5>
+            <input type="file" class="file" id="file" name="file">
+            <input type="submit" class="btn btn-success" value="Upload">
+        </form>
+
+        <form th:action="@{{userId}/edit(userId=${user.id})}" class="edit">
+            <button class="btn btn-success">Edit profile</button>
+        </form>
+
+
     </div>
+
+    <div class="userInfo">
+        <h3 th:text="'Username: ' + ${user.username}"></h3>
+        <h3 th:text="'First name: ' + ${user.first_name}"></h3>
+        <h3 th:text="'Last name: ' + ${user.last_name}"></h3>
+        <h3 th:text="'Bio: ' + ${user.bio}"></h3>
+        <h3 th:text="'Email: ' + ${user.email}"></h3>
+    </div>
+
+
+
+
 </section>
 
-<section id="News">
-    <div class="post" th:each="post : ${posts}">
-        <img th:src="@{css/photos/01.jpg}" alt="">
-        <a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a>
-        <div class="date">
-            <div class="calendar">
-                <i class="fa-solid fa-calendar-days"></i>
-                <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
-            </div>
-            <div class="like">
-                <form th:action="@{{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
-                <h5 th:text="${post.likesCount}"></h5>
-            </div>
-        </div>
-        <div class="line"></div>
-    </div>
-</section>
+
 
 <section id="Contact">
     <div class="contact">
         <div class="image">
-            <img th:src="@{css/photos/Group_4.png}" alt="">
+            <img th:src="@{/css/photos/Group_4.png}" alt="Contact Image">
         </div>
         <div class="contacts">
             <h3>Contacts</h3>
@@ -121,32 +111,7 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
 
-        var likeForms = document.querySelectorAll('.like-form');
-
-        likeForms.forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                if (!loggedIn) {
-                    event.preventDefault();
-
-                    var popover = new bootstrap.Popover(form.querySelector('.like-icon'), {
-                        trigger: 'manual', // Manual trigger so we can control when to show it
-                        content: "Please log in or sign up to like.",
-                        placement: 'top'
-                    });
-
-                    popover.show();
-                    setTimeout(function() {
-                        popover.hide();
-                    }, 3000); // Hide the popover after 3 seconds
-                }
-            });
-        });
-    });
-</script>
 
 </body>
 </html>

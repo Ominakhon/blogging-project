@@ -23,7 +23,7 @@ public class User {
     private int id;
 
     @Lob
-    @Column(name = "photo")
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
 
     @Column(name = "username", length = 50)

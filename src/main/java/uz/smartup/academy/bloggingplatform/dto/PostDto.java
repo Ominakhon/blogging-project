@@ -1,6 +1,7 @@
 package uz.smartup.academy.bloggingplatform.dto;
 
 import lombok.Getter;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -22,6 +23,8 @@ public class PostDto {
 
     private long likesCount;
 
+    private Post.Status status;
+
     public PostDto() {}
 
     public PostDto(Builder builder) {
@@ -31,6 +34,7 @@ public class PostDto {
         this.photo = builder.photo;
         this.createdAt = builder.createdAt;
         this.likesCount = builder.likesCount;
+        this.status = builder.status;
     }
 
     public static class Builder {
@@ -45,6 +49,8 @@ public class PostDto {
         private LocalDateTime createdAt;
 
         private long likesCount;
+
+        private Post.Status status;
 
         public Builder id(int id) {
             this.id = id;
@@ -73,6 +79,11 @@ public class PostDto {
 
         public Builder likesCount(long likesCount) {
             this.likesCount = likesCount;
+            return this;
+        }
+
+        public Builder status(Post.Status status) {
+            this.status = status;
             return this;
         }
 
