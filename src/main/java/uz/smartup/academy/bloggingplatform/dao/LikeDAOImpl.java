@@ -1,9 +1,11 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Like;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.util.List;
 
@@ -49,5 +51,12 @@ public class LikeDAOImpl implements LikeDAO {
         return entityManager.createQuery(query, Long.class)
                 .setParameter("postId", postId)
                 .getSingleResult();
+    }
+
+    @Override
+    public List<Like> getAllLike() {
+        TypedQuery<Like> query = entityManager.createQuery("FROM Like", Like.class);
+
+        return query.getResultList();
     }
 }
