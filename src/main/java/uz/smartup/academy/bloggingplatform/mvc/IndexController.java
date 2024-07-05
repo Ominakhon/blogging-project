@@ -139,8 +139,10 @@ public class IndexController {
 
         try {
             byte[] bytes = file.getBytes();
-            user.setPhoto(bytes);
-            userService.updateUser(user);
+            if(!file.isEmpty() && file != null) {
+                user.setPhoto(bytes);
+                userService.updateUser(user);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("errorMessage", "Failed to upload the photo. Please try again.");
@@ -170,7 +172,7 @@ public class IndexController {
         try {
 //            System.out.println(userDTO.getId());
             UserDTO user = userService.getUserById(userId);
-            if (photo == null) {
+            if (photo == null || photo.isEmpty()) {
                 userDTO.setPhoto(user.getPhoto());
             }else {
                 byte[] photoBytes = photo.getBytes();
