@@ -14,7 +14,6 @@ import java.util.List;
 @Controller
 public class AdminPanelController {
 
-
     private final UserService userService;
     private final PostService postService;
     private final CategoryService categoryService;

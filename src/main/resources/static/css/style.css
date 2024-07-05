@@ -392,6 +392,14 @@ section#Profile .image img{
     border-radius: 50%;
 }
 
+
+section#Profile .left-side .col-sm-6 {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+
 section#Profile .left-side .edit{
     width: 200px;
 }
