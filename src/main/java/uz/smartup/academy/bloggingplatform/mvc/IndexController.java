@@ -119,9 +119,9 @@ public class IndexController {
 
     }
 
-    @GetMapping("profile/{userId}")
-    public String profile(@PathVariable("userId") int userId, Model model) {
-        UserDTO user = userService.getUserById(userId);
+    @GetMapping("profile/{username}")
+    public String profile(@PathVariable("username") String username, Model model) {
+        UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
@@ -132,10 +132,10 @@ public class IndexController {
         return "profile";
     }
 
-    @PostMapping("/profile/{userId}/uploadPhoto")
-    public String uploadPhoto(RedirectAttributes attributes,@RequestParam("file") MultipartFile file, Model model, @PathVariable("userId") int userId) {
+    @PostMapping("/profile/{username}/uploadPhoto")
+    public String uploadPhoto(RedirectAttributes attributes,@RequestParam("file") MultipartFile file, Model model, @PathVariable("username") String username) {
         // Assume you have a method to get the user from the database
-        UserDTO user = userService.getUserById(userId);
+        UserDTO user = userService.getUserByUsername(username);
 
         try {
             byte[] bytes = file.getBytes();
@@ -148,14 +148,14 @@ public class IndexController {
             model.addAttribute("errorMessage", "Failed to upload the photo. Please try again.");
         }
 
-        attributes.addAttribute("userId", userId);
+        attributes.addAttribute("username", username);
 
-        return "redirect:/profile/{userId}";
+        return "redirect:/profile/{username}";
     }
 
     @GetMapping("profile/{userId}/edit")
-    public String editProfile(Model model, @PathVariable("userId") int userId) {
-        UserDTO user = userService.getUserById(userId);
+    public String editProfile(Model model, @PathVariable("userId") String  username) {
+        UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
 
 
@@ -178,7 +178,8 @@ public class IndexController {
                 byte[] photoBytes = photo.getBytes();
                 userDTO.setPhoto(photoBytes);
             }
-            userDTO.setId(userId);
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
             userDTO.setEmail(user.getEmail());
             userDTO.setPassword(user.getPassword());
             userDTO.setRegistered(user.getRegistered());
@@ -188,9 +189,9 @@ public class IndexController {
             model.addAttribute("errorMessage", "Failed to update the profile. Please try again.");
         }
 
-        attributes.addAttribute("userId", userId);
+        attributes.addAttribute("username", userDTO.getUsername());
 
-        return "redirect:/profile/{userId}";
+        return "redirect:/profile/{username}";
     }
 
 }

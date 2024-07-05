@@ -56,7 +56,7 @@ public class UserDtoUtil {
         user.setBio(userDTO.getBio());
         user.setPassword(userDTO.getPassword());
         user.setUsername(userDTO.getUsername());
-        user.setRegistered(LocalDate.now());
+//        user.setRegistered(LocalDate.now());
         return user;
     }
 }

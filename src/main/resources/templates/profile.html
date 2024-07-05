@@ -54,7 +54,7 @@
             <img th:src="'data:image/png;base64,' + ${base64EncodedPhoto}" alt="Profile Image">
         </div>
 
-        <form th:action="@{{userId}/uploadPhoto(userId=${user.id})}" class="upload" method="POST" enctype="multipart/form-data">
+        <form th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="_method" value="put">
             <h5 class="text-success">Upload photo: </h5>
 <!--            <input type="file" class="file" id="file" name="file">-->
@@ -64,7 +64,7 @@
             </div>
         </form>
 
-        <form th:action="@{{userId}/edit(userId=${user.id})}" class="edit">
+        <form th:action="@{{username}/edit(username=${user.username})}" class="edit">
             <button class="btn btn-success">Edit profile</button>
         </form>
 
