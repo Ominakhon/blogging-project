@@ -45,7 +45,7 @@ public class User {
     private LocalDate registered;
 
     @Column(name = "enabled")
-    private String enabled = "1";
+    private String enabled ;
 
     @Column(name = "password", length = 100)
     private String password;

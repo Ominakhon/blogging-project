@@ -115,9 +115,13 @@
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
 
-<!--            <div th:if="${param.error}">-->
-<!--                <i class="text-danger">Sorry! You entered invalid username or password</i>-->
-<!--            </div>-->
+            <div th:if="${param.error}">
+                <i class="text-danger">Sorry! You entered invalid username or password</i>
+            </div>
+
+            <div th:if="${param.continue}">
+                <i class="text-danger">Sorry! You must click login button</i>
+            </div>
 
         </form>
         <div class="form-footer text-center">

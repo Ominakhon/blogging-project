@@ -1,6 +1,7 @@
 package uz.smartup.academy.bloggingplatform.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.sql.Timestamp;
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @Getter
+@Setter
 public class PostDto {
 
     private int id;

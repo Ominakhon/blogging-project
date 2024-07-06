@@ -6,7 +6,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -34,24 +33,30 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(
                         authManager ->  authManager
                                 .requestMatchers(HttpMethod.GET, "/admin", "/admin/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/", "/posts/*", "/profile/*", "/categories/*").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/profile/*").permitAll()
-                                .anyRequest().authenticated())
-                .formLogin(
-                        form ->
-                                form.loginPage("/login")
-                                        .loginProcessingUrl("/authenticate")
-                                        .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .logout(LogoutConfigurer::permitAll);
+                .formLogin(
+                        form -> form.loginPage("/login")
+                                .loginProcessingUrl("/authenticate")
+                                .defaultSuccessUrl("/", true)
+                                .permitAll()
+                )
+                .logout(logout ->
+                        logout.logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                                .permitAll()
+                );
 
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.httpBasic(Customizer.withDefaults());
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.httpBasic(Customizer.withDefaults());
 
-        return httpSecurity.build();
+        return http.build();
     }
 }
