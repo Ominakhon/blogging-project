@@ -49,7 +49,9 @@ public class PostDaoImpl implements PostDao{
 
 
     @Override
-    public List<Post> getPostsByTag(Tag tag) {
+    public List<Post> getPostsByTag(int tagId) {
+        Tag tag = entityManager.find(Tag.class, tagId);
+
         TypedQuery<Post> posts = entityManager.createQuery("FROM Post WHERE :tag MEMBER OF tags", Post.class);
         posts.setParameter("tag", tag);
 
@@ -57,7 +59,9 @@ public class PostDaoImpl implements PostDao{
     }
 
     @Override
-    public List<Post> getPostsByCategory(Category category) {
+    public List<Post> getPostsByCategory(int categoryId) {
+        Category category = entityManager.find(Category.class, categoryId);
+
         TypedQuery<Post> posts = entityManager.createQuery("FROM Post WHERE :category MEMBER OF categories", Post.class);
         posts.setParameter("category", category);
 
@@ -67,6 +71,7 @@ public class PostDaoImpl implements PostDao{
     @Override
     public User getAuthorById(int id) {
         Post post = entityManager.find(Post.class, id);
+
         return post.getAuthor();
     }
 
@@ -107,11 +112,6 @@ public class PostDaoImpl implements PostDao{
         return query.getResultList();
     }
 
-    @Override
-    public Post.Status findPostStatusById(int postId) {
-        Post post = getById(postId);
-        return post.getStatus();
-    }
 
 
 

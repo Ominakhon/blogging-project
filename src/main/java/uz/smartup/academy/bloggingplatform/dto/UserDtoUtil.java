@@ -19,7 +19,6 @@ public class UserDtoUtil {
         user.setPassword(userDTO.getPassword());
         user.setUsername(userDTO.getUsername());
         user.setRegistered(LocalDate.now());
-        user.setRoles(userDTO.getRoles());
         return user;
     }
 
@@ -34,15 +33,12 @@ public class UserDtoUtil {
         userDTO.setPassword(user.getPassword());
         userDTO.setUsername(user.getUsername());
         userDTO.setRegistered(user.getRegistered());
-        userDTO.setRoles(user.getRoles());
 
         return userDTO;
     }
-
     public List<UserDTO> toDTOs(List<User> users){
         return users.stream().map(this::toDTO).toList();
     }
-
     public List<UserDTO> toEntities(List<User> users) {
         return users.stream().map(this::toDTO).toList();
     }

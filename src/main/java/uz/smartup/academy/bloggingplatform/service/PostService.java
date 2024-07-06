@@ -10,13 +10,17 @@ import java.util.List;
 public interface PostService {
     void createPost(Post post);
 
-    void update(PostDto postDto);
+    void update(Post post);
 
     void delete(int postId);
 
     PostDto getById(int id);
 
     List<PostDto> getAllPosts();
+
+    List<PostDto> getPostsByTag(int tagId);
+
+    List<PostDto> getPostsByCategory(int categoryId);
 
     User getAuthorById(int id);
 
@@ -33,15 +37,7 @@ public interface PostService {
     List<PostDto> getPublishedPostsByAuthorId(int authorId);
 
     Post getPostWithLikeCount(int postId);
-  
+
     void addCommentToPost(int userId, int posIid, CommentDTO commentDTO);
-
-  void switchPostDraftToPublished(int id);
-
-    void switchPublishedToDraft(int id);
-
-    List<PostDto> getPostsByCategory(String categoryTitle);
-
-    List<PostDto> getPostsByTag(String tagTitle);
 
 }

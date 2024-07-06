@@ -10,7 +10,6 @@ import java.util.List;
         void delete(Category category);
         List<Category> getAllCategories();
         Category findCategoryById(int id);
-        Category findCategoryByTitle(String title);
 
     }
 

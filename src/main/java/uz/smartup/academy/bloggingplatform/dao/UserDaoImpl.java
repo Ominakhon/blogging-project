@@ -3,8 +3,6 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
-import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
@@ -23,21 +21,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getALlUsers() {
-        TypedQuery<User> users = entityManager.createQuery("FROM User", User.class);
-        return users.getResultList();
-    }
-
-    @Override
     public void save(User user) {
         entityManager.persist(user);
     }
 
     @Override
     public User getUserByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", username)
-                .getSingleResult();
+        return entityManager.find(User.class, username);
     }
 
     @Override
@@ -52,21 +42,12 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(User user) {
-        if (entityManager.contains(user)) {
-            entityManager.remove(user);
-        } else {
-            User managedUser = entityManager.find(User.class, user.getId());
-            if (managedUser != null) {
-                entityManager.remove(managedUser);
-            }
-        }
+        entityManager.remove(user);
     }
 
     @Override
-    public List<Post> getUserAllPosts(int userId) {
-        return entityManager.createQuery("SELECT p FROM Post p WHERE p.user.id = :userId", Post.class)
-                .setParameter("userId", userId)
-                .getResultList();
+    public List<User> getAllUsers() {
+        return List.of();
     }
 
     @Override
@@ -74,6 +55,7 @@ public class UserDaoImpl implements UserDao {
         TypedQuery<Role> query = entityManager.createQuery(
                 "SELECT r FROM Role r WHERE r.id.username = :userName", Role.class);
         query.setParameter("userName", userName);
+
         return query.getResultList();
     }
 
@@ -94,9 +76,12 @@ public class UserDaoImpl implements UserDao {
         query.setParameter("username", user.getUsername());
 
         return new HashSet<>(query.getResultList());
-
     }
 
-
+    @Override
+    public List<User> getALlUsers() {
+        TypedQuery<User> users = entityManager.createQuery("FROM User", User.class);
+        return users.getResultList();
+    }
 
 }

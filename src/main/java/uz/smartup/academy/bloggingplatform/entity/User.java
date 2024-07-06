@@ -6,8 +6,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +21,7 @@ public class User {
     private int id;
 
     @Lob
-    @Column(name = "photo", columnDefinition = "LONGBLOB")
+    @Column(name = "photo")
     private byte[] photo;
 
     @Column(name = "username", length = 50)
@@ -47,7 +45,7 @@ public class User {
     @Column(name = "password", length = 50)
     private String password;
 
-    @OneToMany(  cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "username", referencedColumnName = "username", updatable = false)
     private List<Role> roles;
 
@@ -64,11 +62,6 @@ public class User {
         post.setAuthor(null);
     }
 
-   public void addRole(Role role) {
-        if(roles.isEmpty()) {
-            roles = new ArrayList<>();
-        }
 
-        roles.add(role);
-    }
+
 }

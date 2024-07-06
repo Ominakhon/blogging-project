@@ -16,9 +16,9 @@ public interface PostDao {
 
     List<Post> getAllPosts();
 
-    List<Post> getPostsByTag(Tag tag);
+    List<Post> getPostsByTag(int tagId);
 
-    List<Post> getPostsByCategory(Category category);
+    List<Post> getPostsByCategory(int categoryId);
 
     User getAuthorById(int id);
 
@@ -30,7 +30,7 @@ public interface PostDao {
 
     List<Post> findPostByStatusAndAuthorId(Post.Status status, int authorId);
 
-  Post.Status findPostStatusById(int postId);
+
 }
 
 /*

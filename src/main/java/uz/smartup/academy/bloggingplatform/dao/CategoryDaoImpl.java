@@ -40,14 +40,5 @@ public class CategoryDaoImpl implements CategoryDao {
     public Category findCategoryById(int id) {
         return entityManager.find(Category.class,id);
     }
-
-    @Override
-    public Category findCategoryByTitle(String title) {
-        TypedQuery<Category> query = entityManager.createQuery("FROM Category WHERE title = :title", Category.class);
-
-        query.setParameter("title", title);
-
-        return query.getSingleResult();
-    }
 }
 
