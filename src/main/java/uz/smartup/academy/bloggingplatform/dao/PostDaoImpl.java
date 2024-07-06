@@ -67,7 +67,6 @@ public class PostDaoImpl implements PostDao{
     @Override
     public User getAuthorById(int id) {
         Post post = entityManager.find(Post.class, id);
-
         return post.getAuthor();
     }
 

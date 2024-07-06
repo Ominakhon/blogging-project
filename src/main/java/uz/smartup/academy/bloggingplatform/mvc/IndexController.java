@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.w3c.dom.stylesheets.LinkStyle;
+import uz.smartup.academy.bloggingplatform.config.CategoryConfiguration;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
@@ -31,12 +32,14 @@ public class IndexController {
     private final CategoryService categoryService;
     private final UserService userService;
     private final LikeService likeService;
+    private final CategoryConfiguration categoryConfiguration;
 
-    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService) {
+    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, CategoryConfiguration categoryConfiguration) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.likeService = likeService;
+        this.categoryConfiguration = categoryConfiguration;
     }
 
     @GetMapping
@@ -192,6 +195,18 @@ public class IndexController {
         attributes.addAttribute("username", userDTO.getUsername());
 
         return "redirect:/profile/{username}";
+    }
+
+    @PostMapping("/web/posts/create")
+    public String CreatePostController(@ModelAttribute("post") PostDto postDto, Model model){
+        model.addAttribute("categories", categoryConfiguration.getCategories());
+        return "createPost";
+    }
+
+    @GetMapping("/web/posts/create")
+    public String CreatePostController(Model model){
+        model.addAttribute("categories", categoryConfiguration.getCategories());
+        return "createPost";
     }
 
 }
