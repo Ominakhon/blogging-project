@@ -64,13 +64,27 @@ public class PostApi {
         Post post = postService.getPostWithLikeCount(postId);
         return ResponseEntity.ok(post);
     }
-
+  
     @PostMapping("{postId}/addComment/{userId}")
     public void addComment(@PathVariable int postId, @PathVariable int userId ,@RequestBody CommentDTO comment) {
         postService.addCommentToPost(userId, postId, comment);
     }
 
+    @GetMapping("/categories/{categoryTitle}")
+    public List<PostDto> getPostsByCategory(@PathVariable("categoryTitle") String  categoryTitle) {
+        List<PostDto> posts = postService.getPostsByCategory(categoryTitle);
 
+        if(posts.isEmpty()) throw new RuntimeException("sorry, posts don't exist yet");
+        else return posts;
+    }
+
+    @GetMapping("/tags/{tagTitle}")
+    public List<PostDto> getPostsByTag(@PathVariable("tagTitle") String tagTitle) {
+        List<PostDto> posts = postService.getPostsByTag(tagTitle);
+
+        if(posts.isEmpty()) throw new RuntimeException("sorry, posts don't exist yet");
+        else return posts;
+    }
 
 
 

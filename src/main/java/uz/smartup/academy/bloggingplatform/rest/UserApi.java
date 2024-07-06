@@ -3,9 +3,7 @@ package uz.smartup.academy.bloggingplatform.rest;
 
 import org.springframework.web.bind.annotation.*;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
-import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
-import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
@@ -23,7 +21,6 @@ public class UserApi {
 
     private final UserService service;
     private final PostService postService;
-
 
     public UserApi(UserService service, PostService postService) {
         this.service = service;
@@ -99,7 +96,42 @@ public class UserApi {
     }
 
     @PutMapping("{userId}/updateComment/{postId}")
-    public void updateCommentsOfPost(@PathVariable int userId, @PathVariable int postId , @RequestBody Comment comment) {
+    public void updateCommentsOfPost(@PathVariable int userId, @PathVariable int postId , @RequestBody CommentDTO comment) {
         service.updateUserComment(userId, postId, comment);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/toPublished")
+    public void switchDraftToPublished(@PathVariable("postId") int postId) {
+        postService.switchPostDraftToPublished(postId);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/toDraft")
+    public void switchPublishedToDraft(@PathVariable("postId") int postId) {
+        postService.switchPublishedToDraft(postId);
+    }
+
+    @PutMapping("/{id}/posts/update")
+    public void updatePost(@RequestBody PostDto postDto) {
+        postService.update(postDto);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/categories/{categoryId}")
+    public void addCategoryToPost(@PathVariable("postId") int postId, @PathVariable("categoryId") int categoryId) {
+        service.addExistCategoriesToPost(categoryId, postId);
+    }
+
+    @PostMapping("/{userId}/posts/{postId}/categories")
+    public void addNewCategoryToPost(@PathVariable("postId") int postId, @RequestBody CategoryDto categoryDto) {
+        service.addNewCategoryToPost(categoryDto, postId);
+    }
+
+    @PutMapping("/{id}/posts/{postId}/tags/{tagId}")
+    public void addTagToPost(@PathVariable("postId") int postId, @PathVariable("tagId") int tagId) {
+        service.addExistTagToPost(tagId, postId);
+    }
+
+    @PostMapping("/{userId}/posts/{postId}/tags")
+    public void addNewTagToPost(@PathVariable("postId") int postId, @RequestBody TagDto tagDto) {
+        service.addNewTagToPost(tagDto, postId);
     }
 }

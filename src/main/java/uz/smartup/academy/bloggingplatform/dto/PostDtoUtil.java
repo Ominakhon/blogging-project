@@ -2,8 +2,10 @@ package uz.smartup.academy.bloggingplatform.dto;
 
 import org.springframework.stereotype.Component;
 import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PostDtoUtil {
@@ -29,11 +31,13 @@ public class PostDtoUtil {
                 .photo(post.getPhoto())
                 .createdAt(post.getCreatedAt())
                 .likesCount(post.getLikesCount())
+                .status(post.getStatus())
                 .build();
     }
 
     public List<PostDto> toDTOs(List<Post> posts) {
         return posts.stream().map(this::toDto).toList();
     }
+
 
 }

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post page</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+    <div class="container-fluid">
+        <div class="navbar-start">
+            <a class="navbar-brand" th:href="@{/}">
+                <div class="image">
+                    <img th:src="@{/css/photos/green.jpg}" alt="">
+                </div>
+                <h4>Green White News</h4>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="dropdown me-2">
+                <button class="btn dropdown-toggle text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Categories
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li th:each="category : ${categories}">
+                        <a class="dropdown-item text-success" th:href="@{categories/{categoryTitle}(categoryTitle=${category.title})}" th:text="${category.title}"> ></a>
+                    </li>
+                </ul>
+            </div>
+            <form class="d-flex me-auto">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <form action="" class="login d-flex" style="height: 60%;">
+                <button class="btn btn-primary me-2" type="button">Login</button>
+            </form>
+            <form action="" class="signup" style="height: 60%;">
+                <button class="btn btn-outline-success" type="button" style="height: 100%;">Signup</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<section id="Post">
+    <div class="date">
+        <div class="calendar">
+            <i class="fa-solid fa-calendar-days"></i>
+            <h5  th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
+        </div>
+        <div class="like d-flex justify-content-start align-items-center">
+            <form th:action="@{/{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form me-2">
+                <button type="submit" class="btn btn-link p-0 like-btn">
+                    <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                </button>
+                <input type="hidden" name="postId" th:value="${post.id}">
+            </form>
+            <h5 th:text="${post.likesCount}" ></h5>
+        </div>
+        <div class="share">
+            <i class="fa-solid fa-share-nodes"></i>
+            <h5>Share</h5>
+        </div>
+    </div>
+    <h1 th:text="${post.title}"></h1>
+    <div class="image">
+        <img th:src="@{/css/photos/04.jpg}" alt="">
+    </div>
+    <p th:text="${post.content}"><!-- Content omitted for brevity -->
+    </p>
+</section>
+
+<section id="Comments">
+    <div class="comment-form">
+<!--        you should fix it when security added-->
+        <form th:action="@{submitComment/{authorId}(authorId=${post.id})}"  th:object="${newComment}" method="POST">
+            <label for="comment">Your Comment:</label>
+            <textarea id="comment" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
+            <button id="submitCommentBtn" class="btn btn-success" type="button" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
+        </form>
+    </div>
+
+    <div class="comments">
+        <h4 th:text="${commentsSize} + ' comments'"></h4>
+        <div class="comment" th:each="comment : ${comments}">
+            <div class="content">
+                <h5 th:text="${comment.author.username}"></h5>
+<!--                <p th:text="${comment.date}"></p>-->
+                <p  th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+
+            </div>
+            <h4 th:text="${comment.content}"></h4>
+        </div>
+    </div>
+</section>
+
+<section id="Contact">
+    <div class="contact">
+        <div class="image">
+            <img th:src="@{/css/photos/Group_4.png}" alt="">
+        </div>
+        <div class="contacts">
+            <h3>Contacts</h3>
+            <li>
+                <a href="https://www.greenwhite.uz/">Official website</a>
+            </li>
+            <li>
+                <a href="mailto:abdullakhmirfayziev81@gmail.com">Gmail</a>
+            </li>
+            <li>
+                <a href="https://t.me/Mirfayziev_a">Telegram</a>
+            </li>
+            <li>
+                <a href="tel:+998991100810">Phone</a>
+            </li>
+        </div>
+    </div>
+    <div class="line"></div>
+    <div class="faq">
+        <p>Green White Solution 2024</p>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
+
+        var submitBtn = document.getElementById('submitCommentBtn');
+        var commentForm = document.getElementById('commentForm');
+
+        var popover = new bootstrap.Popover(submitBtn, {
+            trigger: 'manual' // Manual trigger so we can control when to show it
+        });
+
+        submitBtn.addEventListener('click', function(event) {
+            if (!loggedIn) {
+                event.preventDefault();
+                popover.show();
+                setTimeout(function() {
+                    popover.hide();
+                }, 3000); // Hide the popover after 3 seconds
+            } else {
+                commentForm.submit();
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
+
+        var likeForms = document.querySelectorAll('.like-form');
+
+        likeForms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!loggedIn) {
+                    event.preventDefault();
+
+                    var popover = new bootstrap.Popover(form.querySelector('.like-icon'), {
+                        trigger: 'manual', // Manual trigger so we can control when to show it
+                        content: "Please log in or sign up to like.",
+                        placement: 'top'
+                    });
+
+                    popover.show();
+                    setTimeout(function() {
+                        popover.hide();
+                    }, 3000); // Hide the popover after 3 seconds
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

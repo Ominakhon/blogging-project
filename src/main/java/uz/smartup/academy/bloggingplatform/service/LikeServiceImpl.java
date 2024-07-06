@@ -11,6 +11,8 @@ import uz.smartup.academy.bloggingplatform.entity.Like;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
+import java.util.List;
+
 @Service
 public class LikeServiceImpl implements LikeService {
 
@@ -68,5 +70,10 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public long countLikesByPostId(int postId) {
         return likeDAO.countByPostId(postId);
+    }
+
+    @Override
+    public List<LikeDTO> getAllLikes() {
+        return likeDTOUtil.toDTOs(likeDAO.getAllLike());
     }
 }
