@@ -32,7 +32,7 @@ public class UserMVC {
         role.setUsername(dto.getUsername());
         roles.add(role);
         service.registerUser(dto, roles);
-        return "createUser";
+        return "redirect:/login";
     }
 
     @GetMapping("/register")
@@ -44,7 +44,7 @@ public class UserMVC {
 
     @GetMapping("/login")
     public String LoginUserController(Model model){
-        model.addAttribute("user", new User());
+//        model.addAttribute("user", new User());
         return "login";
     }
 }

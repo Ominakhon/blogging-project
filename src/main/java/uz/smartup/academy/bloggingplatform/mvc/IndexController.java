@@ -82,7 +82,7 @@ public class IndexController {
         return "getPost";
     }
 
-    @PostMapping("/{postId}/submitComment/{authorId}")
+    @PostMapping("posts/{postId}/submitComment/{authorId}")
     public String createComment(RedirectAttributes attributes, @PathVariable("postId") int postId, @PathVariable("authorId") int authorId, @ModelAttribute("newComment") CommentDTO comment) {
         postService.addCommentToPost(authorId, postId, comment);
 
@@ -91,7 +91,7 @@ public class IndexController {
         return "redirect:/post/{id}";
     }
 
-    @PostMapping("/{postId}/likes/{userId}")
+    @PostMapping("posts/{postId}/likes/{userId}")
     public String createLike(@PathVariable("postId") int postId, @PathVariable("userId") int userId) {
         likeService.addLike(userId, postId);
 
