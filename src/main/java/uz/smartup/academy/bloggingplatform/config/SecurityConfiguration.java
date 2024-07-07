@@ -37,7 +37,7 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(
                         authManager ->  authManager
                                 .requestMatchers(HttpMethod.GET, "/admin", "/admin/*").hasAnyRole("ADMIN")
-                                .requestMatchers(HttpMethod.GET, "/", "/posts/*", "/profile/*", "/categories/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/", "/register", "/posts/*", "/profile/*", "/categories/*").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/profile/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
                                 .anyRequest().authenticated()

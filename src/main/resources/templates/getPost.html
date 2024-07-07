@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body th:data-logged-in="${loggedIn != null}">
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container-fluid">
         <div class="navbar-start">
@@ -37,8 +37,8 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
-            <div th:if="${loggedIn != null}">
-                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile" style="height: 60%;">
+            <div th:if="${loggedIn != null}" style="display: flex;">
+                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile me-2" style="height: 60%;">
                     <button class="btn btn-outline-success" type="submit">Profile</button>
                 </form>
 
@@ -65,12 +65,24 @@
             <h5  th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
         </div>
         <div class="like d-flex justify-content-start align-items-center">
-            <form th:action="@{/{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form me-2">
-                <button type="submit" class="btn btn-link p-0 like-btn">
-                    <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                </button>
-                <input type="hidden" name="postId" th:value="${post.id}">
-            </form>
+            <div th:if="${loggedIn!=null}">
+                <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
+                    <button type="submit" class="btn btn-link p-0 like-btn">
+                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                    </button>
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                </form>
+            </div>
+
+            <div th:if="${loggedIn==null}">
+                <form action="" method="post" class="like-form me-2">
+                    <button type="submit" class="btn btn-link p-0 like-btn">
+                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                    </button>
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                </form>
+            </div>
+
             <h5 th:text="${post.likesCount}" ></h5>
         </div>
         <div class="share">
@@ -88,20 +100,29 @@
 
 <section id="Comments">
     <div class="comment-form">
-<!--        you should fix it when security added-->
-        <form th:action="@{submitComment/{authorId}(authorId=${post.id})}"  th:object="${newComment}" method="POST">
-            <label for="comment">Your Comment:</label>
-            <textarea id="comment" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
-            <button id="submitCommentBtn" class="btn btn-success" type="button" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
-        </form>
+
+        <div th:if="${loggedIn!=null}">
+            <form th:action="@{/posts/{postId}/submitComment/{username}(username=${loggedIn.username}, postId=${post.id})}"  th:object="${newComment}" method="POST">
+                <label for="comment">Your Comment:</label>
+                <textarea id="comment" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
+                <button id="submitCommentBtn" class="btn btn-success" type="submit" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
+            </form>
+        </div>
+
+        <div th:if="${loggedIn==null}">
+            <form action=""  th:object="${newComment}" method="POST">
+                <label for="comment">Your Comment:</label>
+                <textarea id="comment1" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
+                <button id="submitCommentBtn1" class="btn btn-success" type="button" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
+            </form>
+        </div>
     </div>
 
     <div class="comments">
         <h4 th:text="${commentsSize} + ' comments'"></h4>
         <div class="comment" th:each="comment : ${comments}">
             <div class="content">
-                <h5 th:text="${comment.author.username}"></h5>
-<!--                <p th:text="${comment.date}"></p>-->
+                <h5 th:text="${comment.username}"></h5>
                 <p  th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
 
             </div>
@@ -140,9 +161,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
+        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
 
-        var submitBtn = document.getElementById('submitCommentBtn');
+        var submitBtn = document.getElementById('submitCommentBtn1');
         var commentForm = document.getElementById('commentForm');
 
         var popover = new bootstrap.Popover(submitBtn, {
@@ -165,7 +186,7 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
+        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
 
         var likeForms = document.querySelectorAll('.like-form');
 

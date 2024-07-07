@@ -69,12 +69,23 @@
             <a th:href="@{/posts/{postId}(postId=${topPost.id})}" th:text="${topPost.title}"></a>
             <p th:text="${topPost.content}"></p>
             <div class="like d-flex justify-content-start">
-                <form th:action="@{posts/{postId}/likes/{username}(postId=${topPost.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${topPost.id}">
-                </form>
+                <div th:if="${loggedIn!=null}">
+                    <form th:action="@{posts/{postId}/likes/{username}(postId=${topPost.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${topPost.id}">
+                    </form>
+                </div>
+                <div th:if="${loggedIn==null}">
+                    <form action="#" method="post" class="like-form me-2">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${topPost.id}">
+                    </form>
+                </div>
+
                 <h5 th:text="${topPost.likesCount}" ></h5>
             </div>
         </div>
@@ -91,12 +102,23 @@
                 <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
             <div class="like">
-                <form th:action="@{posts/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
+                <div th:if="${loggedIn!=null}">
+                    <form th:action="@{posts/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${post.id}">
+                    </form>
+                </div>
+                <div th:if="${loggedIn==null}">
+                    <form action="" method="post" class="like-form">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${post.id}">
+                    </form>
+                </div>
+
                 <h5 th:text="${post.likesCount}"></h5>
             </div>
         </div>

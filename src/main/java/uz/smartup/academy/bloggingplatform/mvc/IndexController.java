@@ -60,8 +60,7 @@ public class IndexController {
 //                .reversed();
 
 
-        for(int i = 0; i < posts.size(); i ++)
-            posts.get(i).setLikesCount(likeService.countLikesByPostId(posts.get(i).getId()));
+        for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
 
         List<CategoryDto> categories = categoryService.getAllCategories();
         model.addAttribute("topPost", posts.getFirst());
@@ -78,7 +77,12 @@ public class IndexController {
         post.setLikesCount(likeService.countLikesByPostId(postId));
         List<CommentDTO> comments = postService.getPostComments(postId);
         List<CategoryDto> categories = categoryService.getAllCategories();
+        post.setLikesCount(likeService.countLikesByPostId(postId));
 
+
+        comments.forEach(commentDTO -> commentDTO.setUsername(userService.getUserById(commentDTO.getAuthorId()).getUsername()));
+
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("commentsSize", comments.size());
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
@@ -89,13 +93,13 @@ public class IndexController {
         return "getPost";
     }
 
-    @PostMapping("/posts/{postId}/submitComment/{authorId}")
-    public String createComment(RedirectAttributes attributes, @PathVariable("postId") int postId, @PathVariable("authorId") int authorId, @ModelAttribute("newComment") CommentDTO comment) {
-        postService.addCommentToPost(authorId, postId, comment);
+    @PostMapping("/posts/{postId}/submitComment/{username}")
+    public String createComment(RedirectAttributes attributes, @PathVariable("postId") int postId, @PathVariable("username") String username, @ModelAttribute("newComment") CommentDTO comment) {
+        postService.addCommentToPost(userService.getUserByUsername(username).getId(), postId, comment);
 
         attributes.addAttribute("id", postId);
 
-        return "redirect:/post/{id}";
+        return "redirect:/posts/{id}";
     }
 
     @PostMapping("/posts/{postId}/likes/{username}")
@@ -103,6 +107,24 @@ public class IndexController {
         likeService.addLike(userService.getUserByUsername(username).getId(), postId);
 
         return "redirect:/";
+    }
+
+    @PostMapping("/{postId}/likes/{username}")
+    public String likePost(@PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
+        likeService.addLike(userService.getUserByUsername(username).getId(), postId);
+
+        attributes.addAttribute("postId", postId);
+
+        return "redirect:/posts/{postId}";
+    }
+
+    @PostMapping("categories/{categoryTitle}/{postId}/likes/{username}")
+    public String likeCategory(@PathVariable("categoryTitle") String categoryTitle, @PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
+        likeService.addLike(userService.getUserByUsername(username).getId(), postId);
+
+        attributes.addAttribute("categoryTitle", categoryTitle);
+
+        return "redirect:/categories/{categoryTitle}";
     }
 
     @GetMapping("/categories/{categoryTitle}")
@@ -118,8 +140,12 @@ public class IndexController {
                     .limit(20)
                     .toList();
 
+
+        for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("posts", posts);
         model.addAttribute("topPost", posts.getFirst());
         model.addAttribute("categories", categories);
