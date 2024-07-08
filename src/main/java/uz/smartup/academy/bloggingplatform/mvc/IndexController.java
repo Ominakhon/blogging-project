@@ -46,25 +46,30 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model) {
-        List<PostDto> posts = postService.getPublishedPost()
-                .stream()
-                .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
-                .toList();
+        List<PostDto> posts = postService.getPublishedPost();
 
+        if (posts != null) {
+            posts = posts.stream()
+                    .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
+                    .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
+                    .toList();
 
-
-        if(posts.size() > 20)
+            if (posts.size() > 20) {
                 posts = posts.stream()
                         .limit(20)
                         .toList();
-//                .reversed();
+            }
 
-
-        for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            for (PostDto post : posts) {
+                post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+        }
 
         List<CategoryDto> categories = categoryService.getAllCategories();
-        if(posts.getFirst().getContent().length() > 500)  posts.getFirst().setContent(posts.getFirst().getContent().substring(0, 500));
-        model.addAttribute("topPost", posts.getFirst());
+
+        PostDto topPost = (posts != null && !posts.isEmpty()) ? posts.getFirst() : null;
+
+        model.addAttribute("topPost", topPost);
         model.addAttribute("posts", posts);
         model.addAttribute("categories", categories);
         model.addAttribute("loggedIn", getLoggedUser());
@@ -130,31 +135,36 @@ public class IndexController {
 
     @GetMapping("/categories/{categoryTitle}")
     public String categoryPost(@PathVariable("categoryTitle") String categoryTitle, Model model) {
-        List<PostDto> posts = postService.getPostsByCategory(categoryTitle)
-                .stream()
-                .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
-                .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
-                .toList();
+        List<PostDto> posts = postService.getPostsByCategory(categoryTitle);
 
-        if(posts.size() > 20)
+        if (posts != null) {
             posts = posts.stream()
-                    .limit(20)
+                    .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
+                    .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
                     .toList();
 
+            if (posts.size() > 20) {
+                posts = posts.stream()
+                        .limit(20)
+                        .toList();
+            }
 
-        for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            for (PostDto post : posts) {
+                post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+        }
 
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+        PostDto topPost = (posts != null && !posts.isEmpty()) ? posts.getFirst() : null;
+
         model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("posts", posts);
-        model.addAttribute("topPost", posts.getFirst());
+        model.addAttribute("topPost", topPost);
         model.addAttribute("categories", categories);
         model.addAttribute("categoryTitle", categoryTitle);
-        model.addAttribute("loggedIn", getLoggedUser());
 
         return "categoryPosts";
-
     }
 
     @GetMapping("/profile/{username}")

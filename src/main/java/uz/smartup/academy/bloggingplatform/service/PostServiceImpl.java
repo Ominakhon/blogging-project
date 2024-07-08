@@ -167,7 +167,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> getPostsByCategory(String categoryTitle) {
         List<Post> posts = dao.getPostsByCategory(categoryDao.findCategoryByTitle(categoryTitle));
-        return dtoUtil.toDTOs(posts);
+        return posts == null ? null : dtoUtil.toDTOs(posts);
     }
 
     @Override

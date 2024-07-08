@@ -54,13 +54,15 @@
                 <form th:action="@{/register}" method="GET" class="signup" style="height: 60%;">
                     <button class="btn btn-outline-success" type="submit" style="height: 100%;">Signup</button>
                 </form>
+            </div>
         </div>
-    </div>
 </nav>
 
 <h2 th:text="${categoryTitle}" style="margin-left: 3%; margin-bottom: 30px"></h2>
 
-<section id="Home">
+<h2 th:if="${topPost == null}" style="margin-left: 3%; margin-bottom: 30px">Posts don't exist yet</h2>
+
+<section id="Home" th:if="${topPost != null}">
     <div class="post">
         <img th:src="@{/css/photos/01.jpg}" alt="Post Image">
         <div class="post_content">
@@ -68,7 +70,7 @@
                 <i class="fa-solid fa-calendar-days"></i>
                 <h5 th:text="${#temporals.format(topPost.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
-            <a th:href="@{/posts/{postId}(postId=${topPost.id})}" th:text="${topPost.title}"></a>
+            <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="title" th:text="${topPost.title}"></a>
             <p th:text="${topPost.content}"></p>
             <div class="like d-flex justify-content-start">
                 <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${topPost.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
@@ -83,7 +85,7 @@
     </div>
 </section>
 
-<section id="News">
+<section id="News" th:if="${posts != null && !posts.isEmpty()}">
     <div class="post" th:each="post : ${posts}">
         <img th:src="@{/css/photos/01.jpg}" alt="News Image">
         <a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a>
@@ -97,7 +99,7 @@
                     <button type="submit" class="btn btn-link p-0 like-btn">
                         <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
                     </button>
-                    <input type="hidden" name="postId" th:value="${topPost.id}">
+                    <input type="hidden" name="postId" th:value="${post.id}">
                 </form>
                 <h5 th:text="${post.likesCount}"></h5>
             </div>
