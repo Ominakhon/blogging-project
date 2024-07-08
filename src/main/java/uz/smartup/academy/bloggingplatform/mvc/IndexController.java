@@ -63,6 +63,7 @@ public class IndexController {
         for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
 
         List<CategoryDto> categories = categoryService.getAllCategories();
+        if(posts.getFirst().getContent().length() > 500)  posts.getFirst().setContent(posts.getFirst().getContent().substring(0, 500));
         model.addAttribute("topPost", posts.getFirst());
         model.addAttribute("posts", posts);
         model.addAttribute("categories", categories);
