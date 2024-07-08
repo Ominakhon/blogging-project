@@ -44,7 +44,10 @@ public class User {
     @Column(name = "registered")
     private LocalDate registered;
 
-    @Column(name = "password", length = 50)
+    @Column(name = "enabled")
+    private String enabled ;
+
+    @Column(name = "password", length = 100)
     private String password;
 
     @OneToMany(  cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)

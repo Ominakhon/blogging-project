@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body th:data-logged-in="${loggedIn != null}">
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container-fluid">
         <div class="navbar-start">
@@ -38,12 +38,22 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
-            <form action="" class="login d-flex" style="height: 60%;">
-                <button class="btn btn-primary me-2" type="button">Login</button>
-            </form>
-            <form action="" class="signup" style="height: 60%;">
-                <button class="btn btn-outline-success" type="button" style="height: 100%;">Signup</button>
-            </form>
+            <div th:if="${loggedIn != null}" style="display: flex;">
+                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile" style="height: 60%;">
+                    <button class="btn btn-outline-success me-2" type="submit">Profile</button>
+                </form>
+
+                <form th:action="@{/logout}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Logout" />
+                </form>
+            </div>
+            <div th:if="${loggedIn == null}" style="display: flex;">
+                <form th:action="@{/login}" class="login d-flex" style="height: 60%;">
+                    <button class="btn btn-primary me-2" type="submit">Login</button>
+                </form>
+                <form th:action="@{/register}" method="GET" class="signup" style="height: 60%;">
+                    <button class="btn btn-outline-success" type="submit" style="height: 100%;">Signup</button>
+                </form>
         </div>
     </div>
 </nav>
@@ -61,7 +71,7 @@
             <a th:href="@{/posts/{postId}(postId=${topPost.id})}" th:text="${topPost.title}"></a>
             <p th:text="${topPost.content}"></p>
             <div class="like d-flex justify-content-start">
-                <form th:action="@{{postId}/likes/{userId}(postId=${topPost.id}, userId=${topPost.id})}" method="post" class="like-form me-2">
+                <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${topPost.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
                     <button type="submit" class="btn btn-link p-0 like-btn">
                         <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
                     </button>
@@ -83,11 +93,11 @@
                 <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
             <div class="like">
-                <form th:action="@{{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form">
+                <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
                     <button type="submit" class="btn btn-link p-0 like-btn">
                         <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
                     </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
+                    <input type="hidden" name="postId" th:value="${topPost.id}">
                 </form>
                 <h5 th:text="${post.likesCount}"></h5>
             </div>
@@ -126,7 +136,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
+        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
 
         var likeForms = document.querySelectorAll('.like-form');
 

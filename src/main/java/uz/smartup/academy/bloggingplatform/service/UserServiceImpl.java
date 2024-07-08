@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
@@ -40,9 +41,10 @@ public class UserServiceImpl implements UserService {
     private final CommentDtoUtil commentDtoUtil;
     private final TagDao tagDao;
     private final TagDtoUtil tagDtoUtil;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao, CommentDtoUtil commentDtoUtil, TagDao tagDao, TagDtoUtil tagDtoUtil) {
+    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao, CommentDtoUtil commentDtoUtil, TagDao tagDao, TagDtoUtil tagDtoUtil, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.dtoUtil = dtoUtil;
         this.postDao = postDao;
@@ -53,6 +55,7 @@ public class UserServiceImpl implements UserService {
         this.commentDtoUtil = commentDtoUtil;
         this.tagDao = tagDao;
         this.tagDtoUtil = tagDtoUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
@@ -117,9 +120,10 @@ public class UserServiceImpl implements UserService {
         for (Role role : roles) {
             role.setUsername(user.getUsername());
         }
-//        String hashedPassword = passwordEncoder.encode(user.getPassword());
-//        user.setPassword(hashedPassword);
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
         user.setRoles(roles);
+        user.setEnabled("1");
 
         userDao.save(user);
     }

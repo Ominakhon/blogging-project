@@ -10,6 +10,7 @@ import uz.smartup.academy.bloggingplatform.dto.CommentDtoUtil;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = dtoUtil.toEntity(commentDTO);
         comment.setAuthor(userDao.getUserById(commentDTO.getAuthorId()));
         comment.setPost(postDao.getById(commentDTO.getPostId()));
-        comment.setCreatedAt(LocalDate.now());
+        comment.setCreatedAt(LocalDateTime.now());
         commentDao.save(comment);
     }
 

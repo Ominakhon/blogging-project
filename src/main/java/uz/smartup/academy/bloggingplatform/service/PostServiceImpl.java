@@ -14,6 +14,8 @@ import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -138,6 +140,7 @@ public class PostServiceImpl implements PostService {
         User user = userDao.getUserById(userId);
         Comment comment = commentDtoUtil.toEntity(commentDTO);
         comment.setAuthor(user);
+        comment.setCreatedAt(LocalDateTime.now());
         post.addComments(comment);
         dao.save(post);
     }

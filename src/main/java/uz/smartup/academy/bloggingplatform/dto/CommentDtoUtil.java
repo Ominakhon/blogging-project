@@ -19,6 +19,7 @@ public class CommentDtoUtil {
         comment.setContent(commentDTO.getContent());;
         comment.setAuthor(comment.getAuthor());
         comment.setPost(comment.getPost());
+        comment.setCreatedAt(commentDTO.getCreatedAt());
         return comment;
     }
 

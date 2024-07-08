@@ -24,27 +24,28 @@ public class UserMVC {
         this.service = userService;
     }
 
+    @GetMapping("/register")
+    public String createInstructor(Model model){
+        model.addAttribute("user", new UserDTO());
+        return "createUser";
+    }
+
     @PostMapping("/register")
     public String createInstructor(@ModelAttribute("user") UserDTO dto){
         List<Role> roles = new ArrayList<>();
+        System.out.println(dto.getUsername());
         Role role = new Role();
         role.setRole("ROLE_VIEWER");
         role.setUsername(dto.getUsername());
         roles.add(role);
         service.registerUser(dto, roles);
-        return "createUser";
-    }
-
-    @GetMapping("/register")
-    public String createInstructor(Model model){
-       model.addAttribute("user", new UserDTO());
-        return "createUser";
+        return "redirect:/login";
     }
 
 
     @GetMapping("/login")
     public String LoginUserController(Model model){
-        model.addAttribute("user", new User());
+//        model.addAttribute("user", new User());
         return "login";
     }
 }

@@ -1,5 +1,7 @@
 package uz.smartup.academy.bloggingplatform.mvc;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +25,10 @@ import java.util.Base64;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping({"", "/"})
 public class IndexController {
     private final PostService postService;
     private final CategoryService categoryService;
@@ -42,12 +44,13 @@ public class IndexController {
         this.categoryConfiguration = categoryConfiguration;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String index(Model model) {
         List<PostDto> posts = postService.getPublishedPost()
                 .stream()
                 .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
                 .toList();
+
 
 
         if(posts.size() > 20)
@@ -56,46 +59,72 @@ public class IndexController {
                         .toList();
 //                .reversed();
 
+
+        for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+
         List<CategoryDto> categories = categoryService.getAllCategories();
-
-
         model.addAttribute("topPost", posts.getFirst());
         model.addAttribute("posts", posts);
         model.addAttribute("categories", categories);
-
+        model.addAttribute("loggedIn", getLoggedUser());
         return "index";
 
     }
 
-    @GetMapping("posts/{postId}")
+    @GetMapping("/posts/{postId}")
     public String getPostById(@PathVariable("postId") int postId, Model model) {
         PostDto post = postService.getById(postId);
+        post.setLikesCount(likeService.countLikesByPostId(postId));
         List<CommentDTO> comments = postService.getPostComments(postId);
         List<CategoryDto> categories = categoryService.getAllCategories();
+        post.setLikesCount(likeService.countLikesByPostId(postId));
 
+
+        comments.forEach(commentDTO -> commentDTO.setUsername(userService.getUserById(commentDTO.getAuthorId()).getUsername()));
+
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("commentsSize", comments.size());
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
         model.addAttribute("categories", categories);
         model.addAttribute("newComment", new CommentDTO());
+        model.addAttribute("loggedIn", getLoggedUser());
 
         return "getPost";
     }
 
-    @PostMapping("/{postId}/submitComment/{authorId}")
-    public String createComment(RedirectAttributes attributes, @PathVariable("postId") int postId, @PathVariable("authorId") int authorId, @ModelAttribute("newComment") CommentDTO comment) {
-        postService.addCommentToPost(authorId, postId, comment);
+    @PostMapping("/posts/{postId}/submitComment/{username}")
+    public String createComment(RedirectAttributes attributes, @PathVariable("postId") int postId, @PathVariable("username") String username, @ModelAttribute("newComment") CommentDTO comment) {
+        postService.addCommentToPost(userService.getUserByUsername(username).getId(), postId, comment);
 
         attributes.addAttribute("id", postId);
 
-        return "redirect:/post/{id}";
+        return "redirect:/posts/{id}";
     }
 
-    @PostMapping("/{postId}/likes/{userId}")
-    public String createLike(@PathVariable("postId") int postId, @PathVariable("userId") int userId) {
-        likeService.addLike(userId, postId);
+    @PostMapping("/posts/{postId}/likes/{username}")
+    public String createLike(@PathVariable("postId") int postId, @PathVariable("username") String username) {
+        likeService.addLike(userService.getUserByUsername(username).getId(), postId);
 
         return "redirect:/";
+    }
+
+    @PostMapping("/{postId}/likes/{username}")
+    public String likePost(@PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
+        likeService.addLike(userService.getUserByUsername(username).getId(), postId);
+
+        attributes.addAttribute("postId", postId);
+
+        return "redirect:/posts/{postId}";
+    }
+
+    @PostMapping("categories/{categoryTitle}/{postId}/likes/{username}")
+    public String likeCategory(@PathVariable("categoryTitle") String categoryTitle, @PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
+        likeService.addLike(userService.getUserByUsername(username).getId(), postId);
+
+        attributes.addAttribute("categoryTitle", categoryTitle);
+
+        return "redirect:/categories/{categoryTitle}";
     }
 
     @GetMapping("/categories/{categoryTitle}")
@@ -111,18 +140,23 @@ public class IndexController {
                     .limit(20)
                     .toList();
 
+
+        for (PostDto post : posts) post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("posts", posts);
         model.addAttribute("topPost", posts.getFirst());
         model.addAttribute("categories", categories);
         model.addAttribute("categoryTitle", categoryTitle);
+        model.addAttribute("loggedIn", getLoggedUser());
 
         return "categoryPosts";
 
     }
 
-    @GetMapping("profile/{username}")
+    @GetMapping("/profile/{username}")
     public String profile(@PathVariable("username") String username, Model model) {
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
@@ -156,7 +190,7 @@ public class IndexController {
         return "redirect:/profile/{username}";
     }
 
-    @GetMapping("profile/{userId}/edit")
+    @GetMapping("/profile/{userId}/edit")
     public String editProfile(Model model, @PathVariable("userId") String  username) {
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
@@ -170,7 +204,7 @@ public class IndexController {
         return "editUser";
     }
 
-    @PostMapping("profile/{userId}/update")
+    @PostMapping("/profile/{userId}/update")
     public String updateUser(@PathVariable("userId") int userId,Model model, @ModelAttribute("user") UserDTO userDTO, RedirectAttributes attributes, @RequestParam(value = "file", required = false) MultipartFile photo) throws IOException {
         try {
 //            System.out.println(userDTO.getId());
@@ -207,6 +241,15 @@ public class IndexController {
     public String CreatePostController(Model model){
         model.addAttribute("categories", categoryConfiguration.getCategories());
         return "createPost";
+    }
+
+    private UserDetails getLoggedUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails)
+            return (UserDetails) principal;
+
+        return null;
     }
 
 }
