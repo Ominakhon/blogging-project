@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Create New User</title>
+    <link rel="icon" th:href="@{/css/photos/Group_4.png}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
     <style>
         body, html {
@@ -43,6 +44,11 @@
             text-transform: uppercase;
             text-align: center;
             width: 100%;
+        }
+        .form-heading img {
+            margin-right: 10px;
+            height: 60px;
+            width: 60px;
         }
         .form-group {
             margin-bottom: 20px;
@@ -101,7 +107,7 @@
 <div class="form-background" th:action="@{/}">
     <div class="form-container">
         <form method="POST" class="funny" id="userForm" th:action="@{/register}">
-            <h3 class="form-heading">Sign In</h3>
+            <h3 class="form-heading"><img th:src="@{css/photos/Group_4.png}" alt="icon"></h3>
 
             <div class="form-group">
                 <input type="text" id="username" class="form-control" th:field="*{user.username}" placeholder="Username" required>
