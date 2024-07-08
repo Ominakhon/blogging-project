@@ -11,6 +11,41 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        .share {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .share i {
+            margin-right: 10px;
+        }
+        .share-options {
+            display: none;
+            position: absolute;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            margin-top: 5px;
+            z-index: 10;
+            width: 200px;
+        }
+        .share-options a {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .share-options a:hover {
+            background: #f0f0f0;
+        }
+        .share-options i {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body th:data-logged-in="${loggedIn != null}">
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
@@ -39,8 +74,8 @@
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
             <div th:if="${loggedIn != null}" style="display: flex;">
-                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile me-2" style="height: 60%;">
-                    <button class="btn btn-outline-success" type="submit">Profile</button>
+                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile" style="height: 60%;">
+                    <button class="btn btn-outline-success me-2" type="submit">Profile</button>
                 </form>
 
                 <form th:action="@{/logout}" method="POST">
@@ -55,6 +90,7 @@
                     <button class="btn btn-outline-success" type="submit" style="height: 100%;">Signup</button>
                 </form>
             </div>
+
         </div>
     </div>
 </nav>
@@ -66,24 +102,12 @@
             <h5  th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
         </div>
         <div class="like d-flex justify-content-start align-items-center">
-            <div th:if="${loggedIn!=null}">
-                <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
-            </div>
-
-            <div th:if="${loggedIn==null}">
-                <form action="" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
-            </div>
-
+            <form th:action="@{/{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form me-2">
+                <button type="submit" class="btn btn-link p-0 like-btn">
+                    <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                </button>
+                <input type="hidden" name="postId" th:value="${post.id}">
+            </form>
             <h5 th:text="${post.likesCount}" ></h5>
         </div>
         <div class="share">
@@ -124,8 +148,7 @@
         <div class="comment" th:each="comment : ${comments}">
             <div class="content">
                 <h5 th:text="${comment.username}"></h5>
-                <p  th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
-
+                <p th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
             </div>
             <h4 th:text="${comment.content}"></h4>
         </div>
@@ -162,7 +185,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
+        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
 
         var submitBtn = document.getElementById('submitCommentBtn1');
         var commentForm = document.getElementById('commentForm');
@@ -174,14 +197,20 @@
         submitBtn.addEventListener('click', function(event) {
             if (!loggedIn) {
                 event.preventDefault();
+        var submitCommentBtn = document.getElementById("submitCommentBtn");
+        if (!loggedIn) {
+            submitCommentBtn.setAttribute("data-bs-toggle", "popover");
+            submitCommentBtn.setAttribute("title", "Error");
+            submitCommentBtn.setAttribute("data-bs-content", "Please log in or sign up to submit a comment.");
+            submitCommentBtn.addEventListener("click", function() {
+                var popover = new bootstrap.Popover(submitCommentBtn);
                 popover.show();
-                setTimeout(function() {
-                    popover.hide();
-                }, 3000); // Hide the popover after 3 seconds
-            } else {
-                commentForm.submit();
-            }
-        });
+            });
+        } else {
+            submitCommentBtn.removeAttribute("data-bs-toggle");
+            submitCommentBtn.removeAttribute("title");
+            submitCommentBtn.removeAttribute("data-bs-content");
+        }
     });
 </script>
 
@@ -210,6 +239,16 @@
             });
         });
     });
+    function copyAndShare() {
+        var dummy = document.createElement("textarea");
+        var text = window.location.href;
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+        alert("URL copied to clipboard!");
+    }
 </script>
 
 </body>

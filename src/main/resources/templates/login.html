@@ -16,7 +16,7 @@
             font-family: 'Arial', sans-serif;
         }
         .form-background {
-            background: #11cb2a;
+            background: rgba(0,166,81,1);
             padding: 50px;
             border-radius: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
@@ -65,11 +65,11 @@
             box-sizing: border-box;
         }
         .form-control:focus {
-            box-shadow: 0 0 10px rgb(17, 203, 42);
-            border-color: #11cb2a;
+            box-shadow: 0 0 10px rgba(0,166,81,1);
+            border-color: rgba(0,166,81,1);
         }
         .btn-primary {
-            background-color: #11cb2a;
+            background-color: rgba(0,166,81,1);
             border: none;
             border-radius: 30px;
             padding: 10px 20px;
@@ -77,7 +77,7 @@
             width: 100%;
         }
         .btn-primary:hover {
-            background-color: #0f9f25;
+            background-color: rgba(0,166,81,1);
         }
         .form-group.text-center {
             margin-top: 30px;
@@ -90,32 +90,47 @@
             color: #555;
         }
         .form-footer a {
-            color: #11cb2a;
+            color: rgba(0,166,81,1);
             text-decoration: none;
             transition: color 0.3s ease-in-out;
         }
         .form-footer a:hover {
-            color: #0f9f25;
+            color: rgba(0,166,81,1);
         }
         .input-group-text {
-            background-color: #11cb2a;
+            background-color: rgba(0,166,81,1);
             color: #fff;
             border: none;
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        .centered-heading {
+            text-align: center;
+        }
+        .green-text {
+            color: rgba(0,166,81,1);
+            font-weight: bold;
+        }
+        .bold-text {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-<div class="form-background" >
+<div class="form-background">
     <div class="form-container">
-        <h3 class="form-heading"><img th:src="@{/css/photos/Group_4.png}" alt="icon"></h3>
+        <div class="centered-heading">
+            <h3><span class="green-text">GREEN</span> <span class="bold-text">WHITE</span></h3><br>
+        </div>
         <form th:action="@{/authenticate}" method="POST">
             <div class="input-group flex-nowrap mb-3">
                 <span class="input-group-text">📧</span>
                 <input type="text" class="form-control" placeholder="Email" name="username" aria-label="Email" aria-describedby="addon-wrapping">
             </div>
             <div class="input-group flex-nowrap mb-3">
-                <span class="input-group-text">🔒</span>
-                <input type="password" class="form-control" placeholder="Password" name="password" aria-label="Password" aria-describedby="addon-wrapping">
+                <span class="input-group-text toggle-password" onclick="togglePassword()">🙈</span>
+                <input type="password" class="form-control" id="password" placeholder="Password" name="password" aria-label="Password" aria-describedby="addon-wrapping">
             </div>
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary">Login</button>
@@ -135,5 +150,18 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function togglePassword() {
+        var passwordField = document.getElementById("password");
+        var toggleIcon = document.querySelector(".toggle-password");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.textContent = "🙉";
+        } else {
+            passwordField.type = "password";
+            toggleIcon.textContent = "🙈";
+        }
+    }
+</script>
 </body>
 </html>
