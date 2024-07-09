@@ -64,6 +64,11 @@ public class IndexController {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
         }
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null)
+             photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+
 
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -71,10 +76,10 @@ public class IndexController {
 
         model.addAttribute("topPost", topPost);
         model.addAttribute("posts", posts);
+        model.addAttribute("photo", photo);
         model.addAttribute("categories", categories);
         model.addAttribute("loggedIn", getLoggedUser());
         return "index";
-
     }
 
     @GetMapping("/posts/{postId}")
@@ -87,7 +92,13 @@ public class IndexController {
 
 
         comments.forEach(commentDTO -> commentDTO.setUsername(userService.getUserById(commentDTO.getAuthorId()).getUsername()));
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null)
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
 
+
+        model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("commentsSize", comments.size());
         model.addAttribute("post", post);
@@ -155,11 +166,17 @@ public class IndexController {
             }
         }
 
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null)
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         PostDto topPost = (posts != null && !posts.isEmpty()) ? posts.getFirst() : null;
 
         model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("photo", photo);
         model.addAttribute("posts", posts);
         model.addAttribute("topPost", topPost);
         model.addAttribute("categories", categories);
@@ -183,7 +200,6 @@ public class IndexController {
 
     @PostMapping("/profile/{username}/uploadPhoto")
     public String uploadPhoto(RedirectAttributes attributes,@RequestParam("file") MultipartFile file, Model model, @PathVariable("username") String username) {
-        // Assume you have a method to get the user from the database
         UserDTO user = userService.getUserByUsername(username);
 
         try {
@@ -207,7 +223,6 @@ public class IndexController {
     public String editProfile(Model model, @PathVariable("userId") String  username) {
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
-
 
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
         model.addAttribute("base64EncodedPhoto", base64EncodedPhoto);
