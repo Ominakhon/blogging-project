@@ -46,7 +46,7 @@
         <div class="navbar-start">
             <a class="navbar-brand" href="#">
                 <div class="image">
-                    <img th:src="@{/css/photos/green.jpg}" alt="">
+                    <img th:src="@{/css/photos/greenNews.jpg}" alt="">
                 </div>
                 <h4>Green White News</h4>
             </a>
@@ -67,14 +67,35 @@
                 <button class="btn btn-success" type="submit">Search</button>
             </form>
             <div th:if="${loggedIn != null}" style="display: flex;">
-                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile" style="height: 60%;">
-                    <button class="btn btn-outline-success me-2" type="submit">Profile</button>
-                </form>
-
-                <form th:action="@{/logout}" method="POST">
-                    <input class="btn btn-danger" type="submit" value="Logout" />
-                </form>
+                <button class="open" type="button" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
+                    <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image">
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas" aria-labelledby="profileOffcanvasLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="profileOffcanvasLabel">Profile Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <form th:action="@{/profile/{username}(username=${loggedIn.username})}" method="GET">
+                            <i class="fa-regular fa-circle-user"></i>
+                            <button class="w-100 mb-2" type="submit">Profile</button>
+                        </form>
+                        <form th:action="@{/profile/{username}/edit(username=${loggedIn.username})}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                            <button class="w-100 mb-2" type="submit">Edit Profile</button>
+                        </form>
+                        <form th:action="@{/posts}">
+                            <i class="fa-regular fa-newspaper"></i>
+                            <button class="w-100 mb-2">Your Posts</button>
+                        </form>
+                        <form th:action="@{/logout}" method="POST" class="w-100">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-danger"></i>
+                            <button type="submit" class="text-danger w-100">Log Out</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+
             <div th:if="${loggedIn == null}" style="display: flex;">
                 <form th:action="@{/login}" class="login d-flex" style="height: 60%;">
                     <button class="btn btn-primary me-2" type="submit">Login</button>
