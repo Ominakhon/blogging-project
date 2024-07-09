@@ -12,6 +12,7 @@ import uz.smartup.academy.bloggingplatform.entity.Comment;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -45,7 +46,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDTO> getAllComments() {
         List<Comment> comments = commentDao.getComments();
-        return dtoUtil.toDTOs(comments);
+            return dtoUtil.toDTOs(comments).stream()
+                    .sorted((c1, c2) -> c2.getCreatedAt().compareTo(c1.getCreatedAt()))
+                    .collect(Collectors.toList());
     }
     @Transactional
     @Override

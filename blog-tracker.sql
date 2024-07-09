@@ -24,7 +24,7 @@ create table `user`(
     `enabled` varchar(1) not null,
     `username` varchar(50) not null,
     `password` varchar(50) not null,
-    `bio` varchar(400),
+    `bio` varchar(800),
     `registered` date,
     primary key (`id`),
     unique(`username`),

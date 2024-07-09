@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home page</title>
-    <link rel="icon" th:href="@{/css/photos/Group_4.png}" type="image/x-icon">
-<html lang="en">
+    <link rel="icon" th:href="@{/css/photos/gws_square.jpg}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+
+    <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title><!DOCTYPE html>
@@ -21,6 +23,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        .contact .contacts li {
+            list-style: none;
+            margin-bottom: 10px;
+            font-family: serif;
+            font-size: 0.8em;
+        }
+        .faq {
+            text-align: left;
+            color: #7c8688;
+            font-size: 0.7em;
+
+
+        }
+
+    </style>
 </head>
 <body th:data-logged-in="${loggedIn != null}">
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
@@ -73,7 +91,7 @@
 
 <section id="Home" th:if="${topPost != null}">
     <div class="post">
-        <img th:src="@{css/photos/01.jpg}" alt="">
+        <img th:src="@{css/photos/GSW_news.jpg}" alt="">
         <div class="post_content">
             <div class="date">
                 <i class="fa-solid fa-calendar-days"></i>
@@ -109,7 +127,7 @@
 
 <section id="News" th:if="${posts != null && !posts.isEmpty()}">
     <div class="post" th:each="post : ${posts}">
-        <img th:src="@{css/photos/01.jpg}" alt="">
+        <img th:src="@{css/photos/GSW_news.jpg}" alt="">
         <a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a>
         <div class="date">
             <div class="calendar">
@@ -141,30 +159,30 @@
     </div>
 </section>
 
-<section id="Contact">
+<<section id="Contact" class="mt-5">
     <div class="contact">
         <div class="image">
-            <img th:src="@{css/photos/Group_4.png}" alt="">
+            <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">
         </div>
         <div class="contacts">
             <h3>Contacts</h3>
             <li>
-                <a href="https://www.greenwhite.uz/">Official website</a>
+                <a href="https://www.greenwhite.uz/"><i class="bi bi-globe2"></i> www.greenwhite.uz</a>
             </li>
             <li>
-                <a href="mailto:abdullakhmirfayziev81@gmail.com">Gmail</a>
+                <a href="mailto:info@greenwhite.uz"><i class="bi bi-envelope"></i> info@greenwhite.uz</a>
             </li>
             <li>
-                <a href="https://t.me/Mirfayziev_a">Telegram</a>
+                <a href="tel:+998712030301"><i class="bi bi-telephone"></i> +998 71 203 03 01</a>
             </li>
             <li>
-                <a href="tel:+998991100810">Phone</a>
+                <a href="tel:+998712008833"><i class="bi bi-telephone"></i> +998 71 200 88 33</a>
             </li>
         </div>
     </div>
     <div class="line"></div>
-    <div class="faq">
-        <p>Green White Solution 2024</p>
+    <div class="faq" >
+        <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
     </div>
 </section>
 

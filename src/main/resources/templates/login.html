@@ -115,13 +115,19 @@
         .bold-text {
             font-weight: bold;
         }
+        .welcome-back {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="form-background">
     <div class="form-container">
         <div class="centered-heading">
-            <h3><span class="green-text">GREEN</span> <span class="bold-text">WHITE</span></h3><br>
+            <h3><span class="green-text">GREEN</span> <span class="bold-text">WHITE</span></h3>
+            <h5 class="welcome-back">Welcome back!</h5>
         </div>
         <form th:action="@{/authenticate}" method="POST">
             <div class="input-group flex-nowrap mb-3">

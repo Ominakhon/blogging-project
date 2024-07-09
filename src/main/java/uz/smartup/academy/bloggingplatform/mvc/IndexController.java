@@ -103,6 +103,7 @@ public class IndexController {
     public String createComment(RedirectAttributes attributes, @PathVariable("postId") int postId, @PathVariable("username") String username, @ModelAttribute("newComment") CommentDTO comment) {
         postService.addCommentToPost(userService.getUserByUsername(username).getId(), postId, comment);
 
+
         attributes.addAttribute("id", postId);
 
         return "redirect:/posts/{id}";
@@ -201,6 +202,7 @@ public class IndexController {
         return "redirect:/profile/{username}";
     }
 
+
     @GetMapping("/profile/{userId}/edit")
     public String editProfile(Model model, @PathVariable("userId") String  username) {
         UserDTO user = userService.getUserByUsername(username);
@@ -241,6 +243,7 @@ public class IndexController {
 
         return "redirect:/profile/{username}";
     }
+
 
     @PostMapping("/web/posts/create")
     public String CreatePostController(@ModelAttribute("post") PostDto postDto, Model model){
