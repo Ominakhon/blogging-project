@@ -4,15 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile page</title>
-    <link rel="icon" th:href="@{/css/photos/Group_4.png}" type="image/x-icon">
+    <link rel="icon" th:href="@{/css/photos/gws_square.jpg}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
 </head>
 <body>
+<style>
+    body {
+        color: #28531f;
+        margin-top: 20px;
+    }
+    .section {
+        padding: 100px 0;
+        position: relative;
+    }
+    .gray-bg {
+        background-color: #f5f5f5;
+    }
+    img {
+        max-width: 100%;
+    }
+    img {
+        vertical-align: middle;
+        border-style: none;
+    }
+    .about-text h3 {
+        font-size: 45px;
+        font-weight: 700;
+        margin: 0 0 6px;
+        color: #38772d;
+    }
+    @media (max-width: 767px) {
+        .about-text h3 {
+            font-size: 35px;
+        }
+    }
+    .about-text h6 {
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #11cb2a;
+    }
+    @media (max-width: 767px) {
+        .about-text h6 {
+            font-size: 18px;
+        }
+    }
+    .about-text p {
+        font-size: 18px;
+        max-width: 450px;
+        color: #333;
+    }
+    .about-text p mark {
+        font-weight: 600;
+        color: rgba(0,166,81,1);
+    }
+
+    .about-list {
+        padding-top: 10px;
+    }
+    .about-list .media {
+        padding: 5px 0;
+    }
+    .about-list label {
+        color: rgba(0,166,81,1);
+        font-weight: 600;
+        width: 88px;
+        margin: 0;
+        position: relative;
+    }
+    .about-list label:after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 11px;
+        width: 1px;
+        height: 12px;
+        background: rgba(0,166,81,1);
+        transform: rotate(15deg);
+        margin: auto;
+        opacity: 0.5;
+    }
+    .about-list p {
+        margin: 0;
+        font-size: 15px;
+        color: #333;
+    }
+
+    @media (max-width: 991px) {
+        .about-avatar {
+            margin-top: 30px;
+        }
+    }
+
+    .about-section .counter {
+        padding: 22px 20px;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(31, 45, 61, 0.125);
+    }
+    .about-section .counter .count-data {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .about-section .counter .count {
+        font-weight: 700;
+        color: rgba(0,166,81,1);
+        margin: 0 0 5px;
+    }
+    .about-section .counter p {
+        font-weight: 600;
+        margin: 0;
+    }
+    .about-avatar img {
+        width: 350px;
+        height: auto;
+        border-radius: 100%;
+    }
+    mark {
+        background-size: 100% 3px;
+        background-repeat: no-repeat;
+        background-position: 0 bottom;
+        background-color: transparent;
+        padding: 0;
+        color: currentColor;
+    }
+    .theme-color {
+        color: rgba(0,166,81,1);
+    }
+    .dark-color {
+        color: rgba(0,166,81,1);
+    }
+    .about-avatar p {
+        text-align: -moz-left;
+        font-weight: bold;
+        /*padding-left: 70px;*/
+    }
+    .contact .contacts li {
+        list-style: none;
+        margin-bottom: 10px;
+        font-family: serif;
+        font-size: 0.8em;
+    }
+    .faq {
+        text-align: left;
+        color: #7c8688;
+        font-size: 0.7em;
+
+
+    }
+
+
+</style>
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container-fluid">
         <div class="navbar-start">
@@ -45,75 +194,91 @@
         </div>
     </div>
 </nav>
-
-<section id="Profile">
-
-    <div class="left-side">
-        <div class="image">
-            <img th:src="'data:image/png;base64,' + ${base64EncodedPhoto}" alt="Profile Image">
-        </div>
-
-        <form th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="_method" value="put">
-            <h5 class="text-success">Upload photo: </h5>
-<!--            <input type="file" class="file" id="file" name="file">-->
-            <div class="col-sm-6">
-                <input class="form-control" type="file" id="file" name="file" >
-                <input type="submit" class="btn btn-success" value="Upload">
+<section class="section about-section gray-bg" id="about">
+    <div class="container">
+        <div class="row align-items-center flex-row-reverse">
+            <div class="col-lg-6">
+                <div class="about-text go-to">
+                    <h3 class="dark-color">About Me</h3>
+                    <h6 class="theme-color lead" th:text="${user.first_name} + ' ' + ${user.last_name}"> </h6>
+                    <p th:text="${user.bio}"></p>
+                    <div class="row about-list">
+                        <div class="col-md-6">
+                            <div class="media">
+                                <label>First name  </label>
+                                <p th:text="${user.first_name}"></p>
+                            </div>
+                            <div class="media">
+                                <label>Last Name</label>
+                                <p th:text="${user.last_name}"></p>
+                            </div>
+                            <div class="media">
+                                <label>Username  </label>
+                                <p th:text="${user.username}"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="media">
+                                <label>E-mail</label>
+                                <p th:text="${user.email}"></p>
+                            </div>
+                            <div class="media">
+                                <label>User ID</label>
+                                <p th:text="${user.id}"></p>
+                            </div>
+                            <form th:action="@{{username}/edit(username=${user.username})}" class="edit">
+                                <button class="btn btn-success">Edit profile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </form>
-
-        <form th:action="@{{username}/edit(username=${user.username})}" class="edit">
-            <button class="btn btn-success">Edit profile</button>
-        </form>
-
-
+            <div class="col-lg-6">
+                <div class="about-avatar">
+                    <img src="/css/photos/profile.webp" title="" alt="">
+                    <p th:text="'🗓️ With us since: ' + ${user.registered}"></p>
+                    <form th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="_method" value="put">
+                        <h5 class="text-success">Upload photo: </h5>
+                        <div class="col-sm-6">
+                            <input class="form-control" type="file" id="file" name="file" >
+                            <input type="submit" class="btn btn-success" value="Upload">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="userInfo">
-        <h3 th:text="'Username: ' + ${user.username}"></h3>
-        <h3 th:text="'First name: ' + ${user.first_name}"></h3>
-        <h3 th:text="'Last name: ' + ${user.last_name}"></h3>
-        <h3 th:text="'Bio: ' + ${user.bio}"></h3>
-        <h3 th:text="'Email: ' + ${user.email}"></h3>
-    </div>
-
-
-
-
 </section>
 
-
-
-<section id="Contact">
+<<section id="Contact" class="mt-5">
     <div class="contact">
         <div class="image">
-            <img th:src="@{/css/photos/Group_4.png}" alt="Contact Image">
+            <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">
         </div>
         <div class="contacts">
             <h3>Contacts</h3>
             <li>
-                <a href="https://www.greenwhite.uz/">Official website</a>
+                <a href="https://www.greenwhite.uz/"><i class="bi bi-globe2"></i> www.greenwhite.uz</a>
             </li>
             <li>
-                <a href="mailto:abdullakhmirfayziev81@gmail.com">Gmail</a>
+                <a href="mailto:info@greenwhite.uz"><i class="bi bi-envelope"></i> info@greenwhite.uz</a>
             </li>
             <li>
-                <a href="https://t.me/Mirfayziev_a">Telegram</a>
+                <a href="tel:+998712030301"><i class="bi bi-telephone"></i> +998 71 203 03 01</a>
             </li>
             <li>
-                <a href="tel:+998991100810">Phone</a>
+                <a href="tel:+998712008833"><i class="bi bi-telephone"></i> +998 71 200 88 33</a>
             </li>
         </div>
     </div>
     <div class="line"></div>
-    <div class="faq">
-        <p>Green White Solution 2024</p>
+    <div class="faq" >
+        <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
     </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
 
 </body>
 </html>

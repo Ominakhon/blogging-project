@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post page</title>
-    <link rel="icon" th:href="@{/css/photos/Group_4.png}" type="image/x-icon">
+    <link rel="icon" th:href="@{/css/photos/gws_square.jpg}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <style>
         .share {
@@ -45,8 +47,16 @@
         .share-options i {
             margin-right: 10px;
         }
-        .offcanvas-end {
-            width: 300px;
+        .contact .contacts li {
+            list-style: none;
+            margin-bottom: 10px;
+            font-family: serif;
+            font-size: 0.8em;
+        }
+        .faq {
+            text-align: left;
+            color: #7c8688;
+            font-size: 0.7em;
         }
     </style>
 </head>
@@ -77,35 +87,14 @@
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
             <div th:if="${loggedIn != null}" style="display: flex;">
-                <button class="open" type="button" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
-                    <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image">
-                </button>
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas" aria-labelledby="profileOffcanvasLabel">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="profileOffcanvasLabel">Profile Menu</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <form th:action="@{/profile/{username}(username=${loggedIn.username})}" method="GET">
-                            <i class="fa-regular fa-circle-user"></i>
-                            <button class="w-100 mb-2" type="submit">Profile</button>
-                        </form>
-                        <form th:action="@{/profile/{username}/edit(username=${loggedIn.username})}">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                            <button class="w-100 mb-2" type="submit">Edit Profile</button>
-                        </form>
-                        <form th:action="@{/posts}">
-                            <i class="fa-regular fa-newspaper"></i>
-                            <button class="w-100 mb-2">Your Posts</button>
-                        </form>
-                        <form th:action="@{/logout}" method="POST" class="w-100">
-                            <i class="fa-solid fa-arrow-right-from-bracket text-danger"></i>
-                            <button type="submit" class="text-danger w-100">Log Out</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile" style="height: 60%;">
+                    <button class="btn btn-outline-success me-2" type="submit">Profile</button>
+                </form>
 
+                <form th:action="@{/logout}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Logout" />
+                </form>
+            </div>
             <div th:if="${loggedIn == null}" style="display: flex;">
                 <form th:action="@{/login}" class="login d-flex" style="height: 60%;">
                     <button class="btn btn-primary me-2" type="submit">Login</button>
@@ -123,7 +112,7 @@
     <div class="date">
         <div class="calendar">
             <i class="fa-solid fa-calendar-days"></i>
-            <h5  th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
+            <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
         </div>
         <div class="like d-flex justify-content-start align-items-center">
             <form th:action="@{/{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form me-2">
@@ -134,14 +123,14 @@
             </form>
             <h5 th:text="${post.likesCount}" ></h5>
         </div>
-        <div class="share">
-            <i class="fa-solid fa-share-nodes" onclick="copyAndShare()" ></i>
+        <div class="share" onclick="copyAndShare()">
+            <i class="fa-solid fa-share-nodes"></i>
             <h5>Share</h5>
         </div>
     </div>
     <h1 th:text="${post.title}"></h1>
     <div class="image">
-        <img th:src="@{/css/photos/04.jpg}" alt="">
+        <img th:src="@{/css/photos/GSW_news.jpg}" alt="">
     </div>
     <p th:text="${post.content}"><!-- Content omitted for brevity -->
     </p>
@@ -149,18 +138,19 @@
 
 <section id="Comments">
     <div class="comment-form">
+
         <div th:if="${loggedIn!=null}">
             <form th:action="@{/posts/{postId}/submitComment/{username}(username=${loggedIn.username}, postId=${post.id})}"  th:object="${newComment}" method="POST">
                 <label for="comment">Your Comment:</label>
                 <textarea id="comment" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
-                <button class="btn btn-success" type="submit">Submit</button>
+                <button id="submitCommentBtn" class="btn btn-success" type="submit" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
             </form>
         </div>
 
         <div th:if="${loggedIn==null}">
             <form action=""  th:object="${newComment}" method="POST">
-                <label for="comment1">Your Comment:</label>
-                <textarea id="comment1" th:field="*{content}" rows="5" placeholder="Write your comment here..."></textarea>
+                <label for="comment">Your Comment:</label>
+                <textarea id="comment1" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
                 <button id="submitCommentBtn1" class="btn btn-success" type="button" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
             </form>
         </div>
@@ -178,76 +168,35 @@
     </div>
 </section>
 
-<section id="Contact">
+<<section id="Contact" class="mt-5">
     <div class="contact">
         <div class="image">
-            <img th:src="@{/css/photos/Group_4.png}" alt="">
+            <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">
         </div>
         <div class="contacts">
             <h3>Contacts</h3>
             <li>
-                <a href="https://www.greenwhite.uz/">Official website</a>
+                <a href="https://www.greenwhite.uz/"><i class="bi bi-globe2"></i> www.greenwhite.uz</a>
             </li>
             <li>
-                <a href="mailto:abdullakhmirfayziev81@gmail.com">Gmail</a>
+                <a href="mailto:info@greenwhite.uz"><i class="bi bi-envelope"></i> info@greenwhite.uz</a>
             </li>
             <li>
-                <a href="https://t.me/Mirfayziev_a">Telegram</a>
+                <a href="tel:+998712030301"><i class="bi bi-telephone"></i> +998 71 203 03 01</a>
             </li>
             <li>
-                <a href="tel:+998991100810">Phone</a>
+                <a href="tel:+998712008833"><i class="bi bi-telephone"></i> +998 71 200 88 33</a>
             </li>
         </div>
     </div>
     <div class="line"></div>
-    <div class="faq">
-        <p>Green White Solution 2024</p>
+    <div class="faq" >
+        <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
     </div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
-
-        var submitBtn = document.getElementById('submitCommentBtn1');
-        var popover = new bootstrap.Popover(submitBtn, {
-            trigger: 'manual' // Manual trigger so we can control when to show it
-        });
-
-        submitBtn.addEventListener('click', function(event) {
-            if (!loggedIn) {
-                event.preventDefault();
-                popover.show();
-
-                setTimeout(function() {
-                        popover.hide();
-                }, 3000);
-            }
-        });
-
-        var likeForms = document.querySelectorAll('.like-form');
-
-        likeForms.forEach(function(form) {
-            form.addEventListener('submit', function(event) {
-                if (!loggedIn) {
-                    event.preventDefault();
-
-                    var popover = new bootstrap.Popover(form.querySelector('.like-icon'), {
-                        trigger: 'manual', // Manual trigger so we can control when to show it
-                        content: "Please log in or sign up to like.",
-                        placement: 'top'
-                    });
-
-                    popover.show();
-                    setTimeout(function() {
-                        popover.hide();
-                    }, 3000); // Hide the popover after 3 seconds
-                }
-            });
-        });
-    });
-
     function copyAndShare() {
         var dummy = document.createElement("textarea");
         var text = window.location.href;

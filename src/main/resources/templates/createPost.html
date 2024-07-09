@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Editor</title>
-    <link rel="icon" th:href="@{/css/photos/Group_4.png}" type="image/x-icon">
+    <link rel="icon" th:href="@{/css/photos/gws_square.jpg}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0; /* light gray background */
-            color: #333; /* dark gray text */
+            background-color: #f0f0f0;
+            color: #333;
             margin: 0;
             padding: 0;
             display: flex;
@@ -135,6 +137,20 @@
         .buttons-container button:hover {
             background-color: #45a049;
         }
+        .contact .contacts li {
+            list-style: none;
+            margin-bottom: 10px;
+            font-family: serif;
+            font-size: 0.8em;
+        }
+        .faq {
+            text-align: left;
+            color: #7c8688;
+            font-size: 0.7em;
+
+
+        }
+
     </style>
 </head>
 <body>
@@ -179,7 +195,32 @@
         <button type="button" id="publishButton">Publish</button>
     </div>
 </div>
-
+<<section id="Contact" class="mt-5">
+    <div class="contact">
+        <div class="image">
+            <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">
+        </div>
+        <div class="contacts">
+            <h3>Contacts</h3>
+            <li>
+                <a href="https://www.greenwhite.uz/"><i class="bi bi-globe2"></i> www.greenwhite.uz</a>
+            </li>
+            <li>
+                <a href="mailto:info@greenwhite.uz"><i class="bi bi-envelope"></i> info@greenwhite.uz</a>
+            </li>
+            <li>
+                <a href="tel:+998712030301"><i class="bi bi-telephone"></i> +998 71 203 03 01</a>
+            </li>
+            <li>
+                <a href="tel:+998712008833"><i class="bi bi-telephone"></i> +998 71 200 88 33</a>
+            </li>
+        </div>
+    </div>
+    <div class="line"></div>
+    <div class="faq" >
+        <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
+    </div>
+</section>
 <script>
     const tagInput = document.getElementById('tagInput');
     const tagsContainer = document.getElementById('tagsContainer');
