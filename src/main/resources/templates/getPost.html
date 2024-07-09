@@ -135,7 +135,7 @@
             <h5 th:text="${post.likesCount}" ></h5>
         </div>
         <div class="share">
-            <i class="fa-solid fa-share-nodes"></i>
+            <i class="fa-solid fa-share-nodes" onclick="copyAndShare()" ></i>
             <h5>Share</h5>
         </div>
     </div>
@@ -149,19 +149,18 @@
 
 <section id="Comments">
     <div class="comment-form">
-
         <div th:if="${loggedIn!=null}">
             <form th:action="@{/posts/{postId}/submitComment/{username}(username=${loggedIn.username}, postId=${post.id})}"  th:object="${newComment}" method="POST">
                 <label for="comment">Your Comment:</label>
                 <textarea id="comment" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
-                <button id="submitCommentBtn" class="btn btn-success" type="submit" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
+                <button class="btn btn-success" type="submit">Submit</button>
             </form>
         </div>
 
         <div th:if="${loggedIn==null}">
             <form action=""  th:object="${newComment}" method="POST">
-                <label for="comment">Your Comment:</label>
-                <textarea id="comment1" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
+                <label for="comment1">Your Comment:</label>
+                <textarea id="comment1" th:field="*{content}" rows="5" placeholder="Write your comment here..."></textarea>
                 <button id="submitCommentBtn1" class="btn btn-success" type="button" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
             </form>
         </div>
@@ -209,11 +208,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = false; // Replace this with actual logic to check if the user is logged in
+        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
 
         var submitBtn = document.getElementById('submitCommentBtn1');
-        var commentForm = document.getElementById('commentForm');
-
         var popover = new bootstrap.Popover(submitBtn, {
             trigger: 'manual' // Manual trigger so we can control when to show it
         });
@@ -221,26 +218,13 @@
         submitBtn.addEventListener('click', function(event) {
             if (!loggedIn) {
                 event.preventDefault();
-        var submitCommentBtn = document.getElementById("submitCommentBtn");
-        if (!loggedIn) {
-            submitCommentBtn.setAttribute("data-bs-toggle", "popover");
-            submitCommentBtn.setAttribute("title", "Error");
-            submitCommentBtn.setAttribute("data-bs-content", "Please log in or sign up to submit a comment.");
-            submitCommentBtn.addEventListener("click", function() {
-                var popover = new bootstrap.Popover(submitCommentBtn);
                 popover.show();
-            });
-        } else {
-            submitCommentBtn.removeAttribute("data-bs-toggle");
-            submitCommentBtn.removeAttribute("title");
-            submitCommentBtn.removeAttribute("data-bs-content");
-        }
-    });
-</script>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
+                setTimeout(function() {
+                        popover.hide();
+                }, 3000);
+            }
+        });
 
         var likeForms = document.querySelectorAll('.like-form');
 
@@ -263,6 +247,7 @@
             });
         });
     });
+
     function copyAndShare() {
         var dummy = document.createElement("textarea");
         var text = window.location.href;
