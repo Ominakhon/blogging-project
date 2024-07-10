@@ -36,7 +36,7 @@
         <div class="navbar-start">
             <a class="navbar-brand" th:href="@{/}">
                 <div class="image">
-                    <img th:src="@{/css/photos/green.jpg}" alt="">
+                    <img th:src="@{/css/photos/greenNews.jpg}" alt="">
                 </div>
                 <h4>Green White News</h4>
             </a>
@@ -105,7 +105,7 @@
 
 <section id="Home" th:if="${topPost != null}">
     <div class="post">
-        <img th:src="@{/css/photos/01.jpg}" alt="Post Image">
+        <img th:src="@{/css/photos/GSW_news.jpg}" alt="Post Image">
         <div class="post_content">
             <div class="date">
                 <i class="fa-solid fa-calendar-days"></i>
@@ -131,7 +131,7 @@
 
 <section id="News" th:if="${posts != null && !posts.isEmpty()}">
     <div class="post" th:each="post : ${posts}">
-        <img th:src="@{/css/photos/01.jpg}" alt="News Image">
+        <img th:src="@{/css/photos/GSW_news.jpg}" alt="News Image">
         <a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a>
         <div class="date">
             <div class="calendar">

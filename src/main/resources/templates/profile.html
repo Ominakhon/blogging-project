@@ -167,7 +167,7 @@
         <div class="navbar-start">
             <a class="navbar-brand" th:href="@{/}">
                 <div class="image">
-                    <img th:src="@{/css/photos/green.jpg}" alt="">
+                    <img th:src="@{/css/photos/greenNews.jpg}" alt="">
                 </div>
                 <h4>Green White News</h4>
             </a>
@@ -241,8 +241,8 @@
                     <form th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="put">
                         <h5 class="text-success">Upload photo: </h5>
-                        <div class="col-sm-6">
-                            <input class="form-control" type="file" id="file" name="file" >
+                        <div class="col-sm-6" style="display: flex; align-items: center;">
+                            <input class="form-control me-2" type="file" id="file" name="file" >
                             <input type="submit" class="btn btn-success" value="Upload">
                         </div>
                     </form>

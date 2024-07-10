@@ -105,6 +105,11 @@
     color: black;
 }
 
+.navbar .offcanvas {
+    width: 300px;
+}
+
+
 section#Home {
     width: 92%;
     margin: auto;
