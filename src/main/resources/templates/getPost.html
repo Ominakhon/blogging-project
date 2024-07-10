@@ -11,7 +11,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
-
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
     <style>
         .share {
@@ -124,7 +123,6 @@
                     <button class="btn btn-outline-success" type="submit" style="height: 100%;">Signup</button>
                 </form>
             </div>
-
         </div>
     </div>
 </nav>
@@ -136,12 +134,24 @@
             <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
         </div>
         <div class="like d-flex justify-content-start align-items-center">
-            <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
-                <button type="submit" class="btn btn-link p-0 like-btn">
-                    <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                </button>
-                <input type="hidden" name="postId" th:value="${post.id}">
-            </form>
+            <div th:if="${loggedIn!=null}">
+                <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
+                    <button type="submit" class="btn btn-link p-0 like-btn">
+                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                    </button>
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                </form>
+            </div>
+
+            <div th:if="${loggedIn==null}">
+                <form action="#" method="post" class="like-form me-2">
+                    <button type="submit" class="btn btn-link p-0 like-btn">
+                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                    </button>
+                    <input type="hidden" name="postId" th:value="${post.id}">
+                </form>
+            </div>
+
             <h5 th:text="${post.likesCount}" ></h5>
         </div>
         <div class="share" onclick="copyAndShare()">
@@ -153,15 +163,13 @@
     <div class="image">
         <img th:src="@{/css/photos/GSW_news.jpg}" alt="">
     </div>
-    <p th:text="${post.content}"><!-- Content omitted for brevity -->
-    </p>
+    <p th:text="${post.content}"><!-- Content omitted for brevity --></p>
 </section>
 
 <section id="Comments">
     <div class="comment-form">
-
         <div th:if="${loggedIn!=null}">
-            <form th:action="@{/posts/{postId}/submitComment/{username}(username=${loggedIn.username}, postId=${post.id})}"  th:object="${newComment}" method="POST">
+            <form th:action="@{/posts/{postId}/submitComment/{username}(username=${loggedIn.username}, postId=${post.id})}" th:object="${newComment}" method="POST">
                 <label for="comment">Your Comment:</label>
                 <textarea id="comment" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
                 <button id="submitCommentBtn" class="btn btn-success" type="submit" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
@@ -169,7 +177,7 @@
         </div>
 
         <div th:if="${loggedIn==null}">
-            <form action=""  th:object="${newComment}" method="POST">
+            <form action="" th:object="${newComment}" method="POST">
                 <label for="comment">Your Comment:</label>
                 <textarea id="comment1" th:field="*{content}" rows="5" placeholder="Write your comment here..." required></textarea>
                 <button id="submitCommentBtn1" class="btn btn-success" type="button" data-bs-toggle="popover" title="Error" data-bs-content="Please log in or sign up to submit a comment.">Submit</button>
@@ -189,7 +197,7 @@
     </div>
 </section>
 
-<<section id="Contact" class="mt-5">
+<section id="Contact" class="mt-5">
     <div class="contact">
         <div class="image">
             <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">
@@ -211,7 +219,7 @@
         </div>
     </div>
     <div class="line"></div>
-    <div class="faq" >
+    <div class="faq">
         <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
     </div>
 </section>
@@ -230,5 +238,49 @@
     }
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var loggedIn = document.body.getAttribute("data-logged-in") === "true";
+
+        var likeForms = document.querySelectorAll('.like-form');
+
+        likeForms.forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!loggedIn) {
+                    event.preventDefault();
+
+                    var popover = new bootstrap.Popover(form.querySelector('.like-icon'), {
+                        trigger: 'manual', // Manual trigger so we can control when to show it
+                        content: "Please log in or sign up to like.",
+                        placement: 'top'
+                    });
+
+                    popover.show();
+                    setTimeout(function() {
+                        popover.hide();
+                    }, 3000);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var commentBtn = document.getElementById('submitCommentBtn1');
+        if (commentBtn) {
+            var popover = new bootstrap.Popover(commentBtn, {
+                trigger: 'manual',
+                content: "Please log in or sign up to submit a comment.",
+                placement: 'top'
+            });
+            commentBtn.addEventListener('click', function() {
+                popover.show();
+                setTimeout(function() {
+                    popover.hide();
+                }, 3000);
+            });
+        }
+    });
+</script>
 </body>
 </html>
