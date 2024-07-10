@@ -236,7 +236,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="about-avatar">
-                    <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image">
+                    <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image" style="width: 100%; max-width: 200px; margin-bottom: 10px">
                     <p th:text="'🗓️ With us since: ' + ${user.registered}"></p>
                     <form th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="put">
