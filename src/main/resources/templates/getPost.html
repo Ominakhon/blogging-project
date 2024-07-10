@@ -136,7 +136,7 @@
             <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
         </div>
         <div class="like d-flex justify-content-start align-items-center">
-            <form th:action="@{/{postId}/likes/{userId}(postId=${post.id}, userId=${post.id})}" method="post" class="like-form me-2">
+            <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
                 <button type="submit" class="btn btn-link p-0 like-btn">
                     <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
                 </button>
