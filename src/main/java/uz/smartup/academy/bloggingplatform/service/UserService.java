@@ -44,4 +44,6 @@ public interface UserService {
     List<PostDto> userDraftPosts(int userId);
 
     void updateUserComment(int userId, int postId, CommentDTO comment);
+
+    void setDefaultPhotoToUser(UserDTO user);
 }

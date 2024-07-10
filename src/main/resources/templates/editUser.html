@@ -89,11 +89,8 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
-            <form action="" class="login d-flex" style="height: 60%;">
-                <button class="btn btn-primary me-2" type="button">Login</button>
-            </form>
-            <form action="" class="signup" style="height: 60%;">
-                <button class="btn btn-outline-success" type="button" style="height: 100%;">Signup</button>
+            <form th:action="@{/logout}" method="POST" style="height: 60%;">
+                <input class="btn btn-danger me-2" type="submit" value="Logout" />
             </form>
         </div>
     </div>
@@ -108,7 +105,6 @@
         </div>
         <h5>Upload photo: </h5>
         <input class="form-control file" type="file" id="file" name="file">
-        <button type="button" class="btn btn-danger mt-2" id="deletePhotoButton">Delete Current Photo</button>
 
         <div class="fields mt-3">
             <label class="form-label">First name: </label>

@@ -29,6 +29,8 @@ public class UserServiceImpl implements UserService {
     @Value("classpath:static/css/photos/userPhoto.jpg")
     private Resource defaultPhotoResource;
 
+
+
     private byte[] defaultPhoto;
 
     private final UserDao userDao;
@@ -214,11 +216,19 @@ public class UserServiceImpl implements UserService {
         return postService.getDraftPostsByAuthorId(userId);
     }
 
-  @Override
+    @Override
     @Transactional
     public void updateUserComment(int userId, int postId, CommentDTO comment) {
         Comment comment1 = commentDtoUtil.toEntity(comment);
 
         userDao.updateUserComment(userId, postId, comment1);
+    }
+
+    @Override
+    @Transactional
+    public void setDefaultPhotoToUser(UserDTO user) {
+        User user1 = userDao.getUserById(user.getId());
+        user.setPhoto(defaultPhoto);
+        userDao.update(dtoUtil.userMergeEntity(user1, user));
     }
 }

@@ -191,7 +191,7 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
-        model.addAttribute("base64EncodedPhoto", base64EncodedPhoto);
+        model.addAttribute("photo", base64EncodedPhoto);
         model.addAttribute("categories", categories);
         model.addAttribute("user", user);
 
@@ -279,6 +279,17 @@ public class IndexController {
             return (UserDetails) principal;
 
         return null;
+    }
+
+    @PostMapping("/deletePhoto/{userId}")
+    public String deletePhoto(@PathVariable("userId") int userId, RedirectAttributes attributes) {
+        UserDTO userDTO = userService.getUserById(userId);
+
+        userService.setDefaultPhotoToUser(userDTO);
+
+        attributes.addAttribute("username", userDTO.getUsername());
+
+        return "redirect:/profile/{username}";
     }
 
 }

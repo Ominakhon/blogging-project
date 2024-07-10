@@ -120,7 +120,7 @@
             </div>
             <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="title" th:text="${topPost.title}"></a>
             <p th:text="${topPost.content}"></p>
-            <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="link-primary" style="font-size:15px; font-weight: 500;">... READ MORE</a>
+            <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="link-primary" style="font-size:15px; font-weight: 500;">READ MORE</a>
 
             <div class="like d-flex justify-content-start">
                 <div th:if="${loggedIn!=null}">
