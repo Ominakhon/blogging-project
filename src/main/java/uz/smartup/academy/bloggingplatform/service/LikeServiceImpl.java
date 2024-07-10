@@ -51,8 +51,6 @@ public class LikeServiceImpl implements LikeService {
             like.setPost(post);
             likeDAO.save(like);
         }
-
-
     }
 
     @Override

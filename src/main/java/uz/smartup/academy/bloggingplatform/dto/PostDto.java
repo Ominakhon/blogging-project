@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -22,6 +20,8 @@ public class PostDto {
     private String content;
 
     private LocalDateTime createdAt;
+
+    private boolean isLiked;
 
     private long likesCount;
 

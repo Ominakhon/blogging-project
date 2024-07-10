@@ -213,24 +213,22 @@
                                 <label>Last Name</label>
                                 <p th:text="${user.last_name}"></p>
                             </div>
+
+                        </div>
+                        <div class="col-md-6">
                             <div class="media">
                                 <label>Username  </label>
                                 <p th:text="${user.username}"></p>
                             </div>
-                        </div>
-                        <div class="col-md-6">
                             <div class="media">
                                 <label>E-mail</label>
                                 <p th:text="${user.email}"></p>
                             </div>
-                            <div class="media">
-                                <label>User ID</label>
-                                <p th:text="${user.id}"></p>
-                            </div>
-                            <form th:action="@{{username}/edit(username=${user.username})}" class="edit">
-                                <button class="btn btn-success">Edit profile</button>
-                            </form>
+
                         </div>
+                        <form th:action="@{{username}/edit(username=${user.username})}" class="edit mt-3">
+                            <button class="btn btn-success">Edit profile</button>
+                        </form>
                     </div>
                 </div>
             </div>

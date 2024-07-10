@@ -117,11 +117,6 @@ public class UserServiceImpl implements UserService {
             user.setPhoto(defaultPhoto);
         }
 
-//        System.out.println("User photo size: " + user.getPhoto().length); // Debugging line
-
-        for (Role role : roles) {
-            role.setUsername(user.getUsername());
-        }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         user.setRoles(roles);
