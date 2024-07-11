@@ -47,6 +47,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/", "/register", "/posts/*", "/profile/*", "/categories/*").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/profile/*", "/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/changePassword").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/password-change").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(
