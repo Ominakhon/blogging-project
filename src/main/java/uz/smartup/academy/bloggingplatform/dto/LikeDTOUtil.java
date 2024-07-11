@@ -11,6 +11,7 @@ import java.util.List;
 public class LikeDTOUtil {
 
     public LikeDTO toDto(Like like) {
+        if(like == null) return null;
         return new LikeDTO.Builder()
                 .id(like.getId())
                 .userId(like.getAuthor().getId())

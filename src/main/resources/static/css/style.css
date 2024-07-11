@@ -7,8 +7,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 94%;
-    margin: auto;
+    width: 100%;
+    padding: 0 3%;
     height: 80px;
     background-color: none;
     margin-bottom: 50px;
@@ -104,6 +104,11 @@
 .navbar li .active{
     color: black;
 }
+
+.navbar .offcanvas {
+    width: 300px;
+}
+
 
 section#Home {
     width: 92%;

@@ -29,6 +29,8 @@ public class UserServiceImpl implements UserService {
     @Value("classpath:static/css/photos/userPhoto.jpg")
     private Resource defaultPhotoResource;
 
+
+
     private byte[] defaultPhoto;
 
     private final UserDao userDao;
@@ -115,11 +117,6 @@ public class UserServiceImpl implements UserService {
             user.setPhoto(defaultPhoto);
         }
 
-//        System.out.println("User photo size: " + user.getPhoto().length); // Debugging line
-
-        for (Role role : roles) {
-            role.setUsername(user.getUsername());
-        }
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         user.setRoles(roles);
@@ -214,11 +211,19 @@ public class UserServiceImpl implements UserService {
         return postService.getDraftPostsByAuthorId(userId);
     }
 
-  @Override
+    @Override
     @Transactional
     public void updateUserComment(int userId, int postId, CommentDTO comment) {
         Comment comment1 = commentDtoUtil.toEntity(comment);
 
         userDao.updateUserComment(userId, postId, comment1);
+    }
+
+    @Override
+    @Transactional
+    public void setDefaultPhotoToUser(UserDTO user) {
+        User user1 = userDao.getUserById(user.getId());
+        user.setPhoto(defaultPhoto);
+        userDao.update(dtoUtil.userMergeEntity(user1, user));
     }
 }

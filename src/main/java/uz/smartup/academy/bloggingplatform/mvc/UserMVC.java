@@ -1,15 +1,15 @@
 package uz.smartup.academy.bloggingplatform.mvc;
 
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.service.SecurityService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.util.ArrayList;
@@ -20,8 +20,14 @@ public class UserMVC {
 
     private final UserService service;
 
-    public UserMVC(UserService userService) {
+    private final SecurityService securityService;
+
+    private final PasswordEncoder passwordEncoder;
+
+    public UserMVC(UserService userService, SecurityService securityService, PasswordEncoder passwordEncoder) {
         this.service = userService;
+        this.securityService = securityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/register")
@@ -33,7 +39,6 @@ public class UserMVC {
     @PostMapping("/register")
     public String createInstructor(@ModelAttribute("user") UserDTO dto){
         List<Role> roles = new ArrayList<>();
-        System.out.println(dto.getUsername());
         Role role = new Role();
         role.setRole("ROLE_VIEWER");
         role.setUsername(dto.getUsername());
@@ -43,9 +48,9 @@ public class UserMVC {
     }
 
 
+
     @GetMapping("/login")
     public String LoginUserController(Model model){
-//        model.addAttribute("user", new User());
         return "login";
     }
 }

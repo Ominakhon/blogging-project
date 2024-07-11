@@ -36,14 +36,14 @@
         <div class="navbar-start">
             <a class="navbar-brand" th:href="@{/}">
                 <div class="image">
-                    <img th:src="@{/css/photos/green.jpg}" alt="">
+                    <img th:src="@{/css/photos/greenNews.jpg}" alt="">
                 </div>
                 <h4>Green White News</h4>
             </a>
         </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="dropdown me-2">
-                <button class="btn dropdown-toggle text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn dropdown-toggle text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" th:text="${categoryTitle}">
                     Categories
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -57,14 +57,35 @@
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
             <div th:if="${loggedIn != null}" style="display: flex;">
-                <form th:action="@{'/profile/' + ${loggedIn.username}}" class="profile" style="height: 60%;">
-                    <button class="btn btn-outline-success me-2" type="submit">Profile</button>
-                </form>
-
-                <form th:action="@{/logout}" method="POST">
-                    <input class="btn btn-danger" type="submit" value="Logout" />
-                </form>
+                <button class="open" type="button" data-bs-toggle="offcanvas" data-bs-target="#profileOffcanvas" aria-controls="profileOffcanvas">
+                    <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image">
+                </button>
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="profileOffcanvas" aria-labelledby="profileOffcanvasLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="profileOffcanvasLabel">Profile Menu</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <form th:action="@{/profile/{username}(username=${loggedIn.username})}" method="GET">
+                            <i class="fa-regular fa-circle-user"></i>
+                            <button class="w-100 mb-2" type="submit">Profile</button>
+                        </form>
+                        <form th:action="@{/profile/{username}/edit(username=${loggedIn.username})}">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                            <button class="w-100 mb-2" type="submit">Edit Profile</button>
+                        </form>
+                        <form th:action="@{/posts}">
+                            <i class="fa-regular fa-newspaper"></i>
+                            <button class="w-100 mb-2">Your Posts</button>
+                        </form>
+                        <form th:action="@{/logout}" method="POST" class="w-100">
+                            <i class="fa-solid fa-arrow-right-from-bracket text-danger"></i>
+                            <button type="submit" class="text-danger w-100">Log Out</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+
             <div th:if="${loggedIn == null}" style="display: flex;">
                 <form th:action="@{/login}" class="login d-flex" style="height: 60%;">
                     <button class="btn btn-primary me-2" type="submit">Login</button>
@@ -74,38 +95,58 @@
                 </form>
             </div>
         </div>
+    </div>
 </nav>
 
-<h2 th:text="${categoryTitle}" style="margin-left: 3%; margin-bottom: 30px"></h2>
-
-<h2 th:if="${topPost == null}" style="margin-left: 3%; margin-bottom: 30px">Posts don't exist yet</h2>
+<!--<h2 th:text="'Category: ' + ${categoryTitle} + ' News'" style="margin-left: 4%; margin-bottom: 30px; margin-top: -20px"></h2>-->
+<marquee scrollamount="20">
+    <h1 th:if="${topPost == null}" style="margin-left: 4%; margin-bottom: 30px; margin-top: 30px">Posts don't exist yet</h1>
+</marquee>
 
 <section id="Home" th:if="${topPost != null}">
     <div class="post">
-        <img th:src="@{/css/photos/01.jpg}" alt="Post Image">
+        <img th:src="@{/css/photos/GSW_news.jpg}" alt="Post Image">
         <div class="post_content">
             <div class="date">
                 <i class="fa-solid fa-calendar-days"></i>
                 <h5 th:text="${#temporals.format(topPost.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
             <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="title" th:text="${topPost.title}"></a>
-            <p th:text="${topPost.content}"></p>
+            <p th:if="${topPost.content.length() > 300}" th:text="${topPost.content.substring(0,300)} + '...'"></p>
+            <p th:if="${topPost.content.length() <= 300}" th:text="${topPost.content}"></p>
+            <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="link-primary" style="font-size:15px; font-weight: 500;">READ MORE</a>
+
             <div class="like d-flex justify-content-start">
-                <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${topPost.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${topPost.id}">
-                </form>
+                <div th:if="${loggedIn!=null}">
+                    <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${topPost.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
+                        <button th:if="${!topPost.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <button th:if="${topPost.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-solid fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${topPost.id}">
+                    </form>
+                </div>
+                <div th:if="${loggedIn==null}">
+                    <form action="#" method="post" class="like-form me-2">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${topPost.id}">
+                    </form>
+                </div>
                 <h5 th:text="${topPost.likesCount}"></h5>
             </div>
         </div>
     </div>
 </section>
 
+
+
 <section id="News" th:if="${posts != null && !posts.isEmpty()}">
     <div class="post" th:each="post : ${posts}">
-        <img th:src="@{/css/photos/01.jpg}" alt="News Image">
+        <img th:src="@{/css/photos/GSW_news.jpg}" alt="News Image">
         <a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a>
         <div class="date">
             <div class="calendar">
@@ -113,12 +154,26 @@
                 <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
             <div class="like">
-                <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
+                <div th:if="${loggedIn!=null}">
+                    <form th:action="@{{categoryTitle}/{postId}/likes/{username}(categoryTitle=${categoryTitle}, postId=${post.id}, username=${loggedIn.username})}" method="post" class="like-form">
+                        <button th:if="${!post.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <button th:if="${post.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-solid fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${post.id}">
+                    </form>
+                </div>
+                <div th:if="${loggedIn==null}">
+                    <form action="" method="post" class="like-form">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${post.id}">
+                    </form>
+                </div>
+
                 <h5 th:text="${post.likesCount}"></h5>
             </div>
         </div>
@@ -126,7 +181,8 @@
     </div>
 </section>
 
-<<section id="Contact" class="mt-5">
+
+<section id="Contact" class="mt-5">
     <div class="contact">
         <div class="image">
             <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">

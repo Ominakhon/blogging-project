@@ -7,26 +7,19 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.w3c.dom.stylesheets.LinkStyle;
 import uz.smartup.academy.bloggingplatform.config.CategoryConfiguration;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.User;
 import uz.smartup.academy.bloggingplatform.service.CategoryService;
 import uz.smartup.academy.bloggingplatform.service.LikeService;
 import uz.smartup.academy.bloggingplatform.service.PostService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.io.IOException;
-import java.util.Base64;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Controller
 public class IndexController {
@@ -63,12 +56,19 @@ public class IndexController {
             for (PostDto post : posts) {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
+
+            if(getLoggedUser() != null)
+                for(PostDto postDto : posts)
+                    postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
+            else
+                for (PostDto postDto : posts)
+                    postDto.setLiked(false);
+
         }
         String photo = "";
         UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
         if(userDTO != null)
              photo = userService.encodePhotoToBase64(userDTO.getPhoto());
-
 
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -96,6 +96,9 @@ public class IndexController {
         UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
         if(userDTO != null)
             photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+
+        if(getLoggedUser() != null)
+            post.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), post.getId()) != null);
 
 
         model.addAttribute("photo", photo);
@@ -130,6 +133,9 @@ public class IndexController {
     @PostMapping("/{postId}/likes/{username}")
     public String likePost(@PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
         likeService.addLike(userService.getUserByUsername(username).getId(), postId);
+        PostDto postDto = postService.getById(postId);
+
+        postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(username).getId(), postId) != null);
 
         attributes.addAttribute("postId", postId);
 
@@ -164,6 +170,13 @@ public class IndexController {
             for (PostDto post : posts) {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
+
+            if(getLoggedUser() != null)
+                for(PostDto postDto : posts)
+                    postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
+            else
+                for (PostDto postDto : posts)
+                    postDto.setLiked(false);
         }
 
         String photo = "";
@@ -191,7 +204,7 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
-        model.addAttribute("base64EncodedPhoto", base64EncodedPhoto);
+        model.addAttribute("photo", base64EncodedPhoto);
         model.addAttribute("categories", categories);
         model.addAttribute("user", user);
 
@@ -279,6 +292,17 @@ public class IndexController {
             return (UserDetails) principal;
 
         return null;
+    }
+
+    @PostMapping("/deletePhoto/{userId}")
+    public String deletePhoto(@PathVariable("userId") int userId, RedirectAttributes attributes) {
+        UserDTO userDTO = userService.getUserById(userId);
+
+        userService.setDefaultPhotoToUser(userDTO);
+
+        attributes.addAttribute("username", userDTO.getUsername());
+
+        return "redirect:/profile/{username}";
     }
 
 }
