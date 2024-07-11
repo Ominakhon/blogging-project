@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.service.SecurityService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.util.ArrayList;
@@ -20,13 +19,10 @@ public class UserMVC {
 
     private final UserService service;
 
-    private final SecurityService securityService;
-
     private final PasswordEncoder passwordEncoder;
 
-    public UserMVC(UserService userService, SecurityService securityService, PasswordEncoder passwordEncoder) {
+    public UserMVC(UserService userService, PasswordEncoder passwordEncoder) {
         this.service = userService;
-        this.securityService = securityService;
         this.passwordEncoder = passwordEncoder;
     }
 
