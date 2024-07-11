@@ -73,6 +73,10 @@
                             <i class="fa-regular fa-newspaper"></i>
                             <button class="w-100 mb-2">Your Posts</button>
                         </form>
+                        <form th:action="@{/posts}">
+                            <i class="fa-regular fa-square-plus"></i>
+                            <button class="w-100 mb-2">Create New Post</button>
+                        </form>
                         <form th:action="@{/changePassword}">
                             <i class="fa-solid fa-key"></i>
                             <button class="w-100 mb-2">Change Password</button>
@@ -138,7 +142,7 @@
                     </form>
                 </div>
 
-                <h5 th:text="${topPost.likesCount}" ></h5>
+                <h5 th:text="${topPost.likesCount}"></h5>
             </div>
         </div>
     </div>
