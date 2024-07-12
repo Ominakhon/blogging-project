@@ -407,7 +407,7 @@ section#Comments .comments .comment .content p{
     color: gray;
 }
 
-section#Comments .comments .comment .content h5{
+section#Comments .comments .comment .content a{
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;

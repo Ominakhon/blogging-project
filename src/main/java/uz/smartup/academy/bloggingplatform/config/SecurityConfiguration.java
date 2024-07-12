@@ -45,6 +45,8 @@ public class SecurityConfiguration {
                         authManager ->  authManager
                                 .requestMatchers(HttpMethod.GET, "/admin", "/admin/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/admin", "/admin/*").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/editor", "/editor/*").hasAnyRole("EDITOR")
+                                .requestMatchers(HttpMethod.POST, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.GET, "/", "/register", "/posts/*", "/profile/*", "/categories/*").permitAll()
                                 .requestMatchers(HttpMethod.POST,  "/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
