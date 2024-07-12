@@ -103,7 +103,7 @@
                             <i class="fa-regular fa-pen-to-square"></i>
                             <button class="w-100 mb-2" type="submit">Edit Profile</button>
                         </form>
-                        <form th:action="@{/posts}">
+                        <form th:action="@{/editor/{username}/posts(username=${loggedIn.username})}">
                             <i class="fa-regular fa-newspaper"></i>
                             <button class="w-100 mb-2">Your Posts</button>
                         </form>
