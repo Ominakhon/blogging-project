@@ -108,6 +108,20 @@ public class UserServiceImpl implements UserService {
         userDao.delete(user);
     }
 
+    @Override
+    @Transactional
+    public void changePassword(String username, String newPassword) {
+        User user = userDao.getUserByUsername(username);
+
+        if(user != null) {
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            user.setPassword(encodedPassword);
+            userDao.update(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
     @Transactional
     @Override
     public void registerUser(UserDTO userDTO, List<Role> roles) {

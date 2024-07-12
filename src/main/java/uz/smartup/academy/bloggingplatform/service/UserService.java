@@ -46,4 +46,6 @@ public interface UserService {
     void updateUserComment(int userId, int postId, CommentDTO comment);
 
     void setDefaultPhotoToUser(UserDTO user);
+
+    void changePassword(String username, String newPassword);
 }
