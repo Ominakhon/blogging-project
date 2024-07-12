@@ -3,10 +3,8 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -84,6 +82,13 @@ public class UserDaoImpl implements UserDao {
         comment.setPost(post);
         comment.setAuthor(user);
         entityManager.merge(comment);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        TypedQuery<User> query = entityManager.createQuery("FROM User WHERE email = :email", User.class);
+
+        return query.getSingleResult();
     }
 
     @Override

@@ -93,7 +93,8 @@
             <div class="row analytic_1">
                 <div class="col-md-3">
                     <div class="analytic_1l">
-                        <h5 class="mb-0">Tag Manager</h5>
+                        <h5 class="mb-0">Category Manager</h5>
+
                     </div>
                 </div>
             </div>
@@ -103,40 +104,36 @@
                     <div class="project_2r">
                         <div class="card">
                             <div class="card-header">
-                                <h6  style="padding-top:2px;" class="d-inline-block mb-0">Tags</h6>
-                                <h6 style="padding-top:2px;" class="d-inline-block mb-0">(</h6>
-                                <h6 th:text="${tagSize}" style="padding-top:2px;" class="d-inline-block mb-0"></h6>
-                                <h6 style="padding-top:2px;" class="d-inline-block mb-0">)</h6>
-                            </div>
+                                <h6  style="padding-top:2px;" class="d-inline-block mb-0">Edit Category</h6>
+                                <div class = "card-body">
+                                    <form th:action="@{/admin/category/edit}" th:object = "${categoryDTO}" method="POST">
+
+                                        <div class ="form-group">
+                                            <label>  Title </label>
+                                            <input
+                                                    type = "text"
+                                                    name = "name"
+                                                    th:field = "*{title}"
+                                                    class = "form-control"
+                                                    placeholder="Enter title"
+                                            />
+                                        </div>
 
 
-                            <div class="card-body table-responsive table_tow">
-                                <div class="table_tow">
-                                    <table class="table table-hover table-bordered table-centered mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Title</th>
-                                            <th>Active?</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each = "tag: ${tagDTO}">
-                                            <td th:text = "${tag.id}"></td>
-                                            <td th:text = "${tag.title}"></td>
-                                            <td>
-                                                <h6 data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Edit" class="d-inline-block mb-0"><a th:href="@{/admin/post/edit/{id}(id=post.id)}"><i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa fa-edit col_3"></i></a></h6>
-                                                <h6 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Delete" class="d-inline-block mb-0"><a th:href="@{/admin/post/delete/{id}(id=post.id)}"><i class="fa fa-trash col_3"></i></a></h6>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                        <div class = "box-footer">
+                                            <button type="submit" class = "btn btn-primary">
+                                                Submit
+                                            </button>
+                                        </div>
+                                    </form>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 </div>

@@ -122,6 +122,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public List<Role> userFindByRoles(String username) {
+        return userDao.userFindByRoles(username);
+    }
+
     @Transactional
     @Override
     public void registerUser(UserDTO userDTO, List<Role> roles) {
@@ -240,4 +245,6 @@ public class UserServiceImpl implements UserService {
         user.setPhoto(defaultPhoto);
         userDao.update(dtoUtil.userMergeEntity(user1, user));
     }
+
+
 }

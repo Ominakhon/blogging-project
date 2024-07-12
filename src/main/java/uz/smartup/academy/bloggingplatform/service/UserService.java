@@ -1,5 +1,6 @@
 package uz.smartup.academy.bloggingplatform.service;
 
+import org.hibernate.cache.spi.support.SimpleTimestamper;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
 
@@ -48,4 +49,6 @@ public interface UserService {
     void setDefaultPhotoToUser(UserDTO user);
 
     void changePassword(String username, String newPassword);
+
+    List<Role> userFindByRoles(String username);
 }
