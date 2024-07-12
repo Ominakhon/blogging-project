@@ -204,6 +204,7 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("photo", base64EncodedPhoto);
         model.addAttribute("categories", categories);
         model.addAttribute("user", user);
@@ -234,6 +235,10 @@ public class IndexController {
 
     @GetMapping("/profile/{userId}/edit")
     public String editProfile(Model model, @PathVariable("userId") String  username) {
+        if(getLoggedUser() == null || !getLoggedUser().getUsername().equals(username)) {
+            return "redirect:/";
+        }
+
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
 

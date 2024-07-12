@@ -78,6 +78,10 @@
                             <i class="fa-regular fa-newspaper"></i>
                             <button class="w-100 mb-2">Your Posts</button>
                         </form>
+                        <form th:action="@{/changePassword}">
+                            <i class="fa-solid fa-key"></i>
+                            <button class="w-100 mb-2">Change Password</button>
+                        </form>
                         <form th:action="@{/logout}" method="POST" class="w-100">
                             <i class="fa-solid fa-arrow-right-from-bracket text-danger"></i>
                             <button type="submit" class="text-danger w-100">Log Out</button>

@@ -37,7 +37,6 @@
         .form-container:hover {
             transform: scale(1.05);
         }
-
         .form-heading img {
             margin-right: 10px;
             height: 60px;
@@ -47,7 +46,6 @@
             margin-bottom: 20px;
             width: 100%;
         }
-
         .btn-primary {
             background-color: rgba(0, 166, 81, 1);
             border: none;
@@ -57,11 +55,9 @@
             width: 100%;
             color: white;
         }
-
         .btn-primary:hover {
             background-color: rgba(0, 166, 81, 1);
         }
-
         .form-group.text-center {
             margin-top: 30px;
             width: 100%;
@@ -114,7 +110,6 @@
             -webkit-box-shadow: 0 0 0px 1000px white inset !important;
             transition: background-color 5000s ease-in-out 0s;
         }
-
         .input {
             border: 2px solid grey;
             border-radius: 30px;
@@ -195,6 +190,11 @@
 
             <div class="form-footer text-center">
                 <p>Already have an account? <a th:href="@{/login}">Log in</a></p>
+            </div>
+
+            <div class="text-center" style="margin-top: 20px;">
+                <h5>OR</h5>
+                <a class="btn btn-danger btn-block" th:href="@{/oauth2/authorization/google}" style="color: white; margin-top: 10px;">Continue with Google</a>
             </div>
         </form>
     </div>
