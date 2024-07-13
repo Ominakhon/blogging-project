@@ -18,6 +18,7 @@ import uz.smartup.academy.bloggingplatform.service.TagService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,7 +50,7 @@ public class EditorMVC {
             photo = userService.encodePhotoToBase64(userDTO.getPhoto());
         }
 
-//        System.out.println(Objects.requireNonNull(getLoggedUser()).getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EDITOR")));
+        posts = posts.reversed();
 
         model.addAttribute("posts", posts);
         model.addAttribute("categories", categories);

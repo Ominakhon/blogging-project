@@ -29,9 +29,13 @@ public class UserServiceImpl implements UserService {
     @Value("classpath:static/css/photos/userPhoto.jpg")
     private Resource defaultPhotoResource;
 
+    @Value("classpath:static/css/photos/GSW_news.jpg")
+    private Resource defaultPhotoResourcePost;
+
 
 
     private byte[] defaultPhoto;
+    private byte[] defaultPhotoPost;
 
     private final UserDao userDao;
     private final UserDtoUtil dtoUtil;
@@ -63,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     public void init() throws IOException {
         defaultPhoto = StreamUtils.copyToByteArray(defaultPhotoResource.getInputStream());
-//        System.out.println("Default photo size: " + defaultPhoto.length); // Debugging line
+        defaultPhotoPost = StreamUtils.copyToByteArray(defaultPhotoResourcePost.getInputStream());
     }
 
     @Override
@@ -127,13 +131,18 @@ public class UserServiceImpl implements UserService {
         return userDao.userFindByRoles(username);
     }
 
+    @Override
+    public byte[] getDefaultPostPhoto() {
+        return defaultPhotoPost;
+    }
+
     @Transactional
     @Override
     public void registerUser(UserDTO userDTO, List<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
 
         if (user.getPhoto() == null || user.getPhoto().length == 0) {
-            user.setPhoto(defaultPhoto);
+            user.setPhoto(defaultPhotoPost);
         }
 
         String hashedPassword = passwordEncoder.encode(user.getPassword());
@@ -143,6 +152,8 @@ public class UserServiceImpl implements UserService {
 
         userDao.save(user);
     }
+
+
 
     @Override
     public List<PostDao> getAllPostsOfUser(int id) {
@@ -156,6 +167,10 @@ public class UserServiceImpl implements UserService {
         User user = userDao.getUserById(userId);
 
         Post post = postDtoUtil.toEntity(postDto);
+
+        if (postDto.getPhoto() == null || postDto.getPhoto().length == 0) {
+            user.setPhoto(defaultPhoto);
+        }
 
         post.setStatus(Post.Status.DRAFT);
         post.setAuthor(user);

@@ -57,7 +57,15 @@ public class UserMVC {
 
     @GetMapping("/changePassword")
     public String showChangePasswordForm(Model model) {
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null){
+            photo = service.encodePhotoToBase64(userDTO.getPhoto());
+        }
+
         model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+        model.addAttribute("photo", photo);
+        model.addAttribute("loggedIn", getLoggedUser());
         return "changePassword";
     }
 

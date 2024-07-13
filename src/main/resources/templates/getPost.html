@@ -174,7 +174,7 @@
     </div>
     <h1 th:text="${post.title}"></h1>
     <div class="image">
-        <img th:src="@{/css/photos/GSW_news.jpg}" alt="">
+        <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
     </div>
     <p th:text="${post.content}"><!-- Content omitted for brevity --></p>
 </section>

@@ -51,4 +51,6 @@ public interface UserService {
     void changePassword(String username, String newPassword);
 
     List<Role> userFindByRoles(String username);
+
+    byte[] getDefaultPostPhoto();
 }

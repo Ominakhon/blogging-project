@@ -58,6 +58,12 @@ public class IndexController {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
 
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
             if(getLoggedUser() != null)
                 for(PostDto postDto : posts)
                     postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
@@ -107,6 +113,8 @@ public class IndexController {
         if(getLoggedUser() != null)
             post.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), post.getId()) != null);
 
+        if(post.getPhoto() == null) post.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+        else post.setHashedPhoto(userService.encodePhotoToBase64(post.getPhoto()));
 
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
@@ -176,6 +184,11 @@ public class IndexController {
 
             for (PostDto post : posts) {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
             }
 
             if(getLoggedUser() != null)

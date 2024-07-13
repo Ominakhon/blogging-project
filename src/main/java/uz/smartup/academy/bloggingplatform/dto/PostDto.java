@@ -32,6 +32,8 @@ public class PostDto {
 
     private List<Integer> tags;
 
+    private String hashedPhoto;
+
     public PostDto() {}
 
     public PostDto(Builder builder) {

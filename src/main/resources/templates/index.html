@@ -115,7 +115,7 @@
 
 <section id="Home" th:if="${topPost != null}">
     <div class="post">
-        <img th:src="@{css/photos/GSW_news.jpg}" alt="">
+        <img th:src="'data:image/png;base64,' + ${topPost.hashedPhoto}" alt="Post Image">
         <div class="post_content">
             <div class="date">
                 <i class="fa-solid fa-calendar-days"></i>
@@ -155,7 +155,7 @@
 
 <section id="News" th:if="${posts != null && !posts.isEmpty()}">
     <div class="post" th:each="post : ${posts}" th:if="${post != topPost}">
-        <img th:src="@{css/photos/GSW_news.jpg}" alt="">
+        <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
         <a th:href="@{/posts/{postId}(postId=${post.id})}" th:text="${post.title}"></a>
         <div class="date">
             <div class="calendar">
