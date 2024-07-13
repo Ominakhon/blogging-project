@@ -285,17 +285,7 @@ public class IndexController {
     }
 
 
-    @PostMapping("/web/posts/create")
-    public String CreatePostController(@ModelAttribute("post") PostDto postDto, Model model){
-        model.addAttribute("categories", categoryConfiguration.getCategories());
-        return "createPost";
-    }
 
-    @GetMapping("/web/posts/create")
-    public String CreatePostController(Model model){
-        model.addAttribute("categories", categoryConfiguration.getCategories());
-        return "createPost";
-    }
 
     private UserDetails getLoggedUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

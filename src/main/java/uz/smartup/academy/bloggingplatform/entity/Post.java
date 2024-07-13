@@ -25,7 +25,7 @@ public class Post {
     private String title;
 
     @Lob
-    @Column(name = "photo")
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")

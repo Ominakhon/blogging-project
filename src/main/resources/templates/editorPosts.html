@@ -155,7 +155,7 @@
 <div class="container">
     <h1 class="text-center">Your Posts</h1>
     <div class="text-right mb-4">
-        <a th:href="@{/posts/new}" class="btn btn-new-post">New Post</a>
+        <a th:href="@{/editor/{username}/posts/new(username=${loggedIn.username})}" class="btn btn-new-post">New Post</a>
     </div>
     <div th:each="post : ${posts}">
         <div class="card">

@@ -112,26 +112,31 @@
 </nav>
 
 
-<section id="postForm">
-    <form th:action="@{next}" method="POST" class="create" th:object="${post}" enctype="multipart/form-data">
-        <h3 style="margin-bottom: 10px; ">Create Post - Step 1</h3>
-
-        <h5>Upload photo: </h5>
-        <input class="form-control file" type="file" id="file" name="file" required>
-
-        <div class="fields mt-3">
-            <label class="form-label">Title: </label>
-            <input type="text" class="form-control" th:field="*{title}" placeholder="title" required>
+<div class="container">
+    <h2>Create Post - Step 2</h2>
+    <form th:action="@{/editor/{username}/posts/save(username=${username})}" method="POST" th:object="${post}">
+        <div class="form-group">
+            <label for="categories">Categories:</label>
+            <select multiple class="form-control" id="categories" th:field="*{categories}">
+                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.title}"></option>
+            </select>
         </div>
-
-        <div class="fields mt-3">
-            <label class="form-label">Content: </label>
-            <textarea class="form-control"  th:field="*{content}" placeholder="content" required></textarea >
+        <div class="form-group">
+            <label for="tags">Tags:</label>
+            <select multiple class="form-control" id="tags" th:field="*{tags}">
+                <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.title}"></option>
+            </select>
         </div>
-
-        <input type="submit" class="btn btn-success mt-3" value="Next">
+        <input type="submit" class="btn btn-primary mt-3" name="action" value="Save as draft">
+        <input type="submit" class="btn btn-success mt-3" name="action" value="Publish">
     </form>
-</section>
+</div>
+
+<form th:action="@{/editor/{username}/posts/new(username=${username})}" style="margin: 25px 10%;">
+    <button class="btn btn-primary">
+        Back
+    </button>
+</form>
 
 <section id="Contact" class="mt-5">
     <div class="contact">
@@ -158,6 +163,8 @@
     <div class="faq" >
         <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
     </div>
+
+
 </section>
 
 
