@@ -34,6 +34,8 @@ public interface UserDao {
 
     User findByEmail(String email);
 
+    void saveRole(Role role);
+
 
 }
 

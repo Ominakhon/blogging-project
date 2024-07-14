@@ -261,5 +261,11 @@ public class UserServiceImpl implements UserService {
         userDao.update(dtoUtil.userMergeEntity(user1, user));
     }
 
+    @Transactional
+    @Override
+    public void saveRole(Role role) {
+        userDao.saveRole(role);
+    }
+
 
 }

@@ -4,11 +4,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import uz.smartup.academy.bloggingplatform.dao.UserDao;
+import uz.smartup.academy.bloggingplatform.dao.UserDaoImpl;
 import uz.smartup.academy.bloggingplatform.dto.*;
+import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.entity.RoleKey;
+import uz.smartup.academy.bloggingplatform.entity.User;
 import uz.smartup.academy.bloggingplatform.service.*;
 
 import java.util.List;
@@ -22,9 +24,11 @@ public class AdminPanelController {
     private final CommentService commentService;
     private final LikeService likeService;
     private final TagService tagService;
+    private final UserDtoUtil userDtoUtil;
+    private final UserDaoImpl dao;
 
 
-    public AdminPanelController(CategoryService categoryService, UserService userService, PostService postService, CommentService commentService, LikeService likeService, TagService tagService) {
+    public AdminPanelController(CategoryService categoryService, UserService userService, PostService postService, CommentService commentService, LikeService likeService, TagService tagService, UserDtoUtil userDtoUtil, UserDaoImpl dao) {
         this.categoryService = categoryService;
         this.userService = userService;
         this.postService = postService;
@@ -32,6 +36,8 @@ public class AdminPanelController {
         this.likeService = likeService;
         this.tagService = tagService;
 
+        this.userDtoUtil = userDtoUtil;
+        this.dao = dao;
     }
 
     @GetMapping("/admin")
@@ -39,12 +45,16 @@ public class AdminPanelController {
         UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
         model.addAttribute("user",user);
 
-        List<UserDTO> userDTOS = userService.getAllUsers();
+        List<UserDTO> userDTOList = userService.getAllUsers();
+        List<User> userDTOS = dao.getUsersWithEditorRole();
         List<PostDto> postDtos = postService.getAllPosts();
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+        List<User> userss = dao.getUsersWithoutEditorRole();
+
         model.addAttribute("userDTO",userDTOS);
-        model.addAttribute("users",userDTOS.size());
+        model.addAttribute("userss",userss);
+        model.addAttribute("users",userDTOList.size());
         model.addAttribute("posts",postDtos.size());
         model.addAttribute("categories",categories);
 
@@ -90,6 +100,24 @@ public class AdminPanelController {
         model.addAttribute("categories",categories);
 
         return "admin_zip/user_table";
+    }
+
+    @GetMapping("/admin/user/{username}/role/add")
+    public String addRole(@PathVariable String username){
+        UserDTO userDTO = userService.getUserByUsername(username);
+
+        //System.out.println(username);
+
+        RoleKey roleKey = new RoleKey(username, "ROLE_EDITOR");
+        Role newRole = new Role();
+        newRole.setId(roleKey);
+
+
+        userService.saveRole(newRole);
+
+        return "redirect:/admin/user";
+
+
     }
 
     @GetMapping("/admin/user/delete/{id}")
