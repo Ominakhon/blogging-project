@@ -10,4 +10,5 @@ public interface TagService {
     void delete( int id);
     List<TagDto> getAllTags();
     TagDto findTagById(int id);
+    List<TagDto> getTagsByPostId(int postId);
 }

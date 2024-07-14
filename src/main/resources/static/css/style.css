@@ -335,6 +335,11 @@ section#Post p {
     font-size: 20px;
 }
 
+section#Post .tags a {
+    font-family: "Kanit", sans-serif;
+    font-weight: 600;
+}
+
 section#Comments {
     margin: auto;
     margin-top: 60px;
@@ -348,7 +353,6 @@ section#Comments .comment-form {
     width: 100%;
     /* max-width: 600px; */
     margin: auto;
-    max-height: 300px;
     padding: 10px;
     /* border: 1px solid #ddd; */
     border-radius: 5px;
@@ -362,9 +366,8 @@ section#Comments .comment-form textarea{
     margin-bottom: 10px;
     border: 1px solid rgb(0, 166, 81);
     border-radius: 5px;
-    height: 10%;
     resize: vertical;
-    height: 70px;
+    height: 100px;
 }
 
 section#Comments .comment-form button{
@@ -397,13 +400,13 @@ section#Comments .comments .comment{
 
 section#Comments .comments .comment .content{
     display: flex;
-    justify-content: flex-start;
     margin-bottom: 0;
 }
 
 section#Comments .comments .comment .content p{
     margin-left: 20px;
     color: gray;
+    margin-top: 5px;
 }
 
 section#Comments .comments .comment .content a{

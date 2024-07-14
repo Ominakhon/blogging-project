@@ -56,4 +56,10 @@ public class TagServiceImpl implements TagService {
     public TagDto findTagById(int id) {
         return tagDtoUtil.toDto(tagDao.findTagById(id));
     }
+
+    @Override
+    public List<TagDto> getTagsByPostId(int postId) {
+        List<Tag> tags = tagDao.getTagsByPostId(postId);
+        return tagDtoUtil.toDTOs(tags);
+    }
 }

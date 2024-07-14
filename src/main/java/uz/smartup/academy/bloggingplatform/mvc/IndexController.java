@@ -8,19 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.config.CategoryConfiguration;
-import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
-import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
-import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.service.CategoryService;
-import uz.smartup.academy.bloggingplatform.service.LikeService;
-import uz.smartup.academy.bloggingplatform.service.PostService;
-import uz.smartup.academy.bloggingplatform.service.UserService;
+import uz.smartup.academy.bloggingplatform.service.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 public class IndexController {
@@ -28,14 +24,15 @@ public class IndexController {
     private final CategoryService categoryService;
     private final UserService userService;
     private final LikeService likeService;
-    private final CategoryConfiguration categoryConfiguration;
+    private final TagService tagService;
 
-    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, CategoryConfiguration categoryConfiguration) {
+
+    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, TagService tagService) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.likeService = likeService;
-        this.categoryConfiguration = categoryConfiguration;
+        this.tagService = tagService;
     }
 
     @GetMapping("/")
@@ -103,6 +100,8 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
         post.setLikesCount(likeService.countLikesByPostId(postId));
 
+        List<TagDto> tags = tagService.getTagsByPostId(postId);
+        System.out.println(tags);
 
         comments.forEach(commentDTO -> commentDTO.setUsername(userService.getUserById(commentDTO.getAuthorId()).getUsername()));
         String photo = "";
@@ -116,9 +115,13 @@ public class IndexController {
         if(post.getPhoto() == null) post.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
         else post.setHashedPhoto(userService.encodePhotoToBase64(post.getPhoto()));
 
+        for (CommentDTO commentDTO : comments)
+            commentDTO.setHashedPhoto(userService.encodePhotoToBase64(userService.getUserById(commentDTO.getAuthorId()).getPhoto()));
+
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("commentsSize", comments.size());
+        model.addAttribute("tags", tags);
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
         model.addAttribute("categories", categories);

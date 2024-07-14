@@ -33,4 +33,11 @@ public class TagDto {
 
     }
 
+    @Override
+    public String toString() {
+        return "TagDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                '}';
+    }
 }

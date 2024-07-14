@@ -15,4 +15,5 @@ public class CommentDTO {
     private String content;
     private String username;
     private LocalDateTime createdAt;
+    private String hashedPhoto;
 }

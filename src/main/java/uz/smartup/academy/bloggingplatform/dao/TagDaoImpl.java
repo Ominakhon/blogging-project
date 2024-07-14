@@ -3,6 +3,7 @@ package uz.smartup.academy.bloggingplatform.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Tag;
 
 import java.util.List;
@@ -48,5 +49,15 @@ public class TagDaoImpl implements TagDao{
         query.setParameter("title", title);
 
         return query.getSingleResult();
+    }
+
+    @Override
+    public List<Tag> getTagsByPostId(int postId) {
+        Post post = entityManager.find(Post.class, postId);
+        TypedQuery<Tag> query = entityManager.createQuery("FROM Tag WHERE :post MEMBER OF posts", Tag.class);
+
+        query.setParameter("post", post);
+
+        return query.getResultList();
     }
 }
