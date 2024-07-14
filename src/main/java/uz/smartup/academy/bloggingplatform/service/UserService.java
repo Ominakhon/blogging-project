@@ -53,4 +53,6 @@ public interface UserService {
     List<Role> userFindByRoles(String username);
 
     byte[] getDefaultPostPhoto();
+
+    void saveRole(Role role);
 }
