@@ -88,6 +88,7 @@ public class EditorMVC {
         userService.addDraftPostByUserId(userDTO.getId(), postDto);
 
         model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("username", username);
         model.addAttribute("post", postDto);
