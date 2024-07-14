@@ -67,7 +67,7 @@ public class User {
         post.setAuthor(null);
     }
 
-   public void addRole(Role role) {
+    public void addRole(Role role) {
         if(roles.isEmpty()) {
             roles = new ArrayList<>();
         }

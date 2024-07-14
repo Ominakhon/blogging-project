@@ -44,11 +44,14 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(
                         authManager ->  authManager
                                 .requestMatchers(HttpMethod.GET, "/admin", "/admin/*").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/admin", "/admin/*").hasAnyRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/editor", "/editor/*").hasAnyRole("EDITOR")
+                                .requestMatchers(HttpMethod.POST, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.GET, "/", "/register", "/posts/*", "/profile/*", "/categories/*").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/profile/*", "/register").permitAll()
+                                .requestMatchers(HttpMethod.POST,  "/register").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/changePassword").authenticated()
-                                .requestMatchers(HttpMethod.POST, "/password-change").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/changePassword", "/profile").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/password-change", "/profile/*").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(

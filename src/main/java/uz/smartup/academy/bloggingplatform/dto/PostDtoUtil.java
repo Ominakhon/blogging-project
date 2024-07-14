@@ -2,10 +2,8 @@ package uz.smartup.academy.bloggingplatform.dto;
 
 import org.springframework.stereotype.Component;
 import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PostDtoUtil {

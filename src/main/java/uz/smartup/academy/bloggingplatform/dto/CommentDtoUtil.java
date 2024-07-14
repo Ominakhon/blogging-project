@@ -1,11 +1,6 @@
 package uz.smartup.academy.bloggingplatform.dto;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.User;
-import uz.smartup.academy.bloggingplatform.repository.PostRepository;
-import uz.smartup.academy.bloggingplatform.repository.UserRepository;
 
 import java.util.List;
 

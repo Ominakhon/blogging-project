@@ -1,12 +1,12 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -87,6 +87,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public User findByEmail(String email) {
+        TypedQuery<User> query = entityManager.createQuery("FROM User WHERE email = :email", User.class);
+
+        return query.getSingleResult();
+    }
+
+    @Override
     public Set<Role> getUserRoles(int userId) {
         User user = getUserById(userId);
 
@@ -97,6 +104,27 @@ public class UserDaoImpl implements UserDao {
 
     }
 
+    @Override
+    public void saveRole(Role role) {
+        entityManager.persist(role);  // Add this method implementation
+    }
+
+
+    @Transactional
+    public List<User> getUsersWithEditorRole() {
+        String hql = "SELECT u FROM User u JOIN Role r ON u.username = r.id.username WHERE r.id.role = 'ROLE_EDITOR'";
+        TypedQuery<User> query = entityManager.createQuery(hql, User.class);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public List<User> getUsersWithoutEditorRole() {
+        String hql = "SELECT u FROM User u WHERE NOT EXISTS (SELECT r FROM Role r WHERE r.id.username = u.username AND r.id.role = 'ROLE_EDITOR')";
+        TypedQuery<User> query = entityManager.createQuery(hql, User.class);
+        return query.getResultList();
+
+
+    }
 
 
 }

@@ -38,19 +38,34 @@ public class UserMVC {
     }
 
     @PostMapping("/register")
-    public String createInstructor(@ModelAttribute("user") UserDTO dto){
-        List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setRole("ROLE_VIEWER");
-        role.setUsername(dto.getUsername());
-        roles.add(role);
-        service.registerUser(dto, roles);
-        return "redirect:/login";
+    public String createInstructor(@ModelAttribute("user") UserDTO dto, RedirectAttributes attributes){
+        try {
+            List<Role> roles = new ArrayList<>();
+            Role role = new Role();
+            role.setRole("ROLE_VIEWER");
+            role.setUsername(dto.getUsername());
+            roles.add(role);
+
+            service.registerUser(dto, roles);
+            attributes.addFlashAttribute("success", "User registered successfully.");
+            return "redirect:/login";
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error", "An error occurred during registration. Please try again.");
+            return "redirect:/register";
+        }
     }
 
     @GetMapping("/changePassword")
     public String showChangePasswordForm(Model model) {
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null){
+            photo = service.encodePhotoToBase64(userDTO.getPhoto());
+        }
+
         model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+        model.addAttribute("photo", photo);
+        model.addAttribute("loggedIn", getLoggedUser());
         return "changePassword";
     }
 

@@ -2,7 +2,6 @@ package uz.smartup.academy.bloggingplatform.dao;
 
 import uz.smartup.academy.bloggingplatform.entity.Post;
 
-import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
@@ -32,6 +31,10 @@ public interface UserDao {
     Set<Role> getUserRoles(int userId);
 
     void updateUserComment(int userId, int postId, Comment comment);
+
+    User findByEmail(String email);
+
+    void saveRole(Role role);
 
 
 }

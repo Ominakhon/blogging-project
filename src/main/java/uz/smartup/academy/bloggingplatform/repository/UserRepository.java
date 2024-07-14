@@ -6,5 +6,4 @@ import uz.smartup.academy.bloggingplatform.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-
 }

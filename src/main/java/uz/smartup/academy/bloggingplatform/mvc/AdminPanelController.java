@@ -1,12 +1,16 @@
 package uz.smartup.academy.bloggingplatform.mvc;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import uz.smartup.academy.bloggingplatform.dao.UserDao;
+import uz.smartup.academy.bloggingplatform.dao.UserDaoImpl;
 import uz.smartup.academy.bloggingplatform.dto.*;
-import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.entity.RoleKey;
+import uz.smartup.academy.bloggingplatform.entity.User;
 import uz.smartup.academy.bloggingplatform.service.*;
 
 import java.util.List;
@@ -20,33 +24,56 @@ public class AdminPanelController {
     private final CommentService commentService;
     private final LikeService likeService;
     private final TagService tagService;
+    private final UserDtoUtil userDtoUtil;
+    private final UserDaoImpl dao;
 
 
-    public AdminPanelController(CategoryService categoryService, UserService userService, PostService postService, CommentService commentService, LikeService likeService, TagService tagService) {
+    public AdminPanelController(CategoryService categoryService, UserService userService, PostService postService, CommentService commentService, LikeService likeService, TagService tagService, UserDtoUtil userDtoUtil, UserDaoImpl dao) {
         this.categoryService = categoryService;
         this.userService = userService;
         this.postService = postService;
         this.commentService = commentService;
         this.likeService = likeService;
         this.tagService = tagService;
+
+        this.userDtoUtil = userDtoUtil;
+        this.dao = dao;
     }
 
-    @RequestMapping("/admin")
+    @GetMapping("/admin")
     public String admin(Model model) {
-        List<UserDTO> userDTOS = userService.getAllUsers();
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
+
+        List<UserDTO> userDTOList = userService.getAllUsers();
+        List<User> userDTOS = dao.getUsersWithEditorRole();
         List<PostDto> postDtos = postService.getAllPosts();
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+        List<User> userss = dao.getUsersWithoutEditorRole();
+
         model.addAttribute("userDTO",userDTOS);
-        model.addAttribute("users",userDTOS.size());
+        model.addAttribute("userss",userss);
+        model.addAttribute("users",userDTOList.size());
         model.addAttribute("posts",postDtos.size());
         model.addAttribute("categories",categories);
 
         return "admin_zip/admin_panel";
     }
+    private UserDetails getLoggedUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails)
+            return (UserDetails) principal;
+
+        return null;
+    }
 
     @GetMapping("/admin/category/{title}")
     public String getPostsByCategory(@PathVariable("title") String title, Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
 
         List<CategoryDto> categories = categoryService.getAllCategories();
         List<PostDto> posts = postService.getPostsByCategory(title);
@@ -57,8 +84,12 @@ public class AdminPanelController {
         return "admin_zip/category_table";
     }
 
-    @RequestMapping("/admin/user")
+    @GetMapping("/admin/user")
     public String getAllUsers(Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
+
         List<UserDTO> userDTOS = userService.getAllUsers();
 
         List<CategoryDto> categories = categoryService.getAllCategories();
@@ -71,8 +102,37 @@ public class AdminPanelController {
         return "admin_zip/user_table";
     }
 
-    @RequestMapping("/admin/post")
+    @GetMapping("/admin/user/{username}/role/add")
+    public String addRole(@PathVariable String username){
+        UserDTO userDTO = userService.getUserByUsername(username);
+
+        //System.out.println(username);
+
+        RoleKey roleKey = new RoleKey(username, "ROLE_EDITOR");
+        Role newRole = new Role();
+        newRole.setId(roleKey);
+
+
+        userService.saveRole(newRole);
+
+        return "redirect:/admin/user";
+
+
+    }
+
+    @GetMapping("/admin/user/delete/{id}")
+    public String deleteUser(@PathVariable int id){
+        userService.deleteUser(id);
+        return "redirect:/admin/user";
+    }
+
+    @GetMapping("/admin/post")
     public String getAllPost(Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
+
+
         List<PostDto> postDtos = postService.getAllPosts();
 
         List<CategoryDto> categories = categoryService.getAllCategories();
@@ -85,8 +145,13 @@ public class AdminPanelController {
         return "admin_zip/post_table";
     }
 
-    @RequestMapping("/admin/comment")
+    @GetMapping("/admin/comment")
     public String getAllComment(Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
+
+
         List<CommentDTO> commentDTOS = commentService.getAllComments();
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -98,8 +163,13 @@ public class AdminPanelController {
         return "admin_zip/comment_table";
     }
 
-    @RequestMapping("/admin/like")
+    @GetMapping("/admin/like")
     public String getAllLike(Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
+
+
         List<LikeDTO> likeDTOS = likeService.getAllLikes();
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -111,20 +181,13 @@ public class AdminPanelController {
         return "admin_zip/like_table";
     }
 
-    @RequestMapping("/admin/category")
-    public String getAllCategories(Model model) {
-        List<CategoryDto> categories = categoryService.getAllCategories();
-
-        model.addAttribute("categoryDTO",categories);
-        model.addAttribute("categorySize",categories.size());
-
-        model.addAttribute("categories",categories);
-
-        return "admin_zip/categories_table";
-    }
-
-    @RequestMapping("/admin/tag")
+    @GetMapping("/admin/tag")
     public String getAllTag(Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
+
+
         List<TagDto> tagDtos = tagService.getAllTags();
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -136,8 +199,47 @@ public class AdminPanelController {
         return "admin_zip/tag_table";
     }
 
+    @GetMapping("/admin/category")
+    public String getAllCategories(Model model) {
+
+        UserDTO user =  userService.getUserByUsername(getLoggedUser().getUsername());
+        model.addAttribute("user",user);
 
 
+        List<CategoryDto> categories = categoryService.getAllCategories();
 
+        model.addAttribute("categoryDTO",categories);
+        model.addAttribute("categorySize",categories.size());
 
+        model.addAttribute("categories",categories);
+
+        return "admin_zip/categories_table";
+    }
+
+    @PostMapping("/admin/category/add")
+    public String addCategory(CategoryDto categoryDto){
+        categoryService.createCategory(categoryDto);
+        return "redirect:/admin/category";
+    }
+
+    int category_id;
+    @GetMapping("/admin/category/edit/{id}")
+    public String editCategory(@PathVariable int id, Model model){
+        category_id = id;
+        model.addAttribute("categoryDTO",categoryService.findCategoryById(id));
+        return "admin_zip/categories_edit.html";
+    }
+
+    @PostMapping("/admin/category/edit")
+    public String editCategory(@ModelAttribute CategoryDto categoryDTO){
+        categoryDTO.setId(category_id);
+        categoryService.update(categoryDTO);
+        return "redirect:/admin/category";
+    }
+
+    @GetMapping("/admin/category/delete/{id}")
+    public String deleteCategory(@PathVariable int id){
+        categoryService.delete(id);
+        return "redirect:/admin/category";
+    }
 }

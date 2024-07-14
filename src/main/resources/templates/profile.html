@@ -226,7 +226,7 @@
                             </div>
 
                         </div>
-                        <form th:action="@{{username}/edit(username=${user.username})}" class="edit mt-3">
+                        <form th:if="${loggedIn.username} == *{user.username}" th:action="@{{username}/edit(username=${user.username})}" class="edit mt-3">
                             <button class="btn btn-success">Edit profile</button>
                         </form>
                     </div>
@@ -236,7 +236,7 @@
                 <div class="about-avatar">
                     <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image" style="width: 100%; max-width: 200px; margin-bottom: 10px">
                     <p th:text="'🗓️ With us since: ' + ${user.registered}"></p>
-                    <form th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
+                    <form th:if="${loggedIn.username} == *{user.username}" th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="put">
                         <h5 class="text-success">Upload photo: </h5>
                         <div class="col-sm-6" style="display: flex; align-items: center;">
@@ -244,8 +244,8 @@
                             <input type="submit" class="btn btn-success" value="Upload">
                         </div>
                     </form>
-                    <!-- Move the delete button outside the main form -->
-                    <form th:action="@{/deletePhoto/{userId}(userId=${user.id})}" method="POST" style="display:inline;">
+
+                    <form th:if="${loggedIn.username} == *{user.username}" th:action="@{/deletePhoto/{userId}(userId=${user.id})}" method="POST" style="display:inline;">
                         <input type="hidden" name="_method" value="put">
                         <button type="submit" class="btn btn-danger mt-2">Delete Current Photo</button>
                     </form>

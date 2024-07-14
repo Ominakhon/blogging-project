@@ -13,6 +13,7 @@ import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.CategoryService;
 import uz.smartup.academy.bloggingplatform.service.LikeService;
 import uz.smartup.academy.bloggingplatform.service.PostService;
@@ -57,6 +58,12 @@ public class IndexController {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
 
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
             if(getLoggedUser() != null)
                 for(PostDto postDto : posts)
                     postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
@@ -67,8 +74,14 @@ public class IndexController {
         }
         String photo = "";
         UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
-        if(userDTO != null)
-             photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+        if(userDTO != null){
+            //System.out.println(userDTO.getRoles());
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+            List<Role>roles = userService.userFindByRoles(userDTO.getUsername());
+            boolean isAdmin = roles.stream()
+                    .anyMatch(role -> "ROLE_ADMIN".equals(role.getRole()));
+            if(isAdmin)return "redirect:/admin";
+        }
 
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -100,6 +113,8 @@ public class IndexController {
         if(getLoggedUser() != null)
             post.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), post.getId()) != null);
 
+        if(post.getPhoto() == null) post.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+        else post.setHashedPhoto(userService.encodePhotoToBase64(post.getPhoto()));
 
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
@@ -171,6 +186,11 @@ public class IndexController {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
 
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
             if(getLoggedUser() != null)
                 for(PostDto postDto : posts)
                     postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
@@ -204,6 +224,7 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
+        model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("photo", base64EncodedPhoto);
         model.addAttribute("categories", categories);
         model.addAttribute("user", user);
@@ -234,6 +255,10 @@ public class IndexController {
 
     @GetMapping("/profile/{userId}/edit")
     public String editProfile(Model model, @PathVariable("userId") String  username) {
+        if(getLoggedUser() == null || !getLoggedUser().getUsername().equals(username)) {
+            return "redirect:/";
+        }
+
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
 
@@ -273,17 +298,7 @@ public class IndexController {
     }
 
 
-    @PostMapping("/web/posts/create")
-    public String CreatePostController(@ModelAttribute("post") PostDto postDto, Model model){
-        model.addAttribute("categories", categoryConfiguration.getCategories());
-        return "createPost";
-    }
 
-    @GetMapping("/web/posts/create")
-    public String CreatePostController(Model model){
-        model.addAttribute("categories", categoryConfiguration.getCategories());
-        return "createPost";
-    }
 
     private UserDetails getLoggedUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

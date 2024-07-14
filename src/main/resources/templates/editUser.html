@@ -17,10 +17,6 @@
             border-color: #28a745;
             box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
         }
-        .navbar-brand .image img {
-            max-width: 50px;
-            height: auto;
-        }
         .contact .image img {
             max-width: 100%;
             height: auto;
@@ -57,23 +53,21 @@
             text-align: left;
             color: #7c8688;
             font-size: 0.7em;
-
-
         }
-
-
     </style>
 </head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">
-            <div class="image">
-                <img th:src="@{/css/photos/greenNews.jpg}" alt="">
-            </div>
-            <h4>Green White News</h4>
-        </a>
+        <div class="navbar-start">
+            <a class="navbar-brand" th:href="@{/}">
+                <div class="image">
+                    <img th:src="@{/css/photos/greenNews.jpg}" alt="">
+                </div>
+                <h4>Green White News</h4>
+            </a>
+        </div>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="dropdown me-2">
                 <button class="btn dropdown-toggle text-dark" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -89,6 +83,7 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
+
             <form th:action="@{/logout}" method="POST" style="height: 60%;">
                 <input class="btn btn-danger me-2" type="submit" value="Logout" />
             </form>
@@ -96,9 +91,11 @@
     </div>
 </nav>
 
+
 <section id="EditForm">
-    <form th:action="@{/profile/{userId}/update(userId=${user.id})}" method="POST" class="userEditForm" th:object="${user}" enctype="multipart/form-data">
+    <form th:action="@{/profile/{userId}/update(userId=${user.id})}" method="POST" class="userEditForm" th:object="${user}" enctype="multipart/form-data" id="profileForm">
         <input type="hidden" name="_method" value="put">
+        <input type="hidden" id="returnUrl" name="returnUrl" value="">
 
         <div class="image">
             <img id="profileImage" th:src="'data:image/png;base64,' + ${base64EncodedPhoto}" alt="Profile Image">
@@ -125,7 +122,7 @@
     </form>
 </section>
 
-<<section id="Contact" class="mt-5">
+<section id="Contact" class="mt-5">
     <div class="contact">
         <div class="image">
             <img th:src="@{/css/photos/gws_square.jpg}" alt="Contact Image">
@@ -153,7 +150,38 @@
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const returnUrlField = document.getElementById('returnUrl');
+        returnUrlField.value = document.referrer;
+
+        document.getElementById('profileForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(event.target);
+            const returnUrl = returnUrlField.value;
+
+            fetch(event.target.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = returnUrl || '/';
+                } else {
+                    alert('Failed to submit form.');
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+                alert('Failed to submit form.');
+            });
+        });
+    });
+
     document.getElementById('deletePhotoButton').addEventListener('click', function() {
         const defaultPhoto = '/css/photos/profile.webp'; // Replace with the path to your default photo
         document.getElementById('profileImage').src = defaultPhoto;
