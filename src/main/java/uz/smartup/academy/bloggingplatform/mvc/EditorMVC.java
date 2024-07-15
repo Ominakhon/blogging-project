@@ -86,6 +86,9 @@ public class EditorMVC {
 
         UserDTO userDTO = userService.getUserByUsername(username);
         userService.addDraftPostByUserId(userDTO.getId(), postDto);
+        String userPhoto = userService.encodePhotoToBase64(userDTO.getPhoto());
+
+        model.addAttribute("photo", userPhoto);
 
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("loggedIn", getLoggedUser());
@@ -129,9 +132,6 @@ public class EditorMVC {
 
         return "redirect:/editor/" + username + "/posts";
     }
-
-
-
 
 
     private UserDetails getLoggedUser() {

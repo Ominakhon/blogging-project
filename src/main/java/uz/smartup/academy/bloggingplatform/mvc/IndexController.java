@@ -118,6 +118,8 @@ public class IndexController {
         for (CommentDTO commentDTO : comments)
             commentDTO.setHashedPhoto(userService.encodePhotoToBase64(userService.getUserById(commentDTO.getAuthorId()).getPhoto()));
 
+        comments = comments.reversed();
+
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("commentsSize", comments.size());
