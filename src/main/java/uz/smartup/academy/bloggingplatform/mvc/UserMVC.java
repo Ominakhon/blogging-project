@@ -6,9 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
@@ -74,12 +72,28 @@ public class UserMVC {
         UserDTO loggedUser = service.getUserByUsername(principal.getName());
 
         if (!form.getNewPassword().equals(form.getConfirmPassword())) {
+            String photo = "";
+            UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
+            if(userDTO != null){
+                photo = service.encodePhotoToBase64(userDTO.getPhoto());
+            }
             model.addAttribute("error", "New password and confirm password do not match.");
+            model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+            model.addAttribute("photo", photo);
+            model.addAttribute("loggedIn", getLoggedUser());
             return "changePassword";
         }
 
         if (!passwordEncoder.matches(form.getOldPassword(), loggedUser.getPassword())) {
+            String photo = "";
+            UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
+            if(userDTO != null){
+                photo = service.encodePhotoToBase64(userDTO.getPhoto());
+            }
             model.addAttribute("error", "Old password is incorrect.");
+            model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+            model.addAttribute("photo", photo);
+            model.addAttribute("loggedIn", getLoggedUser());
             return "changePassword";
         }
 
@@ -125,4 +139,6 @@ public class UserMVC {
 
         return null;
     }
+
+
 }

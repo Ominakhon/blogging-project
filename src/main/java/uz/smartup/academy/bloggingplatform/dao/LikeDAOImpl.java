@@ -59,4 +59,11 @@ public class LikeDAOImpl implements LikeDAO {
 
         return query.getResultList();
     }
+
+    @Override
+    public List<Like> getLikesByPostId(int postId) {
+        TypedQuery<Like> query = entityManager.createQuery("SELECT l FROM Like l WHERE l.post.id = :postId", Like.class);
+        query.setParameter("postId", postId);
+        return query.getResultList();
+    }
 }

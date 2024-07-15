@@ -6,11 +6,9 @@ import uz.smartup.academy.bloggingplatform.dao.CategoryDao;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.TagDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
-import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
-import uz.smartup.academy.bloggingplatform.dto.CommentDtoUtil;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
-import uz.smartup.academy.bloggingplatform.dto.PostDtoUtil;
+import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
+import uz.smartup.academy.bloggingplatform.entity.Like;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -59,6 +57,11 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void delete(int postId) {
+        List<LikeDTO> likes = likeService.getLikesByPostId(postId);
+
+        for(LikeDTO like : likes)
+            likeService.removeLike(like.getUserId(), postId);
+
         dao.delete(dao.getById(postId));
     }
 

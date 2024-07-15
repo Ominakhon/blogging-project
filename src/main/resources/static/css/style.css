@@ -31,21 +31,22 @@
     justify-content: center;
     align-items: center;
 }
-
-.navbar .open {
+.open {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 0; /* Remove padding */
+    border: none; /* Remove border */
+    border-radius: 50%; /* Make the button circular */
+    overflow: hidden; /* Ensure the image fits within the button */
 }
 
-.navbar .open img {
-    width: 60px;
-    height: 60px;
+.open img {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
+    object-fit: cover;
 }
+
 
 .navbar .offcanvas-body form{
     height: 40px;

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
@@ -131,6 +132,15 @@ public class EditorMVC {
         }
 
         return "redirect:/editor/" + username + "/posts";
+    }
+
+    @RequestMapping("/editor/posts/{username}/delete/{postId}")
+    public String deletePost(@PathVariable("postId") int postId, @PathVariable("username") String username , RedirectAttributes attributes) {
+        postService.delete(postId);
+
+        attributes.addAttribute("username", username);
+
+        return "redirect:/editor/{username}/posts";
     }
 
 

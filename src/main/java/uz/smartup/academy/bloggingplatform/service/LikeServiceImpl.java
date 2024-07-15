@@ -74,4 +74,10 @@ public class LikeServiceImpl implements LikeService {
     public List<LikeDTO> getAllLikes() {
         return likeDTOUtil.toDTOs(likeDAO.getAllLike());
     }
+
+    @Override
+    public List<LikeDTO> getLikesByPostId(int postId) {
+        List<Like> likes = likeDAO.getLikesByPostId(postId);
+        return likeDTOUtil.toDTOs(likes);
+    }
 }

@@ -228,8 +228,15 @@ public class IndexController {
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null)
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
         model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("loggedInPhoto", photo);
         model.addAttribute("photo", base64EncodedPhoto);
         model.addAttribute("categories", categories);
         model.addAttribute("user", user);
