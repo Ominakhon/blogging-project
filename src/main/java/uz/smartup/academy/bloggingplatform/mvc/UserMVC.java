@@ -89,6 +89,28 @@ public class UserMVC {
     }
 
 
+//    @GetMapping("/password/reset")
+//    public String showChangePasswordFormm(Model model) {
+//        model.addAttribute("passwordChangeForm", new PasswordChangeForm());
+//        return "password";
+//    }
+//
+//    @PostMapping("/password/reset")
+//    public String changePasswordd(@ModelAttribute("passwordChangeForm") PasswordChangeForm form, Principal principal, Model model, RedirectAttributes attributes) {
+//        UserDTO user = service.getUserByEmail(principal.getName());
+//
+//        if (!form.getNewPassword().equals(form.getConfirmPassword())) {
+//            model.addAttribute("error", "New password and confirm password do not match.");
+//            return "password";
+//        }
+//
+//        service.changePassword(user.getUsername(), form.getNewPassword());
+//        attributes.addFlashAttribute("success", "Password changed successfully.");
+//        return "redirect:/";
+//    }
+//
+
+
 
     @GetMapping("/login")
     public String LoginUserController(Model model){
