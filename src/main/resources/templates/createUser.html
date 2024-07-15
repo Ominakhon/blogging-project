@@ -166,10 +166,12 @@
     <div class="form-container">
         <form th:action="@{/register}" method="POST" class="funny" id="userForm" th:object="${user}">
             <div class="centered-heading">
+                <a th:href="@{/}" style="text-decoration: none; color: inherit;">
                 <h2 style="margin: 0; display: inline-block;">
                     <span class="green-text" style="vertical-align: middle; margin-right: 10px;">GREEN</span>
                     <span class="bold-text" style="vertical-align: middle; margin-right: 10px;">WHITE</span>
                 </h2>
+                </a>
                 <h5 class="welcome-back" style="margin-top: 10px;">Welcome!</h5>
             </div>
 
@@ -203,6 +205,7 @@
 
             <div class="form-group text-center" style="cursor: pointer;">
                 <input type="submit" class="btn btn-primary" value="Sign up" style="color: white;">
+
             </div>
 
             <div class="form-footer text-center">

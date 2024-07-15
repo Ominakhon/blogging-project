@@ -1,12 +1,14 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
+import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -39,6 +41,18 @@ public class UserDaoImpl implements UserDao {
                 .setParameter("username", username)
                 .getSingleResult();
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        try {
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
 
     @Override
     public User getUserById(int id) {

@@ -16,13 +16,13 @@ import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
 import java.util.Base64;
 import uz.smartup.academy.bloggingplatform.entity.*;
+import uz.smartup.academy.bloggingplatform.repository.PasswordResetTokenRepository;
 
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
         this.tagDao = tagDao;
         this.tagDtoUtil = tagDtoUtil;
         this.passwordEncoder = passwordEncoder;
+
     }
 
     @PostConstruct
@@ -94,6 +95,13 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserByUsername(String username) {
         User user = userDao.getUserByUsername(username);
         return dtoUtil.toDTO(user);
+    }
+
+    @Override
+    public UserDTO getUserByEmail(String email) {
+        User user = userDao.getUserByEmail(email);
+        if(user != null) return dtoUtil.toDTO(user);
+        else throw new RuntimeException("User not found!");
     }
 
     @Override
