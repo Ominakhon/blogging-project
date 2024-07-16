@@ -345,7 +345,7 @@ section#Comments {
     margin: auto;
     margin-top: 60px;
     width: 92%;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid rgb(0, 166, 81);
     padding: 10px;
 }
@@ -356,7 +356,7 @@ section#Comments .comment-form {
     margin: auto;
     padding: 10px;
     /* border: 1px solid #ddd; */
-    border-radius: 5px;
+    border-radius: 7px;
     /* height: 200px; */
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
@@ -366,7 +366,7 @@ section#Comments .comment-form textarea{
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid rgb(0, 166, 81);
-    border-radius: 5px;
+    border-radius: 7px;
     resize: vertical;
     height: 100px;
 }
@@ -377,7 +377,7 @@ section#Comments .comment-form button{
     /* background-color: #169532; */
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
 }
 
