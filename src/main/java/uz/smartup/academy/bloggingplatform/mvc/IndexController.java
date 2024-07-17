@@ -25,14 +25,16 @@ public class IndexController {
     private final UserService userService;
     private final LikeService likeService;
     private final TagService tagService;
+    private final CommentService commentService;
 
 
-    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, TagService tagService) {
+    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, TagService tagService, CommentService commentService) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.likeService = likeService;
         this.tagService = tagService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/")
@@ -122,6 +124,7 @@ public class IndexController {
 
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("loggedInId", userDTO.getId());
         model.addAttribute("commentsSize", comments.size());
         model.addAttribute("tags", tags);
         model.addAttribute("post", post);
@@ -330,6 +333,42 @@ public class IndexController {
         attributes.addAttribute("username", userDTO.getUsername());
 
         return "redirect:/profile/{username}";
+    }
+
+    @PostMapping("/posts/{postId}/delete/{commentId}")
+    public String deleteComment(@PathVariable("commentId") int commentId, @PathVariable("postId") int postId, RedirectAttributes attributes) {
+        UserDTO loggedIn = userService.getUserByUsername(getLoggedUser().getUsername());
+        CommentDTO commentDTO = commentService.getComment(commentId);
+        if(commentDTO.getAuthorId() == loggedIn.getId())
+            commentService.deleteComment(commentId);
+
+        attributes.addAttribute("postId", postId);
+
+        return "redirect:/posts/{postId}";
+    }
+
+    @GetMapping("/posts/{postId}/edit/{commentId}")
+    public String editComment(@PathVariable("postId") int postId, @PathVariable("commentId") int commentId, Model model, RedirectAttributes attributes) {
+        UserDTO user = userService.getUserByUsername(getLoggedUser().getUsername());
+        CommentDTO commentDTO = commentService.getComment(commentId);
+
+        String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
+        model.addAttribute("photo", base64EncodedPhoto);
+        model.addAttribute("comment", commentDTO);
+        model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("postId", postId);
+
+        return "editComment";
+    }
+
+    @PostMapping("/{commentId}/updateComment/{postId}")
+    public String updateComment(@PathVariable("commentId") int commentId ,@PathVariable("postId") int postId, @ModelAttribute("comment") CommentDTO comment, RedirectAttributes attributes) {
+        comment.setId(commentId);
+        commentService.updateComment(comment);
+
+        attributes.addAttribute("postId", postId);
+
+        return "redirect:/posts/{postId}";
     }
 
 }

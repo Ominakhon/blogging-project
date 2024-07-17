@@ -7,11 +7,11 @@ import uz.smartup.academy.bloggingplatform.entity.Comment;
 import java.util.List;
 
 public interface CommentService {
-    public void save(CommentDTO comment);
-    public Comment getComment(int id);
-    public List<CommentDTO> getAllComments();
-    public void deleteComment(int id);
-    public void updateComment(CommentDTO comment);
+    void save(CommentDTO comment);
+    CommentDTO getComment(int id);
+    List<CommentDTO> getAllComments();
+    void deleteComment(int id);
+    void updateComment(CommentDTO comment);
 
 
 }

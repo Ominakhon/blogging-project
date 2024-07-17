@@ -39,8 +39,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment getComment(int id) {
-        return commentDao.getComment(id);
+    public CommentDTO getComment(int id) {
+        return dtoUtil.toDto(commentDao.getComment(id));
     }
 
     @Override
@@ -60,7 +60,9 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void updateComment(CommentDTO comment) {
-        Comment comment1 = dtoUtil.toEntity(comment);
+        Comment comment1 = commentDao.getComment(comment.getId());
+        System.out.println(comment.getId());
+        comment1.setContent(comment.getContent());
         commentDao.update(comment1);
     }
 }

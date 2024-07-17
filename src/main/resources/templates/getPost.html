@@ -205,7 +205,7 @@
     <div class="comments">
         <h4 th:if="${commentsSize>1}" th:text="${commentsSize} + ' comments'"></h4>
         <h4 th:if="${commentsSize<2}" th:text="${commentsSize} + ' comment'"></h4>
-        <div class="comment" th:each="comment : ${comments}" style="display: flex; justify-content: start;">
+        <div class="comment" th:each="comment : ${comments}" style="display: flex; justify-content: start; align-items: center;">
             <div class="image" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; margin-bottom: 20px;">
                 <img style="width: 100%; height: 100%; border-radius: 50%; " th:if="${comment.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${comment.hashedPhoto}" alt="Post Image">
             </div>
@@ -213,6 +213,19 @@
                 <div class="content">
                     <a th:href="@{/profile/{username}(username=${comment.username})}" th:text="${comment.username}"></a>
                     <p th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"></p>
+
+                    <form th:if="${loggedIn != null and loggedInId == comment.authorId}" th:action="@{/posts/{postId}/edit/{commentId}(postId=${post.id}, commentId=${comment.id})}" method="get">
+                        <button type="submit" style="border: none; background-color: white; margin-left: 20px;">
+                            <i class="fa-solid fa-pen-to-square text-success"></i>
+                        </button>
+                    </form>
+
+                    <form th:if="${loggedIn != null and loggedInId == comment.authorId}" th:action="@{/posts/{postId}/delete/{commentId}(postId=${post.id}, commentId=${comment.id})}" method="post">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit" style="border: none; background-color: white; margin-left: 20px;">
+                            <i class="fa-solid fa-trash-can text-danger"></i>
+                        </button>
+                    </form>
                 </div>
                 <h4 th:text="${comment.content}"></h4>
             </div>
