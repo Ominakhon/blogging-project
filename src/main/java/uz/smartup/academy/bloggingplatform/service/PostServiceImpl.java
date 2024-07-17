@@ -178,4 +178,9 @@ public class PostServiceImpl implements PostService {
         return dtoUtil.toDTOs(posts);
     }
 
+    @Override
+    public List<PostDto> searchPosts(String keyword) {
+        return dtoUtil.toDTOs(dao.searchPosts(keyword));
+    }
+
 }
