@@ -11,9 +11,7 @@ public class CommentDtoUtil {
     public Comment toEntity(CommentDTO commentDTO){
         Comment comment = new Comment();
         comment.setId(commentDTO.getId());
-        comment.setContent(commentDTO.getContent());;
-        comment.setAuthor(comment.getAuthor());
-        comment.setPost(comment.getPost());
+        comment.setContent(commentDTO.getContent());
         comment.setCreatedAt(commentDTO.getCreatedAt());
         return comment;
     }

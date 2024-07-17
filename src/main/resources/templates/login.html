@@ -120,13 +120,23 @@
             color: #888;
             margin-bottom: 10px;
         }
+        .password-reset {
+            font-size: 0.8rem;
+            color: #8cb176;
+            margin-bottom: 10px;
+            margin-left: 180px;
+        }
     </style>
 </head>
 <body>
 <div class="form-background">
     <div class="form-container">
         <div class="centered-heading">
-            <h3><span class="green-text">GREEN</span> <span class="bold-text">WHITE</span></h3>
+            <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+                <h3>
+                    <span class="green-text">GREEN</span> <span class="bold-text">WHITE</span>
+                </h3>
+            </a>
             <h5 class="welcome-back">Welcome back!</h5>
         </div>
         <form th:action="@{/authenticate}" method="POST">
@@ -138,6 +148,11 @@
                 <span class="input-group-text toggle-password" onclick="togglePassword()">🙈</span>
                 <input type="password" class="form-control" id="password" placeholder="Password" name="password" aria-label="Password" aria-describedby="addon-wrapping">
             </div>
+            <span>
+               <a th:href="@{/password/reset}">
+            <h5 class="password-reset">Forgot password?</h5>
+               </a>
+            </span>
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
@@ -150,6 +165,7 @@
         <div class="form-footer text-center">
             <p>Don't have an account? <a th:href="@{/register}">Sign up</a></p>
         </div>
+
     </div>
 </div>
 
@@ -171,3 +187,4 @@
 </script>
 </body>
 </html>
+    

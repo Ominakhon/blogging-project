@@ -15,6 +15,8 @@ public interface LikeDAO {
     long countByPostId(int postId);
 
     List<Like> getAllLike();
+
+    List<Like> getLikesByPostId(int postId);
 }
 
 

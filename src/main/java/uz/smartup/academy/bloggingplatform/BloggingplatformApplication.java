@@ -10,4 +10,4 @@ public class BloggingplatformApplication {
 		SpringApplication.run(BloggingplatformApplication.class, args);
 	}
 
-}
+}	

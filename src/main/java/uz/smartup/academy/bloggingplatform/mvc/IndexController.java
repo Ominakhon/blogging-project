@@ -8,19 +8,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.config.CategoryConfiguration;
-import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
-import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
-import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.service.CategoryService;
-import uz.smartup.academy.bloggingplatform.service.LikeService;
-import uz.smartup.academy.bloggingplatform.service.PostService;
-import uz.smartup.academy.bloggingplatform.service.UserService;
+import uz.smartup.academy.bloggingplatform.service.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Controller
 public class IndexController {
@@ -28,14 +24,17 @@ public class IndexController {
     private final CategoryService categoryService;
     private final UserService userService;
     private final LikeService likeService;
-    private final CategoryConfiguration categoryConfiguration;
+    private final TagService tagService;
+    private final CommentService commentService;
 
-    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, CategoryConfiguration categoryConfiguration) {
+
+    public IndexController(PostService postService, CategoryService categoryService, UserService userService, LikeService likeService, TagService tagService, CommentService commentService) {
         this.postService = postService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.likeService = likeService;
-        this.categoryConfiguration = categoryConfiguration;
+        this.tagService = tagService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/")
@@ -56,6 +55,12 @@ public class IndexController {
 
             for (PostDto post : posts) {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
             }
 
             if(getLoggedUser() != null)
@@ -97,6 +102,8 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
         post.setLikesCount(likeService.countLikesByPostId(postId));
 
+        List<TagDto> tags = tagService.getTagsByPostId(postId);
+        System.out.println(tags);
 
         comments.forEach(commentDTO -> commentDTO.setUsername(userService.getUserById(commentDTO.getAuthorId()).getUsername()));
         String photo = "";
@@ -107,10 +114,19 @@ public class IndexController {
         if(getLoggedUser() != null)
             post.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), post.getId()) != null);
 
+        if(post.getPhoto() == null) post.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+        else post.setHashedPhoto(userService.encodePhotoToBase64(post.getPhoto()));
+
+        for (CommentDTO commentDTO : comments)
+            commentDTO.setHashedPhoto(userService.encodePhotoToBase64(userService.getUserById(commentDTO.getAuthorId()).getPhoto()));
+
+        comments = comments.reversed();
 
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("loggedInId", userDTO.getId());
         model.addAttribute("commentsSize", comments.size());
+        model.addAttribute("tags", tags);
         model.addAttribute("post", post);
         model.addAttribute("comments", comments);
         model.addAttribute("categories", categories);
@@ -178,6 +194,11 @@ public class IndexController {
                 post.setLikesCount(likeService.countLikesByPostId(post.getId()));
             }
 
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
             if(getLoggedUser() != null)
                 for(PostDto postDto : posts)
                     postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
@@ -210,8 +231,15 @@ public class IndexController {
         UserDTO user = userService.getUserByUsername(username);
         List<CategoryDto> categories = categoryService.getAllCategories();
 
+
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null)
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+
         String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
         model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("loggedInPhoto", photo);
         model.addAttribute("photo", base64EncodedPhoto);
         model.addAttribute("categories", categories);
         model.addAttribute("user", user);
@@ -285,17 +313,7 @@ public class IndexController {
     }
 
 
-    @PostMapping("/web/posts/create")
-    public String CreatePostController(@ModelAttribute("post") PostDto postDto, Model model){
-        model.addAttribute("categories", categoryConfiguration.getCategories());
-        return "createPost";
-    }
 
-    @GetMapping("/web/posts/create")
-    public String CreatePostController(Model model){
-        model.addAttribute("categories", categoryConfiguration.getCategories());
-        return "createPost";
-    }
 
     private UserDetails getLoggedUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -315,6 +333,42 @@ public class IndexController {
         attributes.addAttribute("username", userDTO.getUsername());
 
         return "redirect:/profile/{username}";
+    }
+
+    @PostMapping("/posts/{postId}/delete/{commentId}")
+    public String deleteComment(@PathVariable("commentId") int commentId, @PathVariable("postId") int postId, RedirectAttributes attributes) {
+        UserDTO loggedIn = userService.getUserByUsername(getLoggedUser().getUsername());
+        CommentDTO commentDTO = commentService.getComment(commentId);
+        if(commentDTO.getAuthorId() == loggedIn.getId())
+            commentService.deleteComment(commentId);
+
+        attributes.addAttribute("postId", postId);
+
+        return "redirect:/posts/{postId}";
+    }
+
+    @GetMapping("/posts/{postId}/edit/{commentId}")
+    public String editComment(@PathVariable("postId") int postId, @PathVariable("commentId") int commentId, Model model, RedirectAttributes attributes) {
+        UserDTO user = userService.getUserByUsername(getLoggedUser().getUsername());
+        CommentDTO commentDTO = commentService.getComment(commentId);
+
+        String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
+        model.addAttribute("photo", base64EncodedPhoto);
+        model.addAttribute("comment", commentDTO);
+        model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("postId", postId);
+
+        return "editComment";
+    }
+
+    @PostMapping("/{commentId}/updateComment/{postId}")
+    public String updateComment(@PathVariable("commentId") int commentId ,@PathVariable("postId") int postId, @ModelAttribute("comment") CommentDTO comment, RedirectAttributes attributes) {
+        comment.setId(commentId);
+        commentService.updateComment(comment);
+
+        attributes.addAttribute("postId", postId);
+
+        return "redirect:/posts/{postId}";
     }
 
 }

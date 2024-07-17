@@ -18,6 +18,8 @@ public interface UserDao {
 
     User getUserByUsername(String username);
 
+    User getUserByEmail(String email);
+
     User getUserById(int id);
 
     void update(User user);
@@ -33,6 +35,8 @@ public interface UserDao {
     void updateUserComment(int userId, int postId, Comment comment);
 
     User findByEmail(String email);
+
+    void saveRole(Role role);
 
 
 }

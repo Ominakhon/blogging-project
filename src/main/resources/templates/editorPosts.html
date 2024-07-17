@@ -155,7 +155,7 @@
 <div class="container">
     <h1 class="text-center">Your Posts</h1>
     <div class="text-right mb-4">
-        <a th:href="@{/posts/new}" class="btn btn-new-post">New Post</a>
+        <a th:href="@{/editor/{username}/posts/new(username=${loggedIn.username})}" class="btn btn-new-post">New Post</a>
     </div>
     <div th:each="post : ${posts}">
         <div class="card">
@@ -167,7 +167,7 @@
                 <p th:text="${post.content}"></p>
                 <div class="text-right">
                     <a th:href="@{/posts/edit/{id}(id=${post.id})}" class="btn btn-edit">Edit</a>
-                    <form th:action="@{/posts/delete/{id}(id=${post.id})}" method="POST" style="display:inline;">
+                    <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
                         <input type="hidden" name="_method" value="delete">
                         <button type="submit" class="btn btn-delete">Delete</button>
                     </form>

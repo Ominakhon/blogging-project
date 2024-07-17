@@ -117,7 +117,62 @@
 			  <div class="project_2r">
 				  <div class="card">
 					  <div class="card-header">
-						  <h6 style="padding-top:2px;" class="d-inline-block mb-0">USERS</h6>
+						  <h6 style="padding-top:2px;" class="d-inline-block mb-0">USERS(Viewer)</h6>
+					  </div>
+					  <div class="card-body table-responsive table_tow">
+						  <div class="table_tow">
+							  <table class="table table-hover table-bordered table-centered mb-0">
+								  <thead>
+								  <tr>
+									  <th>ID</th>
+									  <th>FirstName</th>
+									  <th>LastName</th>
+									  <th>Email</th>
+									  <th>Registered</th>
+									  <th>Active?</th>
+								  </tr>
+								  </thead>
+								  <tbody>
+								  <tr th:each = "user: ${userss}">
+									  <td th:text = "${user.id}"></td>
+									  <td th:text = "${user.firstName}"></td>
+									  <td th:text = "${user.lastName}"></td>
+									  <td th:text = "${user.email}"></td>
+									  <td th:text = "${user.registered}"></td>
+									  <td>
+										  <h6 data-bs-toggle="tooltip"
+											  data-bs-placement="left"
+											  data-bs-original-title="Edit"
+											  class="d-inline-block mb-0">
+											  <a th:href="@{/profile/{username}/edit(username=${user.username})}">
+												  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;"
+													 class="fa fa-edit col_3">
+												  </i>
+											  </a>
+										  </h6>
+
+										  <a data-bs-toggle="tooltip"
+											  data-bs-placement="left"
+											  data-bs-original-title="Add Role"
+											  class="d-inline-block mb-0"
+											  th:href="@{/admin/user/{username}/role/add(username=${user.username})}">
+											  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa">&#xf0fe;</i>
+										  </a>
+									  </td>
+								  </tr>
+								  </tbody>
+							  </table>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+
+		  <div class="col-xl-9 col-md-7 col-lg-7">
+			  <div class="project_2r">
+				  <div class="card">
+					  <div class="card-header">
+						  <h6 style="padding-top:2px;" class="d-inline-block mb-0">USERS(Editor)</h6>
 					  </div>
 					  <div class="card-body table-responsive table_tow">
 						  <div class="table_tow">
@@ -135,13 +190,13 @@
 								  <tbody>
 								  <tr th:each = "user: ${userDTO}">
 									  <td th:text = "${user.id}"></td>
-									  <td th:text = "${user.first_name}"></td>
-									  <td th:text = "${user.last_name}"></td>
+									  <td th:text = "${user.firstName}"></td>
+									  <td th:text = "${user.lastName}"></td>
 									  <td th:text = "${user.email}"></td>
 									  <td th:text = "${user.registered}"></td>
 									  <td>
 										  <h6 data-bs-toggle="tooltip"
-											  data-bs-placement="right"
+											  data-bs-placement="left"
 											  data-bs-original-title="Edit"
 											  class="d-inline-block mb-0">
 											  <a th:href="@{/profile/{username}/edit(username=${user.username})}">
@@ -150,6 +205,14 @@
 												  </i>
 											  </a>
 										  </h6>
+
+<!--										  <a data-bs-toggle="tooltip"-->
+<!--											 data-bs-placement="left"-->
+<!--											 data-bs-original-title="Add Role"-->
+<!--											 class="d-inline-block mb-0"-->
+<!--											 th:href="@{/admin/user/{username}/role/add(username=${user.username})}">-->
+<!--											  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa">&#xf0fe;</i>-->
+<!--										  </a>-->
 									  </td>
 								  </tr>
 								  </tbody>

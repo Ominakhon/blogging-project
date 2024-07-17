@@ -4,11 +4,10 @@ import org.hibernate.cache.spi.support.SimpleTimestamper;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
 
-import uz.smartup.academy.bloggingplatform.entity.Comment;
 import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
-import java.util.Set;
 
 public interface UserService {
 
@@ -17,6 +16,9 @@ public interface UserService {
     UserDTO getUserById(int id);
 
     UserDTO getUserByUsername(String username);
+
+    UserDTO getUserByEmail(String email);
+
 
     void updateUser(UserDTO userDTO);
 
@@ -51,4 +53,8 @@ public interface UserService {
     void changePassword(String username, String newPassword);
 
     List<Role> userFindByRoles(String username);
+
+    byte[] getDefaultPostPhoto();
+
+    void saveRole(Role role);
 }

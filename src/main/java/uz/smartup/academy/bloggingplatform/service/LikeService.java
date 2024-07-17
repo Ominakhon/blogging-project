@@ -11,5 +11,6 @@ public interface LikeService {
     void removeLike(int userId, int postId);
     long countLikesByPostId(int postId);
     List<LikeDTO> getAllLikes();
+    List<LikeDTO> getLikesByPostId(int postId);
 
 }

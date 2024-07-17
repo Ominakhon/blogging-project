@@ -26,7 +26,7 @@ public class User {
     @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
 
-    @Column(name = "username", length = 50)
+    @Column(name = "username", length = 50, unique = true)
     private String username;
 
     @Column(name = "first_name", length = 50)

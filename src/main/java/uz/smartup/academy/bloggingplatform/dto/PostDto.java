@@ -6,6 +6,7 @@ import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,6 +27,12 @@ public class PostDto {
     private long likesCount;
 
     private Post.Status status;
+
+    private List<Integer> categories;
+
+    private List<Integer> tags;
+
+    private String hashedPhoto;
 
     public PostDto() {}
 
