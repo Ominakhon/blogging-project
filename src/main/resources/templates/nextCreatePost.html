@@ -116,16 +116,27 @@
     <h2>Create Post - Step 2</h2>
     <form th:action="@{/editor/{username}/posts/save(username=${username})}" method="POST" th:object="${post}">
         <div class="form-group">
-            <label for="categories">Categories:</label>
-            <select multiple class="form-control" id="categories" th:field="*{categories}">
-                <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.title}"></option>
-            </select>
+            <h3>Categories</h3>
+            <div class="container">
+                <div th:each="category : ${categories}">
+                    <label>
+                        <input type="checkbox" th:field="*{categories}" th:value="${category.id}">
+                        <span th:text="${category.title}"></span>
+                    </label>
+                </div>
+            </div>
+
         </div>
         <div class="form-group">
-            <label for="tags">Tags:</label>
-            <select multiple class="form-control" id="tags" th:field="*{tags}">
-                <option th:each="tag : ${tags}" th:value="${tag.id}" th:text="${tag.title}"></option>
-            </select>
+            <h3>Tags</h3>
+            <div class="container">
+                <div th:each="tag : ${tags}">
+                    <label>
+                        <input type="checkbox" th:field="*{tags}" th:value="${tag.id}">
+                        <span th:text="${tag.title}"></span>
+                    </label>
+                </div>
+            </div>
         </div>
         <input type="submit" class="btn btn-primary mt-3" name="action" value="Save as draft">
         <input type="submit" class="btn btn-success mt-3" name="action" value="Publish">

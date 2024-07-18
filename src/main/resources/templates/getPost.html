@@ -176,10 +176,10 @@
     <div class="image">
         <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
     </div>
-    <p th:text="${post.content}"><!-- Content omitted for brevity --></p>
+    <p th:text="${post.content}"></p>
 
-    <div class="tags" th:if="${tags!=null}" th:each="tag : ${tags}" >
-        <a href="" th:text="'#' + ${tag.title}" style="font-size: 20px; "></a>
+    <div class="tags" th:if="${tags!=null}" th:each="tag : ${tags}">
+        <a th:href="@{/posts/tags/{tagTitle}(tagTitle=${tag.title})}" th:text="'#' + ${tag.title}" style="font-size: 20px; "></a>
     </div>
 </section>
 
