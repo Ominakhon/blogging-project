@@ -74,12 +74,7 @@ public class IndexController {
         String photo = "";
         UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
         if(userDTO != null){
-            //System.out.println(userDTO.getRoles());
             photo = userService.encodePhotoToBase64(userDTO.getPhoto());
-            List<Role>roles = userService.userFindByRoles(userDTO.getUsername());
-            boolean isAdmin = roles.stream()
-                    .anyMatch(role -> "ROLE_ADMIN".equals(role.getRole()));
-            if(isAdmin)return "redirect:/admin";
         }
 
         List<CategoryDto> categories = categoryService.getAllCategories();
@@ -122,9 +117,10 @@ public class IndexController {
 
         comments = comments.reversed();
 
+        if(userDTO != null)
+            model.addAttribute("loggedInId", userDTO.getId());
         model.addAttribute("photo", photo);
         model.addAttribute("loggedIn", getLoggedUser());
-        model.addAttribute("loggedInId", userDTO.getId());
         model.addAttribute("commentsSize", comments.size());
         model.addAttribute("tags", tags);
         model.addAttribute("post", post);
@@ -369,6 +365,57 @@ public class IndexController {
         attributes.addAttribute("postId", postId);
 
         return "redirect:/posts/{postId}";
+    }
+
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam("keyword") String keyword, Model model) {
+        List<PostDto> posts = postService.searchPosts(keyword);
+
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null){
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+        }
+
+        if (posts != null) {
+
+            posts = posts.stream()
+                    .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
+                    .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
+                    .toList();
+
+            if (posts.size() > 20) {
+                posts = posts.stream()
+                        .limit(20)
+                        .toList();
+            }
+
+            for (PostDto post : posts) {
+                post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
+            if(getLoggedUser() != null)
+                for(PostDto postDto : posts)
+                    postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
+            else
+                for (PostDto postDto : posts)
+                    postDto.setLiked(false);
+
+        }
+
+        model.addAttribute("photo", photo);
+        model.addAttribute("posts", posts);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("loggedIn", getLoggedUser());
+
+        return "searchResults";
     }
 
 }

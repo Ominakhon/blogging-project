@@ -5,6 +5,8 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jdk.jfr.Registered;
 import org.springframework.stereotype.Repository;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.entity.*;
 
@@ -15,8 +17,11 @@ public class PostDaoImpl implements PostDao{
 
     private final EntityManager entityManager;
 
-    public PostDaoImpl(EntityManager entityManager) {
+    private final SessionFactory sessionFactory;
+
+    public PostDaoImpl(EntityManager entityManager, SessionFactory sessionFactory) {
         this.entityManager = entityManager;
+        this.sessionFactory = sessionFactory;
     }
 
 
@@ -47,6 +52,19 @@ public class PostDaoImpl implements PostDao{
         return query.getResultList();
     }
 
+
+    @Override
+    public List<Post> searchPosts(String keyword) {
+        TypedQuery<Post> query = entityManager.createQuery(
+                "SELECT DISTINCT p FROM Post p LEFT JOIN p.tags t WHERE " +
+                        "LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "LOWER(p.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+                        "LOWER(t.title) LIKE LOWER(CONCAT('%', :keyword, '%'))", Post.class
+        );
+        query.setParameter("keyword", keyword);
+
+        return query.getResultList();
+    }
 
     @Override
     public List<Post> getPostsByTag(Tag tag) {

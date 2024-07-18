@@ -44,4 +44,6 @@ public interface PostService {
 
     List<PostDto> getPostsByTag(String tagTitle);
 
+    List<PostDto> searchPosts(String keyword);
+
 }
