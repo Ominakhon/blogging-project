@@ -200,7 +200,7 @@
                 <input type="password" id="password" name="password" class="input" th:field="*{password}" required>
                 <label class="label" for="password">Password</label>
                 <div class="input-group-append">
-                    <span class="toggle-password" onclick="togglePassword()"><i id="toggleIcon" class="fa-regular fa-eye"></i></span>
+                    <span class="toggle-password" onclick="togglePassword()"><i id="toggleIcon" class="fa-regular fa-eye-slash"></i></span>
                 </div>
             </div>
 
@@ -225,12 +225,12 @@
 
         if (togglePasswordField.type === "password") {
             togglePasswordField.type = "text";
-            toggleIcon.classList.remove("fa-eye");
-            toggleIcon.classList.add("fa-eye-slash");
-        } else {
-            togglePasswordField.type = "password";
             toggleIcon.classList.remove("fa-eye-slash");
             toggleIcon.classList.add("fa-eye");
+        } else {
+            togglePasswordField.type = "password";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
         }
     }
     document.getElementById('password').addEventListener('input', function() {
