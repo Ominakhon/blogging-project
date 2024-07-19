@@ -418,4 +418,58 @@ public class IndexController {
         return "searchResults";
     }
 
+
+    @GetMapping("/posts/tags/{tagTitle}")
+    public String findPostsByTag(@PathVariable("tagTitle") String tagTitle, Model model) {
+        List<PostDto> posts = postService.getPostsByTag(tagTitle);
+
+//        posts.removeIf(postDto -> postDto.getStatus().equals(Post.Status.DRAFT));
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+
+        if(userDTO != null){
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+        }
+
+        if (posts != null) {
+
+            posts = posts.stream()
+                    .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
+                    .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
+                    .toList();
+
+            if (posts.size() > 20) {
+                posts = posts.stream()
+                        .limit(20)
+                        .toList();
+            }
+
+            for (PostDto post : posts) {
+                post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
+            if(getLoggedUser() != null)
+                for(PostDto postDto : posts)
+                    postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
+            else
+                for (PostDto postDto : posts)
+                    postDto.setLiked(false);
+
+        }
+
+        model.addAttribute("photo", photo);
+        model.addAttribute("posts", posts);
+        model.addAttribute("keyword", tagTitle);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("loggedIn", getLoggedUser());
+
+        return "searchResults";
+    }
+
 }
