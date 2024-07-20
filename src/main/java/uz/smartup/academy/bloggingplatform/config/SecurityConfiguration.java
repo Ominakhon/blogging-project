@@ -1,23 +1,35 @@
 package uz.smartup.academy.bloggingplatform.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import uz.smartup.academy.bloggingplatform.service.CustomUserDetailsService;
+import org.springframework.security.web.firewall.HttpFirewall;
 
 import javax.sql.DataSource;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfiguration {
+
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,6 +52,11 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                         authManager ->  authManager
@@ -48,7 +65,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.POST, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.GET, "/", "/register", "/posts/*", "/profile/*", "/categories/*", "/profile", "/search", "/posts/tags/*").permitAll()
-                                .requestMatchers(HttpMethod.POST,  "/register").permitAll()
+                                .requestMatchers(HttpMethod.POST,  "/register-user").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/changePassword").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/password-change").authenticated()
@@ -68,6 +85,12 @@ public class SecurityConfiguration {
                         logout.logoutUrl("/logout")
                                 .logoutSuccessUrl("/")
                                 .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/", true)
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .permitAll()
                 );
 
         http.csrf(AbstractHttpConfigurer::disable);

@@ -104,6 +104,8 @@ public class UserDaoImpl implements UserDao {
     public User findByEmail(String email) {
         TypedQuery<User> query = entityManager.createQuery("FROM User WHERE email = :email", User.class);
 
+        query.setParameter("email", email);
+
         return query.getSingleResult();
     }
 

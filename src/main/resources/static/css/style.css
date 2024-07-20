@@ -507,6 +507,33 @@ section#EditForm .userEditForm .btn {
     width: 100%;
 }
 
+.google {
+    cursor: pointer;
+    border-radius: 0;
+    background-color:white;
+    border: 2px solid black;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    height: 40px;
+}
+
+.google a {
+    background-color: none;
+    border-radius:0;
+    color: black;
+    margin-left: 5px;
+}
+
+.google:hover {
+    border:2px solid rgb(0, 166, 81);
+    color: rgb(0, 166, 81);
+}
+
+.google:hover a {
+    color: rgb(0, 166, 81);
+}
 
 
 

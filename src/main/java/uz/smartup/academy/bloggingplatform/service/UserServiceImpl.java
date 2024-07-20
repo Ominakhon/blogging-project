@@ -100,8 +100,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getUserByEmail(String email) {
         User user = userDao.getUserByEmail(email);
-        if(user != null) return dtoUtil.toDTO(user);
-        else throw new RuntimeException("User not found!");
+        return dtoUtil.toDTO(user);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class UserServiceImpl implements UserService {
         User user = dtoUtil.toEntity(userDTO);
 
         if (user.getPhoto() == null || user.getPhoto().length == 0) {
-            user.setPhoto(defaultPhotoPost);
+            user.setPhoto(defaultPhoto);
         }
 
         String hashedPassword = passwordEncoder.encode(user.getPassword());
@@ -177,7 +176,7 @@ public class UserServiceImpl implements UserService {
         Post post = postDtoUtil.toEntity(postDto);
 
         if (postDto.getPhoto() == null || postDto.getPhoto().length == 0) {
-            user.setPhoto(defaultPhoto);
+            user.setPhoto(defaultPhotoPost);
         }
 
         post.setStatus(Post.Status.DRAFT);

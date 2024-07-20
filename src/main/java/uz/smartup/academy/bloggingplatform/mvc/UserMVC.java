@@ -1,9 +1,14 @@
 package uz.smartup.academy.bloggingplatform.mvc;
 
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
 import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.service.CustomUserDetailsService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.security.Principal;
@@ -21,8 +27,7 @@ import java.util.List;
 public class UserMVC {
 
     private final UserService service;
-
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;;
 
     public UserMVC(UserService userService, PasswordEncoder passwordEncoder) {
         this.service = userService;
@@ -30,22 +35,23 @@ public class UserMVC {
     }
 
     @GetMapping("/register")
-    public String createInstructor(Model model){
+    public String createUser(Model model) {
         model.addAttribute("user", new UserDTO());
         return "createUser";
     }
 
-    @PostMapping("/register")
-    public String createInstructor(@ModelAttribute("user") UserDTO dto, RedirectAttributes attributes){
+    @PostMapping("/register-user")
+    public String createUser(@ModelAttribute("user") UserDTO user, RedirectAttributes attributes) {
         try {
             List<Role> roles = new ArrayList<>();
             Role role = new Role();
             role.setRole("ROLE_VIEWER");
-            role.setUsername(dto.getUsername());
+            role.setUsername(user.getUsername());
             roles.add(role);
 
-            service.registerUser(dto, roles);
-            attributes.addFlashAttribute("success", "User registered successfully.");
+            service.registerUser(user, roles);
+
+            attributes.addFlashAttribute("success", "User registered and logged in successfully.");
             return "redirect:/login";
         } catch (Exception e) {
             attributes.addFlashAttribute("error", "An error occurred during registration. Please try again.");
@@ -57,7 +63,7 @@ public class UserMVC {
     public String showChangePasswordForm(Model model) {
         String photo = "";
         UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
-        if(userDTO != null){
+        if (userDTO != null) {
             photo = service.encodePhotoToBase64(userDTO.getPhoto());
         }
 
@@ -74,7 +80,7 @@ public class UserMVC {
         if (!form.getNewPassword().equals(form.getConfirmPassword())) {
             String photo = "";
             UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
-            if(userDTO != null){
+            if (userDTO != null) {
                 photo = service.encodePhotoToBase64(userDTO.getPhoto());
             }
             model.addAttribute("error", "New password and confirm password do not match.");
@@ -87,7 +93,7 @@ public class UserMVC {
         if (!passwordEncoder.matches(form.getOldPassword(), loggedUser.getPassword())) {
             String photo = "";
             UserDTO userDTO = getLoggedUser() == null ? null : service.getUserByUsername(getLoggedUser().getUsername());
-            if(userDTO != null){
+            if (userDTO != null) {
                 photo = service.encodePhotoToBase64(userDTO.getPhoto());
             }
             model.addAttribute("error", "Old password is incorrect.");
@@ -102,32 +108,8 @@ public class UserMVC {
         return "redirect:/";
     }
 
-
-//    @GetMapping("/password/reset")
-//    public String showChangePasswordFormm(Model model) {
-//        model.addAttribute("passwordChangeForm", new PasswordChangeForm());
-//        return "password";
-//    }
-//
-//    @PostMapping("/password/reset")
-//    public String changePasswordd(@ModelAttribute("passwordChangeForm") PasswordChangeForm form, Principal principal, Model model, RedirectAttributes attributes) {
-//        UserDTO user = service.getUserByEmail(principal.getName());
-//
-//        if (!form.getNewPassword().equals(form.getConfirmPassword())) {
-//            model.addAttribute("error", "New password and confirm password do not match.");
-//            return "password";
-//        }
-//
-//        service.changePassword(user.getUsername(), form.getNewPassword());
-//        attributes.addFlashAttribute("success", "Password changed successfully.");
-//        return "redirect:/";
-//    }
-//
-
-
-
     @GetMapping("/login")
-    public String LoginUserController(Model model){
+    public String loginUserController(Model model) {
         return "login";
     }
 
@@ -139,6 +121,4 @@ public class UserMVC {
 
         return null;
     }
-
-
 }
