@@ -1,7 +1,4 @@
 package uz.smartup.academy.bloggingplatform.mvc;
-
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +12,6 @@ import uz.smartup.academy.bloggingplatform.entity.User;
 import uz.smartup.academy.bloggingplatform.repository.PasswordResetTokenRepository;
 import uz.smartup.academy.bloggingplatform.service.MailSenderService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
-
-import java.security.Principal;
-
 @Controller
 @RequestMapping
 public class UrlController {
@@ -45,17 +39,23 @@ public class UrlController {
     @PostMapping("/password/reset")
     public String processForgotPasswordForm(@ModelAttribute UserDTO userDTO, RedirectAttributes redirectAttributes) {
         UserDTO userDTO1 = userService.getUserByEmail(userDTO.getEmail());
+
         if (userDTO1 != null) {
             User user = userDtoUtil.toEntity(userDTO1);
             String output = mailSenderService.sendMail(user);
             if ("success".equals(output)) {
-                redirectAttributes.addFlashAttribute("message", "Password reset email sent successfully!");
-                return "redirect:/password/reset?success";
+                redirectAttributes.addFlashAttribute("success", "Password reset email sent successfully!");
+                return "redirect:/login?success";
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Error sending password reset email!");
+                return "redirect:/login?error";
             }
+        } else {
+            redirectAttributes.addFlashAttribute("errorValue", "No user found with this email address!");
+            return "redirect:/password/reset?error";
         }
-        redirectAttributes.addFlashAttribute("error", "Error sending password reset email!");
-        return "redirect:/password/reset?error";
     }
+
 
     @GetMapping("/password/reset/{token}")
     public String resetPasswordToken(@PathVariable String token, Model model, RedirectAttributes redirectAttributes) {
@@ -94,5 +94,11 @@ public class UrlController {
         attributes.addFlashAttribute("success", "Password changed successfully.");
         return "redirect:/";
     }
+
+
+
+
+
+
 
 }
