@@ -23,7 +23,9 @@ public class UserDtoUtil {
         return user;
     }
 
-    public UserDTO toDTO(User user){
+    public UserDTO toDTO(User user) {
+        if (user == null) return null;
+
         if(user == null) return null;
 
         UserDTO userDTO = new UserDTO();
