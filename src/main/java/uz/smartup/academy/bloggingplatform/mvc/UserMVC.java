@@ -1,13 +1,16 @@
 package uz.smartup.academy.bloggingplatform.mvc;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -18,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
 import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.service.CustomUserDetailsService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,4 +150,52 @@ public class UserMVC {
 
         return null;
     }
+
+    @GetMapping("/complete-registration")
+    public String showCompleteRegistrationPage(Model model, HttpSession session) {
+        OAuth2User oauth2User = (OAuth2User) session.getAttribute("oauth2User");
+        model.addAttribute("email", oauth2User.getAttribute("email"));
+        return "setPassword";
+    }
+
+    @PostMapping("/complete-registration")
+    public String completeRegistration(@RequestParam String email,
+                                       @RequestParam String username,
+                                       @RequestParam String password,
+                                       @RequestParam String confirmPassword,
+                                       RedirectAttributes redirectAttributes,
+                                       HttpSession session,
+                                       HttpServletRequest request) throws ServletException {
+        if (!password.equals(confirmPassword)) {
+            redirectAttributes.addFlashAttribute("error", "Passwords do not match");
+            return "redirect:/complete-registration";
+        }
+
+        OAuth2User oauth2User = (OAuth2User) session.getAttribute("oauth2User");
+        String firstName = oauth2User.getAttribute("given_name");
+        String lastName = oauth2User.getAttribute("family_name");
+
+        List<Role> roles = new ArrayList<>();
+        Role role = new Role();
+        role.setRole("ROLE_VIEWER");
+        role.setUsername(username);
+        roles.add(role);
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(username);
+        userDTO.setFirst_name(firstName);
+        userDTO.setLast_name(lastName);
+        userDTO.setPassword(password);
+        userDTO.setEmail(email);
+
+        service.registerUser(userDTO, roles);
+
+        Authentication auth = new UsernamePasswordAuthenticationToken(username, service.getUserByUsername(username).getPassword());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        request.login(username, password);
+
+        return "redirect:/";
+    }
+
 }

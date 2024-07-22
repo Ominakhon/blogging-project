@@ -19,7 +19,6 @@ import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
-import uz.smartup.academy.bloggingplatform.service.CustomUserDetailsService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.io.IOException;
@@ -33,14 +32,12 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
     private final UserDao userDao;
 
-    private final CustomUserDetailsService userDetailsService;
 
     private final PasswordEncoder passwordEncoder;
 
-    public OAuth2LoginSuccessHandler(@Lazy UserService userService, @Lazy UserDao userDao, @Lazy CustomUserDetailsService userDetailsService,@Lazy PasswordEncoder passwordEncoder) {
+    public OAuth2LoginSuccessHandler(@Lazy UserService userService, @Lazy UserDao userDao, @Lazy PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.userDao = userDao;
-        this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -57,42 +54,23 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         String firstName = oauth2User.getAttribute("given_name");
         String lastName = oauth2User.getAttribute("family_name");
 
-
         User user = null;
+
         if (userDao.getUserByEmail(email) != null) {
             user = userDao.getUserByEmail(email);
+            UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                    user.getUsername(), user.getPassword(), user.getRoles().stream()
+                    .map(role -> (GrantedAuthority) role::getRole).collect(Collectors.toList()));
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            super.onAuthenticationSuccess(request, response, authentication);
         } else {
-            List<Role> roles = new ArrayList<>();
-            Role role = new Role();
-            role.setRole("ROLE_VIEWER");
-            role.setUsername(firstName);
-            roles.add(role);
-
-            String randomPassword = UUID.randomUUID().toString();
-
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(firstName.toLowerCase(Locale.ROOT));
-            userDTO.setFirst_name(firstName);
-            userDTO.setLast_name(lastName);
-            userDTO.setPassword(randomPassword);
-            userDTO.setEmail(email);
-
-            userService.registerUser(userDTO, roles);
+            request.getSession().setAttribute("oauth2User", oauth2User);
+            response.sendRedirect("/complete-registration");
         }
-
-        // Manually log in the user
-//        UserDetails userDetails = userDao.loadUserByUsername(email);
-        User euser = userDao.findByEmail(email);
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
-                euser.getUsername(), euser.getPassword(), euser.getRoles().stream()
-                .map(role -> (GrantedAuthority) role::getRole).collect(Collectors.toList()));
-
-
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        super.onAuthenticationSuccess(request, response, authentication);
     }
 }
 
