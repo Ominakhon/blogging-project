@@ -8,7 +8,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,9 @@ import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.CustomUserDetailsService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -27,11 +32,13 @@ import java.util.List;
 public class UserMVC {
 
     private final UserService service;
-    private final PasswordEncoder passwordEncoder;;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public UserMVC(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserMVC(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.service = userService;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
     }
 
     @GetMapping("/register")
@@ -41,8 +48,14 @@ public class UserMVC {
     }
 
     @PostMapping("/register-user")
-    public String createUser(@ModelAttribute("user") UserDTO user, RedirectAttributes attributes) {
+    public String createUser(Model model, @ModelAttribute("user") UserDTO user, RedirectAttributes attributes, HttpServletRequest request) {
         try {
+//            if (service.getUserByUsername(user.getUsername()) != null) {
+//                model.addAttribute("error", "this username already exist, please use another username");
+//                model.addAttribute("user", new UserDTO());
+//                return "createUser";
+//            }
+
             List<Role> roles = new ArrayList<>();
             Role role = new Role();
             role.setRole("ROLE_VIEWER");
@@ -51,12 +64,26 @@ public class UserMVC {
 
             service.registerUser(user, roles);
 
+            request.login(user.getUsername(), user.getPassword());
+
             attributes.addFlashAttribute("success", "User registered and logged in successfully.");
-            return "redirect:/login";
+            return "redirect:/";
         } catch (Exception e) {
             attributes.addFlashAttribute("error", "An error occurred during registration. Please try again.");
             return "redirect:/register";
         }
+    }
+
+    public void autoLogin(String username, String password, HttpServletRequest request) {
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+
+        Authentication authentication = authenticationManager.authenticate(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //this step is important, otherwise the new login is not in session which is required by Spring Security
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
     }
 
     @GetMapping("/changePassword")

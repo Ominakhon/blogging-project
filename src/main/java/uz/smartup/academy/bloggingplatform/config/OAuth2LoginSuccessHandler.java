@@ -24,6 +24,7 @@ import uz.smartup.academy.bloggingplatform.service.UserService;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -45,7 +46,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
@@ -79,7 +81,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         }
 
         // Manually log in the user
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+//        UserDetails userDetails = userDao.loadUserByUsername(email);
+        User euser = userDao.findByEmail(email);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                euser.getUsername(), euser.getPassword(), euser.getRoles().stream()
+                .map(role -> (GrantedAuthority) role::getRole).collect(Collectors.toList()));
+
+
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);

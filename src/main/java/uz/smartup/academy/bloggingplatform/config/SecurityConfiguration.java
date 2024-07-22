@@ -22,10 +22,10 @@ import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import uz.smartup.academy.bloggingplatform.service.CustomUserDetailsService;
 import org.springframework.security.web.firewall.HttpFirewall;
 
+
 import javax.sql.DataSource;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfiguration {
 
     @Autowired
@@ -51,10 +51,10 @@ public class SecurityConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new CustomUserDetailsService();
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        return new CustomUserDetailsService();
+//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

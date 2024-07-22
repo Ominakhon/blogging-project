@@ -511,8 +511,8 @@ section#EditForm .userEditForm .btn {
     cursor: pointer;
     border-radius: 0;
     background-color:white;
-    border: 2px solid black;
-    color: black;
+    border: 2px solid gray;
+    color: gray;
     display: flex;
     justify-content: center;
     align-items:center;
@@ -522,7 +522,7 @@ section#EditForm .userEditForm .btn {
 .google a {
     background-color: none;
     border-radius:0;
-    color: black;
+    color: gray;
     margin-left: 5px;
 }
 
