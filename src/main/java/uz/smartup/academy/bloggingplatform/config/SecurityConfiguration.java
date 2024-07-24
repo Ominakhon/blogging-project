@@ -63,6 +63,8 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/admin", "/admin/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.POST, "/editor", "/editor/*").hasAnyRole("EDITOR")
+                                .requestMatchers(HttpMethod.GET, "/password/reset", "/password/reset/*").hasAnyRole("VIEWER")
+                                .requestMatchers(HttpMethod.POST, "/password/reset", "/password/reset/*").hasAnyRole("VIEWER")
                                 .requestMatchers(HttpMethod.GET, "/", "/register", "/posts/*", "/profile/*", "/categories/*", "/profile", "/search", "/posts/tags/*").permitAll()
                                 .requestMatchers(HttpMethod.POST,  "/register-user").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
