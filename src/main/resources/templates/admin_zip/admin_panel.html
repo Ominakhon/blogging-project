@@ -33,6 +33,7 @@
 
 		  <ul class="dropdown-menu drop_2" style="left:auto; right:0; min-width:200px;">
 		  <li class="small" style="padding: 0.25rem 1rem;">Welcome !</li>
+		  <li><a class="dropdown-item" th:href="@{/}"> Home page </a></li>
 		  <li><a class="dropdown-item" th:href="@{@{/profile/{username}(username=${user.username})}}"><i class="fa fa-user"></i> My Account</a></li>
 		  <li><a class="dropdown-item" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a></li>
 		</ul>
@@ -144,7 +145,7 @@
 											  data-bs-placement="left"
 											  data-bs-original-title="Edit"
 											  class="d-inline-block mb-0">
-											  <a th:href="@{/profile/{username}/edit(username=${user.username})}">
+											  <a th:href="@{/admin/user/{username}/edit(username=${user.username})}">
 												  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;"
 													 class="fa fa-edit col_3">
 												  </i>
@@ -199,7 +200,7 @@
 											  data-bs-placement="left"
 											  data-bs-original-title="Edit"
 											  class="d-inline-block mb-0">
-											  <a th:href="@{/profile/{username}/edit(username=${user.username})}">
+											  <a th:href="@{/admin/user/{username}/edit(username=${user.username})}">
 												  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;"
 													 class="fa fa-edit col_3">
 												  </i>

@@ -102,6 +102,20 @@ public class AdminPanelController {
         return "admin_zip/user_table";
     }
 
+    @GetMapping("/admin/user/{userId}/edit")
+    public String editProfile(Model model, @PathVariable("userId") String  username) {
+
+        UserDTO user = userService.getUserByUsername(username);
+        List<CategoryDto> categories = categoryService.getAllCategories();
+
+        String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
+        model.addAttribute("base64EncodedPhoto", base64EncodedPhoto);
+        model.addAttribute("user", user);
+        model.addAttribute("categories", categories);
+
+        return "editUser";
+    }
+
     @GetMapping("/admin/user/{username}/role/add")
     public String addRole(@PathVariable String username){
         UserDTO userDTO = userService.getUserByUsername(username);
