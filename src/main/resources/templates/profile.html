@@ -122,10 +122,15 @@
         font-weight: 600;
         margin: 0;
     }
-    .about-avatar img {
-        width: 350px;
-        height: auto;
-        border-radius: 100%;
+    .about-avatar .image {
+        height: 200px;
+        border-radius: 50%;
+    }
+
+    .about-avatar .image img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
     }
     mark {
         background-size: 100% 3px;
@@ -282,7 +287,9 @@
             </div>
             <div class="col-lg-6">
                 <div class="about-avatar">
-                    <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image" style="width: 100%; max-width: 200px; margin-bottom: 10px">
+                    <div class="image">
+                        <img th:src="'data:image/png;base64,' + ${photo}" alt="Profile Image" style="width: 100%; max-width: 200px; margin-bottom: 10px">
+                    </div>
                     <p th:text="'🗓️ With us since: ' + ${user.registered}"></p>
                     <form th:if="${loggedIn != null and loggedIn.username == user.username}" th:action="@{{username}/uploadPhoto(username=${user.username})}" class="upload" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="put">

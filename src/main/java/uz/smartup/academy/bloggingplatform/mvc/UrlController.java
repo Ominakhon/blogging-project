@@ -45,10 +45,10 @@ public class UrlController {
             String output = mailSenderService.sendMail(user);
             if ("success".equals(output)) {
                 redirectAttributes.addFlashAttribute("success", "Password reset email sent successfully!");
-                return "redirect:/login?success";
+                return "redirect:/password/reset?success";
             } else {
                 redirectAttributes.addFlashAttribute("error", "Error sending password reset email!");
-                return "redirect:/login?error";
+                return "redirect:/password/reset?error";
             }
         } else {
             redirectAttributes.addFlashAttribute("errorValue", "No user found with this email address!");
