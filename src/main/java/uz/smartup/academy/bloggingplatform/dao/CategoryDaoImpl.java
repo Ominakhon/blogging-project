@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Category;
+import uz.smartup.academy.bloggingplatform.entity.Post;
 
 import java.util.List;
 
@@ -48,6 +49,15 @@ public class CategoryDaoImpl implements CategoryDao {
         query.setParameter("title", title);
 
         return query.getSingleResult();
+    }
+
+    @Override
+    public List<Category> getCategoriesByPostId(int postId) {
+        Post post = entityManager.find(Post.class, postId);
+        TypedQuery<Category> query = entityManager.createQuery("FROM Category WHERE :post MEMBER OF posts", Category.class);
+        query.setParameter("post", post);
+
+        return query.getResultList();
     }
 }
 

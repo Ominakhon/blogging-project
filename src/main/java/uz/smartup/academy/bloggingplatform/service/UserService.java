@@ -57,4 +57,5 @@ public interface UserService {
     byte[] getDefaultPostPhoto();
 
     void saveRole(Role role);
+
 }

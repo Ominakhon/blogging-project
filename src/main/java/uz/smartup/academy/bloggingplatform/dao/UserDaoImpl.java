@@ -79,7 +79,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public List<Post> getUserAllPosts(int userId) {
-        return entityManager.createQuery("SELECT p FROM Post p WHERE p.user.id = :userId", Post.class)
+        return entityManager.createQuery("SELECT p FROM Post p WHERE p.author.id = :userId", Post.class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
