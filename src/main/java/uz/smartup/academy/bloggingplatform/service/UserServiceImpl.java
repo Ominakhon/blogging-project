@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
@@ -14,6 +15,8 @@ import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.TagDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
+
+import java.time.LocalDate;
 import java.util.Base64;
 import uz.smartup.academy.bloggingplatform.entity.*;
 import uz.smartup.academy.bloggingplatform.repository.PasswordResetTokenRepository;
@@ -273,6 +276,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveRole(Role role) {
         userDao.saveRole(role);
+    }
+
+    @Override
+    @Transactional
+    public void banUser(int userId) {
+        User user = userDao.getUserById(userId);
+        if (user != null) {
+            user.setEnabled(null);
+            user.setRegistered(LocalDate.now());  // Ban qilingan vaqtni saqlaymiz
+            userDao.save(user);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void unBanUser(int userId) {
+        User user = userDao.getUserById(userId);
+        if (user != null) {
+            user.setEnabled("1");
+            user.setRegistered(LocalDate.now());  // unBan qilingan vaqtni saqlaymiz
+            userDao.save(user);
+        }
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedRate = 3600000) // Har 1 soatda bir marta ishga tushadi
+    public void unbanUsers() {
+
+        System.out.println("ishladi0000000000000000000000000000000000000");
+
+        List<User> bannedUsers = userDao.findAllByEnabledIsNull();
+        LocalDate now = LocalDate.now();
+        for (User user : bannedUsers) {
+            if (user.getRegistered() != null && user.getRegistered().plusDays(1).isBefore(now)) {
+                user.setEnabled("1");
+                user.setRegistered(LocalDate.now());  // Tiklangandan vaqtini yangilaymiz
+                userDao.save(user);
+            }
+        }
     }
 
 

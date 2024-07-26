@@ -58,4 +58,9 @@ public interface UserService {
 
     void saveRole(Role role);
 
+    void banUser(int userId);
+
+    void unBanUser(int userId);
+
+    void unbanUsers();
 }
