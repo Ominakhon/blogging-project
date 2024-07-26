@@ -11,6 +11,7 @@ import java.util.List;
         List<Category> getAllCategories();
         Category findCategoryById(int id);
         Category findCategoryByTitle(String title);
+        List<Category> getCategoriesByPostId(int postId);
 
     }
 
