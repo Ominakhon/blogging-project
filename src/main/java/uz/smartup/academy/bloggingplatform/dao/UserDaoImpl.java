@@ -126,10 +126,17 @@ public class UserDaoImpl implements UserDao {
         entityManager.persist(role);  // Add this method implementation
     }
 
+    @Transactional
+    @Override
+    public List<User> findAllByEnabledIsNull() {
+        TypedQuery<User> query = entityManager.createQuery("from User where enabled is null", User.class);
+        return query.getResultList();
+    }
+
 
     @Transactional
     public List<User> getUsersWithEditorRole() {
-        String hql = "SELECT u FROM User u JOIN Role r ON u.username = r.id.username WHERE r.id.role = 'ROLE_EDITOR'";
+        String hql = "SELECT u FROM User u JOIN Role r ON u.username = r.id.username WHERE r.id.role = 'ROLE_EDITOR' AND u.enabled IS NOT NULL";
         TypedQuery<User> query = entityManager.createQuery(hql, User.class);
         return query.getResultList();
     }

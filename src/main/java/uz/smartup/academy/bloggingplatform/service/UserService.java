@@ -57,4 +57,10 @@ public interface UserService {
     byte[] getDefaultPostPhoto();
 
     void saveRole(Role role);
+
+    void banUser(int userId);
+
+    void unBanUser(int userId);
+
+    void unbanUsers();
 }

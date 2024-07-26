@@ -38,6 +38,7 @@ public interface UserDao {
 
     void saveRole(Role role);
 
+    List<User> findAllByEnabledIsNull();
 
 }
 
