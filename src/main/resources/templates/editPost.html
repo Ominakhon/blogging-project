@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Editor</title>
     <link rel="icon" th:href="@{/css/photos/gws_square.ico}" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/style.css}">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-<!--    <link rel="stylesheet" href="/richText/font-awesome.min.css" />-->
     <link rel="stylesheet" href="/richText/richtext.min.css">
-
-
 </head>
 
 <style>
@@ -41,7 +37,6 @@
 </style>
 
 <body>
-
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top">
     <div class="container-fluid">
         <div class="navbar-start">
@@ -85,9 +80,7 @@
                             <i class="fa-regular fa-pen-to-square"></i>
                             <button class="w-100 mb-2" type="submit">Edit Profile</button>
                         </form>
-
-                        <form th:action="@{/editor/{username}/posts(username=${loggedIn.username})}"
-                              sec:authorize="hasRole('ROLE_EDITOR')">
+                        <form th:action="@{/editor/{username}/posts(username=${loggedIn.username})}" sec:authorize="hasRole('ROLE_EDITOR')">
                             <i class="fa-regular fa-newspaper"></i>
                             <button class="w-100 mb-2">Your Posts</button>
                         </form>
@@ -102,7 +95,6 @@
                     </div>
                 </div>
             </div>
-
             <div th:if="${loggedIn == null}" style="display: flex;">
                 <form th:action="@{/login}" class="login d-flex" style="height: 60%;">
                     <button class="btn btn-primary me-2" type="submit">Login</button>
@@ -115,25 +107,33 @@
     </div>
 </nav>
 
-
 <section id="postForm">
-    <form th:action="@{next}" method="POST" class="create" th:object="${post}" enctype="multipart/form-data">
-        <h3 style="margin-bottom: 10px; ">Create Post - Step 1</h3>
+    <form th:action="@{/editor/posts/{username}/edit/{postId}(username=${username}, postId=${post.id})}" method="POST" class="create" th:object="${post}" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="put">
+        <h3 style="margin-bottom: 10px;">Edit Post</h3>
 
         <h5>Upload photo: </h5>
         <input class="form-control file" type="file" id="file" name="file">
 
         <div class="fields mt-3">
             <label class="form-label">Title: </label>
-            <input type="text" class="form-control" th:field="*{title}" placeholder="title" required>
+            <input type="text" class="form-control" th:field="*{title}" placeholder="title" required >
         </div>
 
         <div class="fields mt-3">
             <label class="form-label">Content: </label>
-            <textarea class="form-control"  th:field="*{content}" placeholder="content" required></textarea >
+            <textarea class="form-control" th:field="*{content}" placeholder="content" required style="height: 300px;"></textarea>
         </div>
 
-        <input type="submit" class="btn btn-success mt-3" value="Next">
+        <h4 style="margin-top: 30px;">Categories: </h4>
+        <div class="container" th:each="category : ${categories}">
+            <label class="form-label">
+                <input type="checkbox" th:field="*{categories}" th:value="${category.id}" th:checked="${post.getCategories().contains(category.id)}">
+                <span th:text="${category.title}"></span>
+            </label>
+        </div>
+
+        <input type="submit" class="btn btn-success mt-3" value="Save changes">
     </form>
 </section>
 
@@ -159,50 +159,13 @@
         </div>
     </div>
     <div class="line"></div>
-    <div class="faq" >
+    <div class="faq">
         <p><i class="bi bi-c-circle"></i> LLC Green White Solutions. All rights reserved 2024</p>
     </div>
 </section>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-
-<script>
-    const tagInput = document.getElementById('tagInput');
-    const tagsContainer = document.getElementById('tagsContainer');
-    const publishButton = document.getElementById('publishButton');
-    const saveDraftButton = document.getElementById('saveDraftButton');
-
-    tagInput.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter' && tagInput.value.trim() !== '') {
-            addTag(tagInput.value.trim());
-            tagInput.value = '';
-        }
-    });
-
-    function addTag(tagName) {
-        const tag = document.createElement('div');
-        tag.classList.add('tag');
-        tag.textContent = tagName;
-        tag.addEventListener('click', function() {
-            this.remove();
-        });
-        tagsContainer.appendChild(tag);
-    }
-
-    addTag('Technology');
-    addTag('Programming');
-    addTag('Web Development');
-
-    publishButton.addEventListener('click', function() {
-        alert('Post published!');
-    });
-
-    saveDraftButton.addEventListener('click', function() {
-        alert('Draft saved!');
-    });
-</script>
 <script src="/path/to/cdn/jquery.min.js"></script>
 <script src="/richText/jquery.richtext.min.js"></script>
 </body>

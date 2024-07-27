@@ -17,6 +17,7 @@ import uz.smartup.academy.bloggingplatform.service.CategoryService;
 import uz.smartup.academy.bloggingplatform.service.PostService;
 import uz.smartup.academy.bloggingplatform.service.TagService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
+import java.lang.Integer;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -44,6 +45,12 @@ public class EditorMVC {
     public String editorPost(@PathVariable("username") String username, Model model) {
         List<PostDto> posts = postService.getPostsByAuthor(userService.getUserByUsername(username).getId());
         List<CategoryDto> categories = categoryService.getAllCategories();
+
+        if (!posts.isEmpty()) {
+            posts = posts.stream()
+                    .sorted(Comparator.comparing(PostDto::getCreatedAt))
+                    .toList();
+        }
 
         String photo = "";
         UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
@@ -118,7 +125,6 @@ public class EditorMVC {
         }
 
 
-        // Add selected categories and tags to the post
         if (postDto.getCategories() != null) {
             for (int categoryId : postDto.getCategories()) {
                 userService.addExistCategoriesToPost(categoryId, post.getId());
@@ -133,6 +139,7 @@ public class EditorMVC {
 
         return "redirect:/editor/" + username + "/posts";
     }
+
 
     @RequestMapping("/editor/posts/{username}/delete/{postId}")
     public String deletePost(@PathVariable("postId") int postId, @PathVariable("username") String username , RedirectAttributes attributes) {
@@ -153,4 +160,38 @@ public class EditorMVC {
         return null;
     }
 
+    @RequestMapping("/editor/posts/{username}/switch/{postId}")
+    public String publishPost(@PathVariable("username") String username, @PathVariable("postId") int postId, RedirectAttributes attributes) {
+        postService.switchPostDraftToPublished(postId);
+
+        attributes.addAttribute("username", username);
+
+        return "redirect:/editor/{username}/posts";
+    }
+
+
+    @GetMapping("/editor/posts/{username}/edit/{postId}")
+    public String editPost(@PathVariable("username") String username, @PathVariable("postId") int postId, Model model) {
+        PostDto postDto = postService.getById(postId);
+
+        UserDTO userDTO = userService.getUserByUsername(username);
+        String userPhoto = userService.encodePhotoToBase64(userDTO.getPhoto());
+
+        List<Integer> postCategories = categoryService.getCategoriesByPostId(postId).stream()
+                .map(CategoryDto::getId)
+                .toList();
+
+        postDto.setCategories(postCategories);
+
+        model.addAttribute("photo", userPhoto);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("post", postDto);
+        model.addAttribute("username", username);
+        model.addAttribute("tags", tagService.getAllTags());
+        model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("tags", tagService.getAllTags());
+
+        return "editPost";
+    }
 }

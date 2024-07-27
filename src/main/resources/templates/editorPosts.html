@@ -166,7 +166,15 @@
             <div class="card-body">
                 <p th:text="${post.content}"></p>
                 <div class="text-right">
-                    <a th:href="@{/posts/edit/{id}(id=${post.id})}" class="btn btn-edit">Edit</a>
+                    <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET" style="display:inline;">
+                        <button type="submit" class="btn btn-success">Edit</button>
+                    </form>
+
+                    <form th:if="${post.status == post.getStatus().DRAFT}" th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
+                        <input type="hidden" name="_method" value="put">
+                        <button type="submit" class="btn btn-success">Publish Post</button>
+                    </form>
+
                     <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
                         <input type="hidden" name="_method" value="delete">
                         <button type="submit" class="btn btn-delete">Delete</button>

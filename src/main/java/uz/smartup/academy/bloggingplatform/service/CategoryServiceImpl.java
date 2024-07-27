@@ -56,4 +56,10 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto findCategoryById(int id) {
         return categoryDtoUtil.toDto(categoryDao.findCategoryById(id));
     }
+
+    @Override
+    public List<CategoryDto> getCategoriesByPostId(int postId) {
+
+        return categoryDtoUtil.toDTOs(categoryDao.getCategoriesByPostId(postId));
+    }
 }

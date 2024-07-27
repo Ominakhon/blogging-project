@@ -12,4 +12,5 @@ public interface CategoryService {
     void delete( int id);
     List<CategoryDto> getAllCategories();
     CategoryDto findCategoryById(int id);
+    List<CategoryDto> getCategoriesByPostId(int postId);
 }

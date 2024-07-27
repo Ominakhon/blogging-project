@@ -61,6 +61,10 @@
                         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                     </div>
                     <div class="offcanvas-body">
+                        <form th:action="@{/admin}" sec:authorize="hasRole('ROLE_ADMIN')" method="GET">
+                            <i class="fa-regular fa-circle-user"></i>
+                            <button class="w-100 mb-2" type="submit">Admin panel</button>
+                        </form>
                         <form th:action="@{/profile/{username}(username=${loggedIn.username})}" method="GET">
                             <i class="fa-regular fa-circle-user"></i>
                             <button class="w-100 mb-2" type="submit">Profile</button>

@@ -126,10 +126,10 @@
                                         <tbody>
                                         <tr th:each = "comment: ${commentDTO}">
                                             <td th:text = "${comment.id}"></td>
-                                            <td th:text = "${comment.post_id}"></td>
-                                            <td th:text = "${comment.user_id}"></td>
+                                            <td th:text = "${comment.postId}"></td>
+                                            <td th:text = "${comment.authorId}"></td>
                                             <td th:text = "${comment.content}"></td>
-                                            <td th:text = "${comment.created_at}"></td>
+                                            <td th:text = "${comment.createdAt}"></td>
                                             <td>
                                                 <h6 data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Edit" class="d-inline-block mb-0"><a th:href="@{/admin/post/edit/{id}(id=post.id)}"><i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa fa-edit col_3"></i></a></h6>
                                                 <h6 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Delete" class="d-inline-block mb-0"><a th:href="@{/admin/post/delete/{id}(id=post.id)}"><i class="fa fa-trash col_3"></i></a></h6>

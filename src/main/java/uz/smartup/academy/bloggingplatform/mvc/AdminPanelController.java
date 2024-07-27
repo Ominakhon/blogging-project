@@ -47,12 +47,14 @@ public class AdminPanelController {
 
         List<UserDTO> userDTOList = userService.getAllUsers();
         List<User> userDTOS = dao.getUsersWithEditorRole();
+        List<User> userDTOSs = dao.findAllByEnabledIsNull();
         List<PostDto> postDtos = postService.getAllPosts();
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         List<User> userss = dao.getUsersWithoutEditorRole();
 
         model.addAttribute("userDTO",userDTOS);
+        model.addAttribute("userDTOs",userDTOSs);
         model.addAttribute("userss",userss);
         model.addAttribute("users",userDTOList.size());
         model.addAttribute("posts",postDtos.size());
@@ -100,6 +102,42 @@ public class AdminPanelController {
         model.addAttribute("categories",categories);
 
         return "admin_zip/user_table";
+    }
+
+    @GetMapping("/admin/user/{userId}/edit")
+    public String editProfile(Model model, @PathVariable("userId") String  username) {
+
+        UserDTO user = userService.getUserByUsername(username);
+        List<CategoryDto> categories = categoryService.getAllCategories();
+
+        String base64EncodedPhoto = userService.encodePhotoToBase64(user.getPhoto());
+        model.addAttribute("base64EncodedPhoto", base64EncodedPhoto);
+        model.addAttribute("user", user);
+        model.addAttribute("categories", categories);
+
+        return "editUser";
+    }
+
+    @GetMapping("/admin/user/{username}/ban")
+    public String banUser(@PathVariable("username") String username, Model model) {
+        UserDTO userDTO = userService.getUserByUsername(username);
+
+        //System.out.println(userDTO);
+
+        userService.banUser(userDTO.getId());
+
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/admin/user/{username}/unban")
+    public String unBanUser(@PathVariable("username") String username, Model model) {
+        UserDTO userDTO = userService.getUserByUsername(username);
+
+        //System.out.println(userDTO);
+
+        userService.unBanUser(userDTO.getId());
+
+        return "redirect:/admin";
     }
 
     @GetMapping("/admin/user/{username}/role/add")

@@ -153,11 +153,13 @@ public class PostServiceImpl implements PostService {
         Post post = dao.getById(id);
 
         post.setStatus(Post.Status.PUBLISHED);
+        post.setCreatedAt(LocalDateTime.now());
 
         dao.update(post);
     }
 
     @Override
+    @Transactional
     public void switchPublishedToDraft(int id) {
         Post post = dao.getById(id);
 

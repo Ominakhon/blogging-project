@@ -15,6 +15,8 @@
 	<link th:href="@{/admin/css/dashboard.css}" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap" rel="stylesheet">
    	<link th:href="@{/admin/css/table.css}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 
 </head>
   <body onLoad="doOnLoad();">
@@ -33,6 +35,7 @@
 
 		  <ul class="dropdown-menu drop_2" style="left:auto; right:0; min-width:200px;">
 		  <li class="small" style="padding: 0.25rem 1rem;">Welcome !</li>
+		  <li><a class="dropdown-item" th:href="@{/}"> Home page </a></li>
 		  <li><a class="dropdown-item" th:href="@{@{/profile/{username}(username=${user.username})}}"><i class="fa fa-user"></i> My Account</a></li>
 		  <li><a class="dropdown-item" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a></li>
 		</ul>
@@ -144,7 +147,7 @@
 											  data-bs-placement="left"
 											  data-bs-original-title="Edit"
 											  class="d-inline-block mb-0">
-											  <a th:href="@{/profile/{username}/edit(username=${user.username})}">
+											  <a th:href="@{/admin/user/{username}/edit(username=${user.username})}">
 												  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;"
 													 class="fa fa-edit col_3">
 												  </i>
@@ -199,9 +202,20 @@
 											  data-bs-placement="left"
 											  data-bs-original-title="Edit"
 											  class="d-inline-block mb-0">
-											  <a th:href="@{/profile/{username}/edit(username=${user.username})}">
+											  <a th:href="@{/admin/user/{username}/edit(username=${user.username})}">
 												  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;"
 													 class="fa fa-edit col_3">
+												  </i>
+											  </a>
+										  </h6>
+
+										  <h6 data-bs-toggle="tooltip"
+											  data-bs-placement="right"
+											  data-bs-original-title="Ban"
+											  class="d-inline-block mb-0">
+											  <a th:href="@{/admin/user/{username}/ban(username=${user.username})}">
+												  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;"
+													 class="fa fa-ban">
 												  </i>
 											  </a>
 										  </h6>
@@ -213,6 +227,50 @@
 <!--											 th:href="@{/admin/user/{username}/role/add(username=${user.username})}">-->
 <!--											  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa">&#xf0fe;</i>-->
 <!--										  </a>-->
+									  </td>
+								  </tr>
+								  </tbody>
+							  </table>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+
+		  <div class="col-xl-9 col-md-7 col-lg-7">
+			  <div class="project_2r">
+				  <div class="card">
+					  <div class="card-header">
+						  <h6 style="padding-top:2px;" class="d-inline-block mb-0">USERS(BAN)</h6>
+					  </div>
+					  <div class="card-body table-responsive table_tow">
+						  <div class="table_tow">
+							  <table class="table table-hover table-bordered table-centered mb-0">
+								  <thead>
+								  <tr>
+									  <th>ID</th>
+									  <th>FirstName</th>
+									  <th>LastName</th>
+									  <th>Email</th>
+									  <th>Registered</th>
+									  <th>Active?</th>
+								  </tr>
+								  </thead>
+								  <tbody>
+								  <tr th:each = "user: ${userDTOs}">
+									  <td th:text = "${user.id}"></td>
+									  <td th:text = "${user.firstName}"></td>
+									  <td th:text = "${user.lastName}"></td>
+									  <td th:text = "${user.email}"></td>
+									  <td th:text = "${user.registered}"></td>
+									  <td>
+										  <a data-bs-toggle="tooltip"
+											 data-bs-placement="left"
+											 data-bs-original-title="UnBan"
+											 class="d-inline-block mb-0"
+											 th:href="@{/admin/user/{username}/unban(username=${user.username})}">
+											  <i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa">&#xf0fe;</i>
+										  </a>
 									  </td>
 								  </tr>
 								  </tbody>
