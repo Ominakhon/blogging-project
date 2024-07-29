@@ -88,9 +88,9 @@ public class Post {
             comments.remove(comment);
     }
 
-    public void removeCategory(Comment comment) {
-        if(!comments.isEmpty())
-            comments.remove(comment);
+    public void removeCategory(Category category) {
+        if(!categories.isEmpty())
+            categories.remove(category);
     }
 
     public void addTag(Tag tag) {

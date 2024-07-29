@@ -2,6 +2,7 @@ package uz.smartup.academy.bloggingplatform.mvc;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -193,5 +194,25 @@ public class EditorMVC {
         model.addAttribute("tags", tagService.getAllTags());
 
         return "editPost";
+    }
+
+
+    @PostMapping("/editor/posts/{username}/edit/{postId}")
+    public String updatePost(@PathVariable("postId") int postId, @PathVariable("username") String username, @ModelAttribute("post") PostDto postDto, Model model, RedirectAttributes attributes,@RequestParam(value = "file", required = false) MultipartFile photo) throws IOException {
+
+        if (photo.isEmpty() || photo == null) {
+            postDto.setPhoto(postService.getById(postId).getPhoto());
+        } else {
+            byte[] bytes = photo.getBytes();
+            postDto.setPhoto(bytes);
+        }
+
+        postDto.setId(postId);
+        postDto.setLikesCount(postService.getPostWithLikeCount(postId).getLikesCount());
+
+        postService.update(postDto);
+
+        return "redirect:/editor/" + username + "/posts";
+
     }
 }

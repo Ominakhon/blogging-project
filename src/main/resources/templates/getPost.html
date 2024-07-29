@@ -511,10 +511,16 @@
     </div>
     <p th:text="${post.content}"></p>
 
-    <div class="tags" th:if="${tags!=null}" th:each="tag : ${tags}">
+    <div class="tags" th:if="${tags!=null}" th:each="tag : ${tags}" style="display: flex; justify-content: start; align-items: center;">
         <a th:href="@{/posts/tags/{tagTitle}(tagTitle=${tag.title})}" th:text="'#' + ${tag.title}"
            style="font-size: 20px; "></a>
     </div>
+
+    <div class="author">
+        <img  th:src="'data:image/png;base64,' + ${authorPhoto}">
+        <a th:href="@{/posts/author/{username}(username=${author.username})}" th:text="${author.username}"></a>
+    </div>
+
 </section>
 
 <section id="Comments">
