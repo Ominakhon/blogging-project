@@ -535,5 +535,26 @@ section#EditForm .userEditForm .btn {
     color: rgb(0, 166, 81);
 }
 
+section#Post .author {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-top: 30px;
+}
+
+section#Post .author img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+section#Post .author a {
+    font-size: 25px;
+    color: rgb(0, 166, 81);
+    font-weight: 600;
+    cursor: pointer;
+}
+
 
 

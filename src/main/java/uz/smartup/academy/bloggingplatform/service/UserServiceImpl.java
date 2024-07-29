@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserService {
         Post post = postDtoUtil.toEntity(postDto);
 
         if (postDto.getPhoto() == null || postDto.getPhoto().length == 0) {
-            user.setPhoto(defaultPhotoPost);
+            post.setPhoto(defaultPhotoPost);
         }
 
         post.setStatus(Post.Status.DRAFT);
@@ -197,6 +197,10 @@ public class UserServiceImpl implements UserService {
 
         Post post = postDtoUtil.toEntity(postDto);
 
+        if (postDto.getPhoto() == null || postDto.getPhoto().length == 0) {
+            post.setPhoto(defaultPhotoPost);
+        }
+
         post.setStatus(Post.Status.PUBLISHED);
         post.setAuthor(user);
         post.setCreatedAt(LocalDateTime.now());
@@ -209,6 +213,8 @@ public class UserServiceImpl implements UserService {
     public void addExistCategoriesToPost(int categoryId, int postId) {
         Post post = postDao.getById(postId);
         Category category = categoryDao.findCategoryById(categoryId);
+
+        System.out.println(categoryId);
 
         post.addCategories(category);
 

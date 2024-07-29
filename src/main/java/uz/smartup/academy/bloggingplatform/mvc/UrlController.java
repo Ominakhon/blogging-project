@@ -1,4 +1,8 @@
 package uz.smartup.academy.bloggingplatform.mvc;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -73,7 +77,8 @@ public class UrlController {
     public String passwordResetProcess(@ModelAttribute("passwordChangeForm") PasswordChangeForm form,
                                        Model model,
                                        RedirectAttributes attributes,
-                                       @PathVariable String token) {
+                                       @PathVariable String token,
+                                       HttpServletRequest request) throws ServletException {
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token);
 //        System.out.println(resetToken.getExpiryDate());
         if (mailSenderService.hasExpired(resetToken.getExpiryDate())) {
@@ -88,14 +93,29 @@ public class UrlController {
             return "passwordReset";
         }
 
+        String rawPassword = form.getNewPassword();
+
         user.setPassword(passwordEncoder.encode(form.getNewPassword()));
         userService.updateUser(userDtoUtil.toDTO(user)); // assuming updateUser saves the updated user
 
+
+
         attributes.addFlashAttribute("success", "Password changed successfully.");
+
+        if(getLoggedUser() == null)
+            request.login(user.getUsername(), rawPassword);
+
         return "redirect:/";
     }
 
+    private UserDetails getLoggedUser() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        if (principal instanceof UserDetails)
+            return (UserDetails) principal;
+
+        return null;
+    }
 
 
 

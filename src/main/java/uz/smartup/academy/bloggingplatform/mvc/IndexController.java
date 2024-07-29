@@ -98,7 +98,8 @@ public class IndexController {
         post.setLikesCount(likeService.countLikesByPostId(postId));
 
         List<TagDto> tags = tagService.getTagsByPostId(postId);
-        System.out.println(tags);
+        UserDTO author = postService.getAuthorById(postId);
+        String authorPhoto = userService.encodePhotoToBase64(author.getPhoto());
 
         comments.forEach(commentDTO -> commentDTO.setUsername(userService.getUserById(commentDTO.getAuthorId()).getUsername()));
         String photo = "";
@@ -128,6 +129,8 @@ public class IndexController {
         model.addAttribute("categories", categories);
         model.addAttribute("newComment", new CommentDTO());
         model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("authorPhoto", authorPhoto);
+        model.addAttribute("author", author);
 
         return "getPost";
     }
@@ -161,13 +164,22 @@ public class IndexController {
         return "redirect:/posts/{postId}";
     }
 
-    @PostMapping("categories/{categoryTitle}/{postId}/likes/{username}")
+    @PostMapping("/categories/{categoryTitle}/{postId}/likes/{username}")
     public String likeCategory(@PathVariable("categoryTitle") String categoryTitle, @PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
         likeService.addLike(userService.getUserByUsername(username).getId(), postId);
 
         attributes.addAttribute("categoryTitle", categoryTitle);
 
         return "redirect:/categories/{categoryTitle}";
+    }
+
+    @PostMapping("/{authorUsername}/posts/{postId}/likes/{username}")
+    public String likeAuthor(@PathVariable("authorUsername") String authorUsername, @PathVariable("postId") int postId, @PathVariable("username") String username, RedirectAttributes attributes) {
+        likeService.addLike(userService.getUserByUsername(username).getId(), postId);
+
+        attributes.addAttribute("username", authorUsername);
+
+        return "redirect:/posts/author/{username}";
     }
 
     @GetMapping("/categories/{categoryTitle}")
@@ -472,4 +484,54 @@ public class IndexController {
         return "searchResults";
     }
 
+
+    @GetMapping("/posts/author/{username}")
+    public String authorPost(@PathVariable("username") String username, Model model) {
+        UserDTO author = userService.getUserByUsername(username);
+        List<PostDto> posts = postService.getPostsByAuthor(author.getId());
+        String photo = userService.encodePhotoToBase64(author.getPhoto());
+
+        if (posts != null) {
+
+            posts = posts.stream()
+                    .filter(postDto -> postDto.getStatus().equals(Post.Status.PUBLISHED))
+                    .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
+                    .toList();
+
+            if (posts.size() > 20) {
+                posts = posts.stream()
+                        .limit(20)
+                        .toList();
+            }
+
+            for (PostDto post : posts) {
+                post.setLikesCount(likeService.countLikesByPostId(post.getId()));
+            }
+
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
+
+            if(getLoggedUser() != null)
+                for(PostDto postDto : posts)
+                    postDto.setLiked(likeService.findByUserAndPost(userService.getUserByUsername(getLoggedUser().getUsername()).getId(), postDto.getId()) != null);
+            else
+                for (PostDto postDto : posts)
+                    postDto.setLiked(false);
+
+        }
+
+
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("username", username);
+        model.addAttribute("photo", photo);
+
+
+        return "postsWithAuthor";
+    }
 }

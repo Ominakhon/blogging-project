@@ -7,13 +7,12 @@ import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dao.TagDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
-import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Like;
-import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -24,9 +23,11 @@ public class PostServiceImpl implements PostService {
     private final LikeService likeService;
     private final CategoryDao categoryDao;
     private final TagDao tagDao;
+    private final CategoryService categoryService;
+    private final UserDtoUtil userDtoUtil;
 
 
-    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil, UserDao userDao, CategoryDao categoryDao, TagDao tagDao) {
+    public PostServiceImpl(PostDao dao, PostDtoUtil dtoUtil, CommentDtoUtil commentDtoUtil, LikeService likeService, PostDtoUtil postDtoUtil, UserDao userDao, CategoryDao categoryDao, TagDao tagDao, CategoryService categoryService, UserDtoUtil userDtoUtil) {
         this.dao = dao;
         this.dtoUtil = dtoUtil;
         this.commentDtoUtil = commentDtoUtil;
@@ -34,6 +35,8 @@ public class PostServiceImpl implements PostService {
         this.userDao = userDao;
         this.categoryDao = categoryDao;
         this.tagDao = tagDao;
+        this.categoryService = categoryService;
+        this.userDtoUtil = userDtoUtil;
     }
 
     @Override
@@ -50,6 +53,24 @@ public class PostServiceImpl implements PostService {
         post.setComments(dao.getPostComments(post.getId()));
         post.setAuthor(dao.getAuthorById(post.getId()));
         post.setStatus(dao.findPostStatusById(post.getId()));
+        post.setTags(tagDao.getTagsByPostId(post.getId()));
+        post.setCreatedAt(dao.getById(post.getId()).getCreatedAt());
+
+        List<CategoryDto> categories = categoryService.getCategoriesByPostId(post.getId());
+
+        if (categories != null) {
+            for (CategoryDto category : categories) {
+                removeCategoryFromPost(post.getId(), category.getId());
+            }
+        }
+
+        List<Category> categories1 = new ArrayList<>();
+
+        postDto.getCategories().forEach(categoryId -> {
+            categories1.add(categoryDao.findCategoryById(categoryId));
+        });
+
+        post.setCategories(categories1);
 
         dao.update(post);
     }
@@ -76,8 +97,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public User getAuthorById(int id) {
-        return dao.getAuthorById(id);
+    public UserDTO getAuthorById(int id) {
+        return userDtoUtil.toDTO(dao.getAuthorById(id));
     }
 
     @Override
@@ -183,6 +204,29 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDto> searchPosts(String keyword) {
         return dtoUtil.toDTOs(dao.searchPosts(keyword));
+    }
+
+    @Override
+    @Transactional
+    public void removeCategoryFromPost(int postId, int categoryId) {
+        Post post = dao.getById(postId);
+
+        post.removeCategory(categoryDao.findCategoryById(categoryId));
+
+        dao.update(post);
+    }
+
+    @Override
+    @Transactional
+    public void addExistCategoriesToPost(int categoryId, int postId) {
+        Post post = dao.getById(postId);
+        Category category = categoryDao.findCategoryById(categoryId);
+
+        System.out.println(categoryId);
+
+        post.addCategories(category);
+
+        dao.update(post);
     }
 
 }

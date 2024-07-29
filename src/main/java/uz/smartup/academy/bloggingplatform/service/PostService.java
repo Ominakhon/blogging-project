@@ -2,6 +2,7 @@ package uz.smartup.academy.bloggingplatform.service;
 
 import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
+import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -18,7 +19,7 @@ public interface PostService {
 
     List<PostDto> getAllPosts();
 
-    User getAuthorById(int id);
+    UserDTO getAuthorById(int id);
 
     List<PostDto> getPostsByAuthor(int authorId);
 
@@ -45,5 +46,9 @@ public interface PostService {
     List<PostDto> getPostsByTag(String tagTitle);
 
     List<PostDto> searchPosts(String keyword);
+
+    void removeCategoryFromPost(int postId, int categoryId);
+
+    void addExistCategoriesToPost(int categoryId, int postId);
 
 }
