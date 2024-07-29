@@ -23,6 +23,7 @@
             color: #7c8688;
             font-size: 0.7em;
         }
+
     </style>
 
     <style>
@@ -35,19 +36,68 @@
         .container {
             margin-top: 30px;
         }
-        .card {
-            margin-bottom: 20px;
+        section.tours {
+            padding: 60px 0px;
+            text-align: center;
+
         }
-        .card-header {
-            background-color: rgb(0, 166, 81);
+
+        section.tours .nav-tabs {
+            border: none;
+            margin: 25px 0px;
+        }
+
+        section.tours .nav-tabs button {
+            padding: 10px 20px;
+            border: none;
+        }
+
+        section.tours .nav-tabs button.active {
+            border: none;
+            background-color: rgb(9, 9, 94);
+            padding: 10px 20px;
+            border-radius: 5px;
             color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
-        .card-body {
-            display: flex;
-            flex-direction: column;
+
+        section.tours .tab-content .box {
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 1);
+            padding: 24px;
+            padding-bottom: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0px 2px 53px -8px rgba(0, 0, 0, 0.22);
+            -webkit-box-shadow: 0px 2px 53px -8px rgba(0, 0, 0, 0.22);
+            -moz-box-shadow: 0px 2px 53px -8px rgba(0, 0, 0, 0.22);
+            min-height: 600px;
+            text-align: center;
+        }
+
+
+        section.tours .tab-content .box h3 {
+            font-weight: 700;
+            font-size: 30px;
+            line-height: 31px;
+            color: rgb(51, 51, 51);
+            margin: 20px 0px;
+        }
+
+
+        section.tours .tab-content .box p {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 21px;
+            color: rgb(85, 85, 85);
+
+        }
+        section.tours .tab-content .box p {
+            font-size: 14px;
+        }
+        .post-image {
+            width: 370px;
+        }
+        .post-image img {
+            width: 100%;
         }
         .btn-edit {
             background-color: rgb(0, 166, 81);
@@ -79,6 +129,11 @@
         .status-draft {
             color: #ffc107;
         }
+        /*@media(max-width:768px){*/
+        /*    h2.title {*/
+        /*        font-size: 35px;*/
+        /*        line-height: 45px;*/
+
     </style>
 
 
@@ -152,39 +207,53 @@
     </div>
 </nav>
 
+<section class="tours" id="tours">
 <div class="container">
-    <h1 class="text-center">Your Posts</h1>
-    <div class="text-right mb-4">
-        <a th:href="@{/editor/{username}/posts/new(username=${loggedIn.username})}" class="btn btn-new-post">New Post</a>
-    </div>
-    <div th:each="post : ${posts}">
-        <div class="card">
-            <div class="card-header">
-                <h5 th:text="${post.title}"></h5>
-                <span th:class="'post-status ' + 'status-' + ${post.status}" th:text="${post.status}"></span>
+    <div class="row justify-content-center">
+        <div class="col-lg-6 aos-init aos-animate" data-aos="zoom-in">
+            <h1 class="text-center">Your Posts</h1>
+            <div class="text-right mb-4">
+                <a th:href="@{/editor/{username}/posts/new(username=${loggedIn.username})}" class="btn btn-new-post">New Post</a>
             </div>
-            <div class="card-body">
-                <p th:text="${post.content}"></p>
-                <div class="text-right">
-                    <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET" style="display:inline;">
-                        <button type="submit" class="btn btn-success">Edit</button>
-                    </form>
+        </div>
+    </div>
 
-                    <form th:if="${post.status == post.getStatus().DRAFT}" th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
-                        <input type="hidden" name="_method" value="put">
-                        <button type="submit" class="btn btn-success">Publish Post</button>
-                    </form>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+            <div class="col-12">
+                <div th:each="post : ${posts}">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="box">
+                                <div class="post-image">
+                                    <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
+                                </div>
+                                <h3 th:text="${post.title}"></h3>
+                                <p th:text="${post.content}"></p>
+                                <div class="text-right">
+                                    <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET" style="display:inline;">
+                                        <button type="submit" class="btn btn-success">Edit</button>
+                                    </form>
 
-                    <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
-                        <input type="hidden" name="_method" value="delete">
-                        <button type="submit" class="btn btn-delete">Delete</button>
-                    </form>
+                                    <form th:if="${post.status == post.getStatus().DRAFT}" th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
+                                        <input type="hidden" name="_method" value="put">
+                                        <button type="submit" class="btn btn-success">Publish Post</button>
+                                    </form>
+
+                                    <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
+                                        <input type="hidden" name="_method" value="delete">
+                                        <button type="submit" class="btn btn-delete">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+</section>
 
 <section id="Contact" class="mt-5">
     <div class="contact">
