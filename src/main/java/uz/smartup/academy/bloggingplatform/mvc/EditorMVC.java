@@ -51,6 +51,11 @@ public class EditorMVC {
             posts = posts.stream()
                     .sorted(Comparator.comparing(PostDto::getCreatedAt))
                     .toList();
+
+            for(PostDto postDto : posts) {
+                if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
+                else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
+            }
         }
 
         String photo = "";
