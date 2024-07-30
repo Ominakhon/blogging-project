@@ -23,6 +23,7 @@ public class UserDTO {
     private byte[] photo;
     private String email;
     private String bio;
+    private String enabled;
     private String password;
     private String username;
     private LocalDate registered;

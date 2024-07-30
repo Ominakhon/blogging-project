@@ -2,28 +2,27 @@ package uz.smartup.academy.bloggingplatform.mvc;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
+import uz.smartup.academy.bloggingplatform.dto.UserDtoUtil;
 import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
+import uz.smartup.academy.bloggingplatform.entity.PasswordResetToken;
 import uz.smartup.academy.bloggingplatform.entity.Role;
+import uz.smartup.academy.bloggingplatform.entity.User;
+import uz.smartup.academy.bloggingplatform.exceptions.EmailSendingException;
+import uz.smartup.academy.bloggingplatform.exceptions.UserAlreadyExistsException;
+import uz.smartup.academy.bloggingplatform.service.MailSenderService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 import java.security.Principal;
@@ -35,12 +34,16 @@ public class UserMVC {
 
     private final UserService service;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+//    private final AuthenticationManager authenticationManager;
+    private final MailSenderService mailSenderService;
+    private final UserDtoUtil userDtoUtil;
 
-    public UserMVC(UserService userService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public UserMVC(UserService userService, PasswordEncoder passwordEncoder, MailSenderService mailSenderService, UserDtoUtil userDtoUtil) {
         this.service = userService;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
+//        this.authenticationManager = authenticationManager;
+        this.mailSenderService = mailSenderService;
+        this.userDtoUtil = userDtoUtil;
     }
 
     @GetMapping("/register")
@@ -52,41 +55,67 @@ public class UserMVC {
     @PostMapping("/register-user")
     public String createUser(Model model, @ModelAttribute("user") UserDTO user, RedirectAttributes attributes, HttpServletRequest request) {
         try {
-//            if (service.getUserByUsername(user.getUsername()) != null) {
-//                model.addAttribute("error", "this username already exist, please use another username");
-//                model.addAttribute("user", new UserDTO());
-//                return "createUser";
-//            }
-
             List<Role> roles = new ArrayList<>();
             Role role = new Role();
             role.setRole("ROLE_VIEWER");
             role.setUsername(user.getUsername());
             roles.add(role);
+            service.registerUserWithConfirmation(user, roles);
 
-            service.registerUser(user, roles);
+            attributes.addFlashAttribute("success", "Registration successful! A verification email has been sent.");
+            return "redirect:/login";
 
-            request.login(user.getUsername(), user.getPassword());
-
-            attributes.addFlashAttribute("success", "User registered and logged in successfully.");
-            return "redirect:/";
-        } catch (Exception e) {
-            attributes.addFlashAttribute("error", "An error occurred during registration. Please try again.");
+        } catch (UserAlreadyExistsException e) {
+            attributes.addFlashAttribute("error", "User already exists. Please try a different username or email.");
             return "redirect:/register";
+
+//        }
         }
+
+
+
     }
 
-    public void autoLogin(String username, String password, HttpServletRequest request) {
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
 
-        Authentication authentication = authenticationManager.authenticate(token);
+    @GetMapping("/email-confirmation")
+    public String activation(@RequestParam("token") String token, Model model){
+        PasswordResetToken verificationToken = mailSenderService.findByToken(token);
+        if(verificationToken == null){
+            model.addAttribute("message", "Your verification token is invalid!");
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        //this step is important, otherwise the new login is not in session which is required by Spring Security
-        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+        }
+        else{
+            User user = verificationToken.getUser();
+            if(user.getEnabled().equals("0")){
+                if(verificationToken.isExpired()){
+                    model.addAttribute("message", "Token is expired!");
+                }
+                else{
+                    user.setEnabled("1");
+                    UserDTO userDTO = userDtoUtil.toDTO(user);
+                    service.updateUser(userDTO);
+                    model.addAttribute("message", "Account is successfully activated!");
+                }
+            }
+            else {
+                model.addAttribute("message", "Your account is already activated!");
+            }
+        }
+        return "activation";
     }
+
+//    public void autoLogin(String username, String password, HttpServletRequest request) {
+//
+//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+//
+//        Authentication authentication = authenticationManager.authenticate(token);
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//         //this step is important, otherwise the new login is not in session which is required by Spring Security
+//        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+//    }
 
     @GetMapping("/changePassword")
     public String showChangePasswordForm(Model model) {
@@ -197,5 +226,9 @@ public class UserMVC {
 
         return "redirect:/";
     }
+
+
+
+
 
 }

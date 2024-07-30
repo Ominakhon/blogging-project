@@ -1,5 +1,6 @@
 package uz.smartup.academy.bloggingplatform.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,13 @@ import java.util.UUID;
 public class MailSenderServiceImpl implements MailSenderService {
 
     private final JavaMailSender mailSender;
-    private final UserService userService;
+//    private final UserService userService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private static final int EXPIRATION_TIME_IN_MINUTES = 60 * 24;
 
-    public MailSenderServiceImpl(JavaMailSender mailSender, UserService userService, PasswordResetTokenRepository passwordResetTokenRepository) {
+    public MailSenderServiceImpl(JavaMailSender mailSender,  PasswordResetTokenRepository passwordResetTokenRepository) {
         this.mailSender = mailSender;
-        this.userService = userService;
+//        this.userService = userService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
@@ -55,8 +56,20 @@ public class MailSenderServiceImpl implements MailSenderService {
                 "Regards,\nGreen White News Support");
         return simpleMailMessage;
     }
+//
+//    private static SimpleMailMessage getVerificationMessage(User user, String token){
+//        token =
+//        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+//        simpleMailMessage.setFrom("abdullakhmirfayziev81@gmail.com");
+//        simpleMailMessage.setTo(user.getEmail());
+//
+//    }
+
+
+
 
     @Override
+    @Transactional
     public String createPasswordResetTokenForUser(User user) {
         UUID uuid = UUID.randomUUID();
         LocalDateTime now = LocalDateTime.now();
@@ -85,6 +98,25 @@ public class MailSenderServiceImpl implements MailSenderService {
     @Override
     public boolean hasExpired(LocalDateTime expiryDate) {
         return LocalDateTime.now().isAfter(expiryDate);
+    }
+
+
+    @Override
+    @Transactional
+    public void save(User user, String token){
+        PasswordResetToken verificationToken = new PasswordResetToken(token, user);
+        verificationToken.setExpiryDate(calculateExpiryDate());
+        passwordResetTokenRepository.save(verificationToken);
+    }
+
+    @Override
+    public PasswordResetToken findByUser(User user) {
+        return passwordResetTokenRepository.findByUser(user);
+    }
+
+    @Override
+    public PasswordResetToken findByToken(String token) {
+        return passwordResetTokenRepository.findByToken(token);
     }
 }
 

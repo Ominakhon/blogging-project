@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Table(name = "PasswordResetToken")
 public class PasswordResetToken {
 
-    private static final int EXPIRATION = 160 * 24;
+    public static final int EXPIRATION = 24 * 60 ;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,19 +25,20 @@ public class PasswordResetToken {
 
     private LocalDateTime expiryDate;
 
-//    public PasswordResetToken() {}
-//
-//    public PasswordResetToken(String token, User user) {
-//        this.token = token;
-//        this.user = user;
-//        this.expiryDate = calculateExpiryDate();
-//    }
-//
-//    private LocalDateTime calculateExpiryDate() {
-//        return LocalDateTime.now().plusMinutes(PasswordResetToken.EXPIRATION);
-//    }
-//
-//    public boolean isExpired() {
-//        return LocalDateTime.now().isAfter(this.expiryDate);
-//    }
+
+    public PasswordResetToken() {}
+
+    public PasswordResetToken(String token, User user) {
+        this.token = token;
+        this.user = user;
+        this.expiryDate = calculateExpiryDate();
+    }
+
+    private LocalDateTime calculateExpiryDate() {
+        return LocalDateTime.now().plusMinutes(PasswordResetToken.EXPIRATION);
+    }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(this.expiryDate);
+    }
 }

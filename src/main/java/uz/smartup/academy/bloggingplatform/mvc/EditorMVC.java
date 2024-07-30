@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.CategoryDto;
 import uz.smartup.academy.bloggingplatform.dto.PostDto;
+import uz.smartup.academy.bloggingplatform.dto.TagDto;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
@@ -21,9 +22,7 @@ import uz.smartup.academy.bloggingplatform.service.UserService;
 import java.lang.Integer;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Controller
 public class EditorMVC {
@@ -107,6 +106,9 @@ public class EditorMVC {
         byte[] photoBytes = photo.getBytes();
         postDto.setPhoto(photoBytes);
 
+//        List<Integer> tags = postDto.getTags();
+//        postService.savePostTags(postDto, tags);
+
 
         UserDTO userDTO = userService.getUserByUsername(username);
         userService.addDraftPostByUserId(userDTO.getId(), postDto);
@@ -114,11 +116,13 @@ public class EditorMVC {
 
         model.addAttribute("photo", userPhoto);
 
+
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("loggedIn", getLoggedUser());
         model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("username", username);
         model.addAttribute("post", postDto);
+        model.addAttribute("newTags", new ArrayList<TagDto>());
 
         return "nextCreatePost";
     }
@@ -129,16 +133,25 @@ public class EditorMVC {
                            @RequestParam("action") String action) {
         UserDTO userDTO = userService.getUserByUsername(username);
 
+
+
         PostDto post = postService.getDraftPostsByAuthorId(userDTO.getId())
                 .stream()
                 .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
                 .toList()
                 .getFirst();
 
+//        List<Integer> tags = postDto.getTags();
+//        postService.savePostTags(post, tags);
+
+
 
         if ("Publish".equals(action)) {
             postService.switchPostDraftToPublished(post.getId());
         }
+
+        List<TagDto> tags = new ArrayList<>();
+
 
 
         if (postDto.getCategories() != null) {
@@ -147,11 +160,11 @@ public class EditorMVC {
             }
         }
 
-        if (postDto.getTags() != null) {
-            for (int tagId : postDto.getTags()) {
-                userService.addExistTagToPost(tagId, post.getId());
-            }
-        }
+//        if (postDto.getTags() != null) {
+//            for (int tagId : postDto.getTags()) {
+//                userService.addExistTagToPost(tagId, post.getId());
+//            }
+//        }
 
         return "redirect:/editor/" + username + "/posts";
     }
