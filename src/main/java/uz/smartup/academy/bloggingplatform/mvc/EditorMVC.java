@@ -52,10 +52,20 @@ public class EditorMVC {
                     .sorted(Comparator.comparing(PostDto::getCreatedAt))
                     .toList();
 
+
+
             for(PostDto postDto : posts) {
                 if(postDto.getPhoto() == null) postDto.setHashedPhoto(userService.encodePhotoToBase64(userService.getDefaultPostPhoto()));
                 else postDto.setHashedPhoto(userService.encodePhotoToBase64(postDto.getPhoto()));
             }
+
+            for (PostDto postDto : posts)
+                if(postDto.getTitle().length() > 30)
+                    postDto.setTitle(postDto.getTitle().substring(0, 30) + "...");
+
+            for (PostDto post : posts)
+                if(post.getContent().length() > 100)
+                    post.setContent(post.getContent().substring(0, 100) + "...");
         }
 
         String photo = "";

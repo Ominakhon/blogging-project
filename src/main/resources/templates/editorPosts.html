@@ -94,11 +94,21 @@
             font-size: 14px;
         }
         .post-image {
-            width: 370px;
+            width: 100%;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+            height: 45%;
+            position: relative;
+            /*border: 1px solid red;*/
         }
         .post-image img {
             width: 100%;
+            border-top-right-radius: 20px;
+            border-top-left-radius: 20px;
+            height: 100%;
         }
+
+
         .btn-edit {
             background-color: rgb(0, 166, 81);
             border: none;
@@ -106,18 +116,65 @@
             transition: background-color 0.3s ease-in-out;
             margin-right: 10px;
         }
+        section.posts {
+            width: 92%;
+            margin: auto;
+            /*border: 1px solid red;*/
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px; /* Add gap between grid items */
+        }
+
+        section.posts .post {
+            width: 100%;
+            /*border: 1px solid black;*/
+            border-radius: 20px;
+            box-shadow: 5px 5px 5px 5px gray;
+            height: 450px;
+        }
+
+        section.posts .post .post-body {
+            height: 50%;
+            padding: 20px 0;
+            /*border: 1px solid black;*/
+        }
+
+        .btn-edit {
+            background-color: rgb(0, 166, 81);
+            border: none;
+            color: white;
+            transition: background-color 0.3s ease-in-out;
+            margin-right: 10px;
+        }
+
         .btn-delete {
             background-color: #dc3545;
             border: none;
             color: white;
             transition: background-color 0.3s ease-in-out;
         }
+
         .btn-new-post {
             background-color: rgb(0, 166, 81);
             border: none;
             color: white;
             transition: background-color 0.3s ease-in-out;
         }
+
+        .post-image .modallll    {
+            position: absolute;
+            height: 35px;
+            width: 35px;
+            right: 5%;
+            top: 5%;
+            border-radius: 50%;
+            background-color: rgba(128, 128, 128, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
         .post-status {
             font-size: 14px;
             font-weight: bold;
@@ -217,43 +274,58 @@
             </div>
         </div>
     </div>
+</div>
+</section>
 
-    <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-            <div class="col-12">
-                <div th:each="post : ${posts}">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="box">
-                                <div class="post-image">
-                                    <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
-                                </div>
-                                <h3 th:text="${post.title}"></h3>
-                                <p th:text="${post.content}"></p>
-                                <div class="text-right">
-                                    <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET" style="display:inline;">
-                                        <button type="submit" class="btn btn-success">Edit</button>
-                                    </form>
 
-                                    <form th:if="${post.status == post.getStatus().DRAFT}" th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
-                                        <input type="hidden" name="_method" value="put">
-                                        <button type="submit" class="btn btn-success">Publish Post</button>
-                                    </form>
+<section class="posts">
+    <div th:each="post : ${posts}" class="post">
+        <div class="post-image">
+            <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
 
-                                    <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST" style="display:inline;">
-                                        <input type="hidden" name="_method" value="delete">
-                                        <button type="submit" class="btn btn-delete">Delete</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+            <div class="modallll">
+                <button type="button" class="btn" data-bs-toggle="modal" th:data-bs-target="'#postActionsModal_' + ${post.id}">
+                    <i class="fa-solid fa-ellipsis-vertical text-white"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="post-body" style="padding-right: 20px; padding-left: 20px;">
+            <h3 th:text="${post.title}"></h3>
+            <p th:text="${post.content}"></p>
+            <h5 class="text-success" th:text="${post.status}"></h5>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" th:id="'postActionsModal_' + ${post.id}" tabindex="-1" aria-labelledby="postActionsModalLabel_" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" th:id="'postActionsModalLabel_' + ${post.id}">Post Actions</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET">
+                            <button type="submit" class="btn btn-success w-100 mb-2">Edit</button>
+                        </form>
+
+                        <form th:if="${post.status == post.getStatus().DRAFT}" th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST">
+                            <input type="hidden" name="_method" value="put">
+                            <button type="submit" class="btn btn-success w-100 mb-2">Publish Post</button>
+                        </form>
+
+                        <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="btn btn-danger w-100">Delete</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </section>
+
 
 <section id="Contact" class="mt-5">
     <div class="contact">
@@ -310,6 +382,7 @@
         });
     });
 </script>
+
 
 </body>
 </html>
