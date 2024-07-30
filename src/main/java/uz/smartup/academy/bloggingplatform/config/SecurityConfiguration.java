@@ -45,10 +45,10 @@ public class SecurityConfiguration {
         return detailsManager;
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+//        return authenticationConfiguration.getAuthenticationManager();
+//    }
 
 //    @Bean
 //    public UserDetailsService userDetailsService() {
@@ -70,7 +70,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/changePassword").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/password-change").authenticated()
-                                .requestMatchers(HttpMethod.GET, "/password/reset", "/password/reset/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/password/reset", "/password/reset/*", "/email-confirmation").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/password/reset", "/password/reset/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/changePassword").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/password-change", "/profile/*").authenticated()
