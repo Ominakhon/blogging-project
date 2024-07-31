@@ -14,6 +14,7 @@ public class UserDtoUtil {
         user.setFirstName(userDTO.getFirst_name());
         user.setLastName(userDTO.getLast_name());
         user.setEmail(userDTO.getEmail());
+        user.setEnabled(user.getEnabled());
         user.setBio(userDTO.getBio());
         user.setPhoto(userDTO.getPhoto());
         user.setPassword(userDTO.getPassword());
@@ -24,9 +25,7 @@ public class UserDtoUtil {
     }
 
     public UserDTO toDTO(User user) {
-        if (user == null) return null;
-
-        if(user == null) return null;
+              if(user == null) return null;
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
@@ -63,4 +62,7 @@ public class UserDtoUtil {
 //        user.setRegistered(LocalDate.now());
         return user;
     }
+
+
+
 }

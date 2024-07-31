@@ -1,11 +1,9 @@
 package uz.smartup.academy.bloggingplatform.service;
 
-import org.hibernate.cache.spi.support.SimpleTimestamper;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
 
 import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.entity.User;
 
 import java.util.List;
 
@@ -25,6 +23,7 @@ public interface UserService {
     void deleteUser(int id);
 
     void registerUser(UserDTO userDTO, List<Role> roles);
+    void registerUserWithConfirmation(UserDTO userDTO, List<Role> roles);
 
     List<PostDao> getAllPostsOfUser(int id);
 
@@ -63,4 +62,5 @@ public interface UserService {
     void unBanUser(int userId);
 
     void unbanUsers();
+    boolean userExists(String email, String userEmail);
 }

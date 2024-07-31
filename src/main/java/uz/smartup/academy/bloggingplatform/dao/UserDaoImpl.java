@@ -5,10 +5,8 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
-import uz.smartup.academy.bloggingplatform.dto.PostDto;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
 
@@ -31,15 +29,21 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void save(User user) {
+    @Transactional
+    public User save(User user) {
         entityManager.persist(user);
+        return user;
     }
 
     @Override
     public User getUserByUsername(String username) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                .setParameter("username", username)
-                .getSingleResult();
+        try {
+            return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -61,11 +65,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    @Transactional
     public void update(User user) {
         entityManager.merge(user);
     }
 
     @Override
+    @Transactional
     public void delete(User user) {
         if (entityManager.contains(user)) {
             entityManager.remove(user);
@@ -123,7 +129,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void saveRole(Role role) {
-        entityManager.persist(role);  // Add this method implementation
+        entityManager.persist(role);
     }
 
     @Transactional

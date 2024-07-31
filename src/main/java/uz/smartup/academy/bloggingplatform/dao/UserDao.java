@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface UserDao {
 
-    void save(User user);
+    User save(User user);
 
     List<User> getALlUsers();
 

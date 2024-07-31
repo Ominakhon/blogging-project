@@ -17,15 +17,15 @@ import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dto.*;
 
 import java.time.LocalDate;
-import java.util.Base64;
+
+import java.util.*;
+
 import uz.smartup.academy.bloggingplatform.entity.*;
-import uz.smartup.academy.bloggingplatform.repository.PasswordResetTokenRepository;
+import uz.smartup.academy.bloggingplatform.exceptions.UserAlreadyExistsException;
 
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -51,9 +51,13 @@ public class UserServiceImpl implements UserService {
     private final TagDao tagDao;
     private final TagDtoUtil tagDtoUtil;
     private final PasswordEncoder passwordEncoder;
+    private final MailSenderService mailSenderService;
+    private final EmailVerificationService emailVerificationService;
+
+//    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 
-    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao, CommentDtoUtil commentDtoUtil, TagDao tagDao, TagDtoUtil tagDtoUtil, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDao userDao, UserDtoUtil dtoUtil, PostDao postDao, PostDtoUtil postDtoUtil, PostService postService, CategoryDtoUtil categoryDtoUtil, CategoryDao categoryDao, CommentDtoUtil commentDtoUtil, TagDao tagDao, TagDtoUtil tagDtoUtil, PasswordEncoder passwordEncoder, MailSenderService mailSenderService, EmailVerificationService emailVerificationService) {
         this.userDao = userDao;
         this.dtoUtil = dtoUtil;
         this.postDao = postDao;
@@ -65,7 +69,9 @@ public class UserServiceImpl implements UserService {
         this.tagDao = tagDao;
         this.tagDtoUtil = tagDtoUtil;
         this.passwordEncoder = passwordEncoder;
-
+//        this.mailSenderService = mailSenderService;
+        this.mailSenderService = mailSenderService;
+        this.emailVerificationService = emailVerificationService;
     }
 
     @PostConstruct
@@ -110,8 +116,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUser(UserDTO userDTO) {
         User user = userDao.getUserById(userDTO.getId());
-//        System.out.println(userDao.userFindByRoles(userDTO.getUsername()));
-//        System.out.println(user);
         userDao.update(dtoUtil.userMergeEntity(user, userDTO));
     }
 
@@ -121,6 +125,8 @@ public class UserServiceImpl implements UserService {
         User user = userDao.getUserById(id);
         userDao.delete(user);
     }
+
+
 
     @Override
     @Transactional
@@ -146,6 +152,12 @@ public class UserServiceImpl implements UserService {
         return defaultPhotoPost;
     }
 
+    public User save(User user) {
+        userDao.save(user);
+        return userDao.getUserById(user.getId());
+    }
+
+
     @Transactional
     @Override
     public void registerUser(UserDTO userDTO, List<Role> roles) {
@@ -164,6 +176,32 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
+    @Override
+    public void registerUserWithConfirmation(UserDTO userDTO, List<Role> roles) {
+        User user = dtoUtil.toEntity(userDTO);
+        if (user.getPhoto() == null || user.getPhoto().length == 0) {
+            user.setPhoto(defaultPhoto);
+        }
+        if (userExists(user.getUsername(), user.getEmail())) {
+            throw new UserAlreadyExistsException("A user with this username or email already exists.");
+        }
+
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        user.setRoles(roles);
+        user.setEnabled("0");
+
+        User saved = userDao.save(user);
+
+        try{
+            String token = UUID.randomUUID().toString();
+            mailSenderService.save(saved, token);
+            emailVerificationService.sendHtmlMail(saved);
+        } catch (Exception e){
+            e.printStackTrace();
+//                logger.error("Error during user registration: {}", e.getMessage(), e);
+        }
+    }
 
 
     @Override
@@ -322,6 +360,11 @@ public class UserServiceImpl implements UserService {
                 userDao.save(user);
             }
         }
+    }
+
+    @Override
+    public boolean userExists(String username, String userEmail) {
+        return userDao.getUserByEmail(userEmail) != null || userDao.getUserByUsername(username) != null;
     }
 
 
