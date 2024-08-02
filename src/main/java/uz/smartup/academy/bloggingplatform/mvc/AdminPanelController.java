@@ -176,6 +176,7 @@ public class AdminPanelController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         model.addAttribute("postDTO",postDtos);
+        model.addAttribute("userDTO",user);
         model.addAttribute("postSize",postDtos.size());
 
         model.addAttribute("categories",categories);
