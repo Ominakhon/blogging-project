@@ -69,7 +69,7 @@ public class Post {
     private long commentsCount;
 
     public void addCategories(Category category) {
-        if(categories.isEmpty())
+        if(categories == null || categories.isEmpty())
             categories = new ArrayList<>();
 
         categories.add(category);

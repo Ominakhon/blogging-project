@@ -111,7 +111,7 @@ public class EditorMVC {
 
 
         UserDTO userDTO = userService.getUserByUsername(username);
-        userService.addDraftPostByUserId(userDTO.getId(), postDto);
+//        userService.addDraftPostByUserId(userDTO.getId(), postDto);
         String userPhoto = userService.encodePhotoToBase64(userDTO.getPhoto());
 
         model.addAttribute("photo", userPhoto);
@@ -135,11 +135,7 @@ public class EditorMVC {
 
 
 
-        PostDto post = postService.getDraftPostsByAuthorId(userDTO.getId())
-                .stream()
-                .sorted((post1, post2) -> post2.getCreatedAt().compareTo(post1.getCreatedAt()))
-                .toList()
-                .getFirst();
+
 
 //        List<Integer> tags = postDto.getTags();
 //        postService.savePostTags(post, tags);
@@ -147,12 +143,17 @@ public class EditorMVC {
 
 
         if ("Publish".equals(action)) {
-            postService.switchPostDraftToPublished(post.getId());
-        }
+            userService.addPublishedPostByUserId(userDTO.getId(), postDto);
+        } else userService.addDraftPostByUserId(userDTO.getId(), postDto);
 
         List<TagDto> tags = new ArrayList<>();
 
 
+        PostDto post = postService.getAllPosts()
+                .reversed()
+                .getFirst();
+
+        System.out.println(post);
 
         if (postDto.getCategories() != null) {
             for (int categoryId : postDto.getCategories()) {

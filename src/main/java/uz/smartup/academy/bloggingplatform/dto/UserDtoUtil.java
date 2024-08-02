@@ -25,7 +25,7 @@ public class UserDtoUtil {
     }
 
     public UserDTO toDTO(User user) {
-              if(user == null) return null;
+        if(user == null) return null;
 
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());

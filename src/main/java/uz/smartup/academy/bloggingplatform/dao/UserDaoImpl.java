@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
@@ -38,9 +39,10 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserByUsername(String username) {
         try {
-            return entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
+            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class)
+                    .setParameter("username", username);
+
+            return query != null ? query.getSingleResult() : null;
         } catch (NoResultException e) {
             return null;
         }
@@ -49,13 +51,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserByEmail(String email) {
         try {
-            return entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
-                    .setParameter("email", email)
-                    .getSingleResult();
+            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class)
+                    .setParameter("email", email);
+
+            return query != null ? query.getSingleResult() : null;
         } catch (NoResultException e) {
             return null;
         }
-
     }
 
 

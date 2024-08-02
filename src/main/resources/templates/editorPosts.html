@@ -34,17 +34,17 @@
             background: #f8f9fa;
         }
         .container {
-            margin-top: 30px;
+            margin-top: 10px;
         }
         section.tours {
-            padding: 60px 0px;
+            padding: 30px 0;
             text-align: center;
 
         }
 
         section.tours .nav-tabs {
             border: none;
-            margin: 25px 0px;
+            margin: 10px 0px;
         }
 
         section.tours .nav-tabs button {
@@ -103,8 +103,8 @@
         }
         .post-image img {
             width: 100%;
-            border-top-right-radius: 20px;
-            border-top-left-radius: 20px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
             height: 100%;
         }
 
@@ -122,13 +122,13 @@
             /*border: 1px solid red;*/
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px; /* Add gap between grid items */
+            gap: 30px; /* Add gap between grid items */
         }
 
         section.posts .post {
             width: 100%;
             /*border: 1px solid black;*/
-            border-radius: 20px;
+            border-radius: 15px;
             box-shadow: 5px 5px 5px 5px gray;
             height: 450px;
         }
@@ -161,7 +161,7 @@
             transition: background-color 0.3s ease-in-out;
         }
 
-        .post-image .modallll    {
+        .post-image .modallll {
             position: absolute;
             height: 35px;
             width: 35px;
@@ -173,6 +173,10 @@
             justify-content: center;
             align-items: center;
             z-index: 1;
+        }
+
+        .no-caret:after {
+            display: none;
         }
 
         .post-status {
@@ -270,61 +274,52 @@
         <div class="col-lg-6 aos-init aos-animate" data-aos="zoom-in">
             <h1 class="text-center">Your Posts</h1>
             <div class="text-right mb-4">
-                <a th:href="@{/editor/{username}/posts/new(username=${loggedIn.username})}" class="btn btn-new-post">New Post</a>
+                <a th:href="@{/editor/{username}/posts/new(username=${loggedIn.username})}" class="btn btn-success btn-new-post">New Post</a>
             </div>
         </div>
     </div>
 </div>
 </section>
 
-
 <section class="posts">
     <div th:each="post : ${posts}" class="post">
         <div class="post-image">
             <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}" alt="Post Image">
 
-            <div class="modallll">
-                <button type="button" class="btn" data-bs-toggle="modal" th:data-bs-target="'#postActionsModal_' + ${post.id}">
+            <div class="dropdown modallll">
+                <button class="btn dropdown-toggle no-caret" type="button" th:id="'dropdownMenuButton_' + ${post.id}" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-ellipsis-vertical text-white"></i>
                 </button>
+                <ul class="dropdown-menu" th:aria-labelledby="'dropdownMenuButton_' + ${post.id}">
+                    <li>
+                        <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET">
+                            <button type="submit" class="dropdown-item">Edit</button>
+                        </form>
+                    </li>
+                    <li th:if="${post.status == post.getStatus().DRAFT}">
+                        <form th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST">
+                            <input type="hidden" name="_method" value="put">
+                            <button type="submit" class="dropdown-item">Publish Post</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST">
+                            <input type="hidden" name="_method" value="delete">
+                            <button type="submit" class="dropdown-item">Delete</button>
+                        </form>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <div class="post-body" style="padding-right: 20px; padding-left: 20px;">
             <h3 th:text="${post.title}"></h3>
             <p th:text="${post.content}"></p>
-            <h5 class="text-success" th:text="${post.status}"></h5>
-        </div>
-
-
-        <!-- Modal -->
-        <div class="modal fade" th:id="'postActionsModal_' + ${post.id}" tabindex="-1" aria-labelledby="postActionsModalLabel_" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" th:id="'postActionsModalLabel_' + ${post.id}">Post Actions</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form th:action="@{/editor/posts/{username}/edit/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="GET">
-                            <button type="submit" class="btn btn-success w-100 mb-2">Edit</button>
-                        </form>
-
-                        <form th:if="${post.status == post.getStatus().DRAFT}" th:action="@{/editor/posts/{username}/switch/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST">
-                            <input type="hidden" name="_method" value="put">
-                            <button type="submit" class="btn btn-success w-100 mb-2">Publish Post</button>
-                        </form>
-
-                        <form th:action="@{/editor/posts/{username}/delete/{postId}(postId=${post.id}, username=${loggedIn.username})}" method="POST">
-                            <input type="hidden" name="_method" value="delete">
-                            <button type="submit" class="btn btn-danger w-100">Delete</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            <h5 class="text-success" th:text="${post.status}" style="font-weight: 600;"></h5>
         </div>
     </div>
 </section>
+
 
 
 <section id="Contact" class="mt-5">

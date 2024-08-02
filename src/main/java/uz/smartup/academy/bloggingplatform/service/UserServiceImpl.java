@@ -182,9 +182,9 @@ public class UserServiceImpl implements UserService {
         if (user.getPhoto() == null || user.getPhoto().length == 0) {
             user.setPhoto(defaultPhoto);
         }
-        if (userExists(user.getUsername(), user.getEmail())) {
-            throw new UserAlreadyExistsException("A user with this username or email already exists.");
-        }
+//        if (userExists(user.getUsername(), user.getEmail())) {
+//            throw new UserAlreadyExistsException("A user with this username or email already exists.");
+//        }
 
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
@@ -349,7 +349,7 @@ public class UserServiceImpl implements UserService {
     @Scheduled(fixedRate = 3600000) // Har 1 soatda bir marta ishga tushadi
     public void unbanUsers() {
 
-        System.out.println("ishladi0000000000000000000000000000000000000");
+//        System.out.println("ishladi0000000000000000000000000000000000000");
 
         List<User> bannedUsers = userDao.findAllByEnabledIsNull();
         LocalDate now = LocalDate.now();

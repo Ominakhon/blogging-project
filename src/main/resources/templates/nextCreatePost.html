@@ -115,6 +115,9 @@
 <div class="container">
     <h2>Create Post - Step 2</h2>
     <form th:action="@{/editor/{username}/posts/save(username=${username})}" method="POST" th:object="${post}">
+        <input type="hidden" th:field="*{title}" >
+        <input type="hidden" th:field="*{content}" >
+        <input type="hidden" th:field="*{photo}" >
         <div class="form-group">
             <h3>Categories</h3>
             <div class="container">
