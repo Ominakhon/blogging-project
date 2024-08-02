@@ -134,6 +134,11 @@
 <body>
 <div class="form-background">
     <div class="form-container">
+
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
+        </div>
+
         <div class="centered-heading">
             <a th:href="@{/}" style="text-decoration: none; color: inherit;">
                 <h3>
@@ -162,6 +167,10 @@
 
             <div th:if="${param.error}">
                 <i class="text-danger">Sorry! You entered invalid username or password</i>
+            </div>
+
+            <div th:if="${error}">
+                <p class="text-danger" th:text="${error}"></p>
             </div>
 
         </form>

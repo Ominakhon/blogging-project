@@ -3,6 +3,8 @@ package uz.smartup.academy.bloggingplatform.mvc;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,14 +21,13 @@ import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
 import uz.smartup.academy.bloggingplatform.entity.PasswordResetToken;
 import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.entity.User;
-import uz.smartup.academy.bloggingplatform.exceptions.EmailSendingException;
-import uz.smartup.academy.bloggingplatform.exceptions.UserAlreadyExistsException;
 import uz.smartup.academy.bloggingplatform.service.MailSenderService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -48,30 +49,56 @@ public class UserMVC {
     public String createUser(Model model) {
         model.addAttribute("user", new UserDTO());
 
-        return "createUser";
+        return "register";
     }
 
     @PostMapping("/register-user")
-    public String createUser(Model model, @ModelAttribute("user") UserDTO user, RedirectAttributes attributes, HttpServletRequest request) {
+    public ResponseEntity<?> createUser(@ModelAttribute("user") UserDTO user, HttpServletRequest request, HttpSession session) {
+        if (request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equals("XMLHttpRequest")) {
+            if(service.userExists(user.getUsername(), user.getEmail())) {
+                return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Username or email is already taken"));
+            }
 
-        if(service.userExists(user.getUsername(), user.getEmail())) {
-            System.out.println("-".repeat(100));
-            System.out.println("user already exists");
-            System.out.println("-".repeat(100));
-            attributes.addFlashAttribute("error", "user already exists");
-            return "redirect:/register";
+            List<Role> roles = new ArrayList<>();
+            Role role = new Role();
+            role.setRole("ROLE_VIEWER");
+            role.setUsername(user.getUsername());
+            roles.add(role);
+            service.registerUserWithConfirmation(user, roles);
+
+            session.setAttribute("registrationMessage", "Registration successful. Check your email inbox and verify your email.");
+            return ResponseEntity.ok(Collections.singletonMap("redirect", "/login"));
+
         }
-
-        List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setRole("ROLE_VIEWER");
-        role.setUsername(user.getUsername());
-        roles.add(role);
-        service.registerUserWithConfirmation(user, roles);
-
-        attributes.addFlashAttribute("success", "Registration successful! A verification email has been sent.");
-        return "redirect:/login";
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Invalid request"));
     }
+
+
+
+//    @PostMapping("/register-user")
+//    public String createUser(Model model, @ModelAttribute("user") UserDTO user, RedirectAttributes attributes, HttpServletRequest request) {
+//
+//        if(service.userExists(user.getUsername(), user.getEmail())) {
+//
+//            System.out.println("-".repeat(100));
+//            System.out.println("user already exists");
+//            System.out.println("-".repeat(100));
+//
+//            model.addAttribute("error", "this username or email is already taken");
+//            model.addAttribute("user", new UserDTO());
+//            return "register";
+//        }
+//
+//        List<Role> roles = new ArrayList<>();
+//        Role role = new Role();
+//        role.setRole("ROLE_VIEWER");
+//        role.setUsername(user.getUsername());
+//        roles.add(role);
+//        service.registerUserWithConfirmation(user, roles);
+//
+//        attributes.addFlashAttribute("success", "Registration successful! A verification email has been sent.");
+//        return "redirect:/login";
+//    }
 
 
 
@@ -101,6 +128,7 @@ public class UserMVC {
         }
         return "activation";
     }
+
 
     @GetMapping("/changePassword")
     public String showChangePasswordForm(Model model) {
@@ -152,7 +180,12 @@ public class UserMVC {
     }
 
     @GetMapping("/login")
-    public String loginUserController(Model model) {
+    public String login(Model model, HttpSession session) {
+        String message = (String) session.getAttribute("registrationMessage");
+        if (message != null) {
+            model.addAttribute("message", message);
+            session.removeAttribute("registrationMessage");
+        }
         return "login";
     }
 
@@ -180,6 +213,7 @@ public class UserMVC {
                                        RedirectAttributes redirectAttributes,
                                        HttpSession session,
                                        HttpServletRequest request) throws ServletException {
+
         if (!password.equals(confirmPassword)) {
             redirectAttributes.addFlashAttribute("error", "Passwords do not match");
             return "redirect:/complete-registration";

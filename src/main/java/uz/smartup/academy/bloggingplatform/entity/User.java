@@ -64,6 +64,9 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PasswordResetToken> passwordResetTokens;
+
     public void addPostToAuthor(Post post){
         if(posts == null) posts = new ArrayList<>();
         posts.add(post);

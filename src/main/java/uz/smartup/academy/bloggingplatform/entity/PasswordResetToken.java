@@ -19,7 +19,7 @@ public class PasswordResetToken {
 
     private String token;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id", referencedColumnName = "id")
     private User user;
 

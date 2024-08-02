@@ -57,16 +57,16 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                        authManager ->  authManager
+        http.authorizeHttpRequests(authManager ->
+                        authManager
                                 .requestMatchers(HttpMethod.GET, "/admin", "/admin/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/admin", "/admin/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.POST, "/editor", "/editor/*").hasAnyRole("EDITOR")
-                                .requestMatchers(HttpMethod.GET, "/password/reset", "/password/reset/*").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/password/reset", "/password/reset/*", "/login?success=true").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/password/reset", "/password/reset/*").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/", "/register","/register/*", "/posts/*", "/profile/*", "/categories/*", "/profile", "/search", "/posts/tags/*", "/posts/author/*").permitAll()
-                                .requestMatchers(HttpMethod.POST,  "/register-user").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/", "/register", "/register/*", "/posts/*", "/profile/*", "/categories/*", "/profile", "/search", "/posts/tags/*", "/posts/author/*").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/register-user").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/css/**", "/js/**", "/photos/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/changePassword").authenticated()
                                 .requestMatchers(HttpMethod.POST, "/password-change").authenticated()
@@ -76,16 +76,16 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/password-change", "/profile/*").authenticated()
                                 .anyRequest().authenticated()
                 )
-                .formLogin(
-                        form -> form.loginPage("/login")
-                                .loginProcessingUrl("/authenticate")
-                                .defaultSuccessUrl("/", true)
-                                .permitAll()
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/authenticate")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
                 )
-                .logout(logout ->
-                        logout.logoutUrl("/logout")
-                                .logoutSuccessUrl("/")
-                                .permitAll()
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/login")
@@ -99,4 +99,5 @@ public class SecurityConfiguration {
 
         return http.build();
     }
+
 }
