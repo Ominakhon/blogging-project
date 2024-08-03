@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST, "/admin", "/admin/*").hasAnyRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/editor", "/editor/*").hasAnyRole("EDITOR")
                                 .requestMatchers(HttpMethod.POST, "/editor", "/editor/*").hasAnyRole("EDITOR")
-                                .requestMatchers(HttpMethod.GET, "/password/reset", "/password/reset/*", "/login?success=true").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/password/reset", "/auto-login","/password/reset/*", "/login?success=true").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/password/reset", "/password/reset/*").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/", "/register", "/register/*", "/posts/*", "/profile/*", "/categories/*", "/profile", "/search", "/posts/tags/*", "/posts/author/*").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/register-user").permitAll()

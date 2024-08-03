@@ -67,11 +67,32 @@ public class UserMVC {
             service.registerUserWithConfirmation(user, roles);
 
             session.setAttribute("registrationMessage", "Registration successful. Check your email inbox and verify your email.");
+            session.setAttribute("user", user);
             return ResponseEntity.ok(Collections.singletonMap("redirect", "/login"));
 
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "Invalid request"));
     }
+
+
+    @GetMapping("/auto-login")
+    public String autoLogin(HttpSession session, HttpServletRequest request) {
+        UserDTO userDTO = (UserDTO) session.getAttribute("user");
+
+        if (userDTO != null) {
+            try {
+                System.out.println(userDTO.getPassword());
+                request.login(userDTO.getUsername(), userDTO.getPassword());
+                return "redirect:/";
+            } catch (ServletException e) {
+                return "redirect:/login?error=true";
+            }
+        }
+
+        System.out.println("login");
+        return "redirect:/login";
+    }
+
 
 
 
