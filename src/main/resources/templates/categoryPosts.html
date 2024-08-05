@@ -142,8 +142,8 @@
                 <h5 th:text="${#temporals.format(topPost.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
             <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="title" th:text="${topPost.title}"></a>
-            <p th:if="${topPost.content.length() > 300}" th:text="${topPost.content.substring(0,300)} + '...'"></p>
-            <p th:if="${topPost.content.length() <= 300}" th:text="${topPost.content}"></p>
+            <p th:if="${topPost.content.length() > 300}" th:utext="${topPost.content.substring(0,300)} + '...'"></p>
+            <p th:if="${topPost.content.length() <= 300}" th:utext="${topPost.content}"></p>
             <a th:href="@{/posts/{postId}(postId=${topPost.id})}" class="link-primary" style="font-size:15px; font-weight: 500;">READ MORE</a>
 
             <div class="like d-flex justify-content-start">

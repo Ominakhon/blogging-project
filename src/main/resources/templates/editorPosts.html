@@ -118,7 +118,7 @@
         }
         section.posts {
             width: 92%;
-            margin: auto;
+            margin: 0 4%;
             /*border: 1px solid red;*/
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -314,7 +314,7 @@
 
         <div class="post-body" style="padding-right: 20px; padding-left: 20px;">
             <h3 th:text="${post.title}"></h3>
-            <p th:text="${post.content}"></p>
+<!--            <p th:utext="${post.content}"></p>-->
             <h5 class="text-success" th:text="${post.status}" style="font-weight: 600;"></h5>
         </div>
     </div>
