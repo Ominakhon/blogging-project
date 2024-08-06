@@ -1,4 +1,6 @@
 package uz.smartup.academy.bloggingplatform.mvc;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -75,6 +77,11 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         PostDto topPost = (posts != null && !posts.isEmpty()) ? posts.getFirst() : null;
+        if(topPost != null) {
+            String safeContent = Jsoup.clean(topPost.getContent(), Safelist.basic());
+            topPost.setContent(safeContent);
+        }
+
 
         model.addAttribute("topPost", topPost);
         model.addAttribute("posts", posts);
