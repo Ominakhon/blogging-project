@@ -119,7 +119,6 @@ public class EditorMVC {
 
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("loggedIn", getLoggedUser());
-        model.addAttribute("tags", tagService.getAllTags());
         model.addAttribute("username", username);
         model.addAttribute("post", postDto);
         model.addAttribute("newTags", new ArrayList<TagDto>());
@@ -134,26 +133,28 @@ public class EditorMVC {
         UserDTO userDTO = userService.getUserByUsername(username);
 
 
-
-
-
-//        List<Integer> tags = postDto.getTags();
-//        postService.savePostTags(post, tags);
-
-
-
         if ("Publish".equals(action)) {
             userService.addPublishedPostByUserId(userDTO.getId(), postDto);
         } else userService.addDraftPostByUserId(userDTO.getId(), postDto);
-
-        List<TagDto> tags = new ArrayList<>();
 
 
         PostDto post = postService.getAllPosts()
                 .reversed()
                 .getFirst();
 
-        System.out.println(post);
+        List<String> tags = separate_string(postDto.getTagsString());
+
+        for(String tag : tags) {
+            TagDto tagDto = tagService.getTagByName(tag);
+
+            if(tagDto == null) {
+                tagDto = new TagDto();
+                tagDto.setTitle(tag);
+                userService.addNewTagToPost(tagDto, post.getId());
+            } else {
+                userService.addExistTagToPost(tagDto.getId(), post.getId());
+            }
+        }
 
         if (postDto.getCategories() != null) {
             for (int categoryId : postDto.getCategories()) {
@@ -161,13 +162,26 @@ public class EditorMVC {
             }
         }
 
-//        if (postDto.getTags() != null) {
-//            for (int tagId : postDto.getTags()) {
-//                userService.addExistTagToPost(tagId, post.getId());
-//            }
-//        }
 
         return "redirect:/editor/" + username + "/posts";
+    }
+
+
+    private List<String> separate_string(String s) {
+        List<String> list = new ArrayList<>();
+        String  word = "";
+
+        for(int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) != ' ') word += s.charAt(i);
+            else {
+                list.add(word);
+                word = "";
+            }
+        }
+
+        if(!word.isEmpty()) list.add(word);
+
+        return list;
     }
 
 

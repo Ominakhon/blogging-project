@@ -15,11 +15,12 @@ public class TagDtoUtil {
     }
 
     public TagDto toDto(Tag tag){
-        return new TagDto.Builder()
+        return tag == null ? null : new TagDto.Builder()
                 .id(tag.getId())
                 .title(tag.getTitle())
                 .build();
     }
+
     public List<TagDto> toDTOs(List<Tag> tags){
         return tags.stream().map(this::toDto).toList();
     }

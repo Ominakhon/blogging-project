@@ -80,8 +80,8 @@ public class UserMVC {
         UserDTO userDTO = (UserDTO) session.getAttribute("user");
 
         if (userDTO != null) {
+            session.removeAttribute("user");
             try {
-                System.out.println(userDTO.getPassword());
                 request.login(userDTO.getUsername(), userDTO.getPassword());
                 return "redirect:/";
             } catch (ServletException e) {
@@ -89,7 +89,6 @@ public class UserMVC {
             }
         }
 
-        System.out.println("login");
         return "redirect:/login";
     }
 

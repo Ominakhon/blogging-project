@@ -131,15 +131,8 @@
 
         </div>
         <div class="form-group">
-            <h3>Tags</h3>
-            <div class="container">
-                <div th:each="tag : ${tags}">
-                    <label>
-                        <input type="checkbox" th:field="*{tags}" th:value="${tag.id}">
-                        <span th:text="${tag.title}"></span>
-                    </label>
-                </div>
-            </div>
+            <label class="form-label">Tags</label>
+            <input th:field="*{tagsString}" type="text" class="form-control" placeholder="write tags with space, for ex (law world ...)">
         </div>
         <input type="submit" class="btn btn-primary mt-3" name="action" value="Save as draft">
         <input type="submit" class="btn btn-success mt-3" name="action" value="Publish">

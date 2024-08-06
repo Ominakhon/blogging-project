@@ -1,6 +1,7 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Post;
@@ -44,11 +45,16 @@ public class TagDaoImpl implements TagDao{
 
     @Override
     public Tag findTagByTitle(String title) {
-        TypedQuery<Tag> query = entityManager.createQuery("FROM Tag WHERE title = :title", Tag.class);
+        try {
+            TypedQuery<Tag> query = entityManager.createQuery("FROM Tag WHERE title = :title", Tag.class);
 
-        query.setParameter("title", title);
+            query.setParameter("title", title);
 
-        return query.getSingleResult();
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+
     }
 
     @Override
