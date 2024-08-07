@@ -368,6 +368,14 @@ public class UserServiceImpl implements UserService {
         return userDao.getUserByEmail(userEmail) != null || userDao.getUserByUsername(username) != null;
     }
 
+    @Override
+    public List<UserDTO> UserByUsername(String username) {
+        List<User> users= userDao.userFindByFirstName(username);
+        //System.out.println(users);
+
+        return dtoUtil.toDTOs(users);
+    }
+
 
 
 
