@@ -184,6 +184,12 @@ public class AdminPanelController {
         return "admin_zip/post_table";
     }
 
+    @RequestMapping("/admin/post/delete/{id}")
+    public String deletePos(@PathVariable int id){
+        postService.delete(id);
+        return "redirect:/admin/post";
+    }
+
     @GetMapping("/admin/comment")
     public String getAllComment(Model model) {
 
