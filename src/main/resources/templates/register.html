@@ -297,7 +297,7 @@
                     console.log('Redirect URL:', data.redirect);
                     if (data.redirect) {
                         console.log('Redirecting to:', data.redirect);
-                        window.location.href = data.redirect;
+                        window.location.href = "/login";
                     } else if (data.error) {
                         // Display error message
                         if (errorContainer) {

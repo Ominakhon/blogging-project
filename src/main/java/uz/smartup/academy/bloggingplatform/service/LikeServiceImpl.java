@@ -35,7 +35,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public void addLike(int userId, int postId) {
+    public boolean addLike(int userId, int postId) {
         User user = userDao.getUserById(userId);
         Post post = postDao.getById(postId);
 
@@ -43,6 +43,7 @@ public class LikeServiceImpl implements LikeService {
 
         if (like1 != null) {
             likeDAO.delete(like1);
+            return true;
             // throw new IllegalStateException("Post already liked");
         }
         else {
@@ -50,6 +51,7 @@ public class LikeServiceImpl implements LikeService {
             like.setAuthor(user);
             like.setPost(post);
             likeDAO.save(like);
+            return true;
         }
     }
 

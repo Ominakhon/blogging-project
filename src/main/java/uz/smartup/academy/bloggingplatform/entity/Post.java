@@ -54,7 +54,7 @@ public class Post {
     private List<Category> categories;
 
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "tag_post",
             joinColumns = @JoinColumn(name = "post_id"),
@@ -94,7 +94,7 @@ public class Post {
     }
 
     public void addTag(Tag tag) {
-        if(tags.isEmpty())
+        if(tags == null || tags.isEmpty())
             tags = new ArrayList<>();
 
         tags.add(tag);

@@ -58,7 +58,7 @@
         .card1:hover {
             cursor: pointer;
             scale: 1.1;
-            background-image: linear-gradient(to top, rgb(250,126,30), rgb(150,47,191));
+            background-image: linear-gradient(to top, rgb(250,126,30), rgb(253, 8, 66));
         }
 
         .card1:hover .instagram {
@@ -200,108 +200,32 @@
             color: #7c8688;
             font-size: 0.7em;
         }
-
-
-        .bubbly-button {
-            font-family: "Helvetica", "Arial", sans-serif;
-            display: inline-block;
-            font-size: 1em;
-            padding: 1em 2em;
-            /*margin-top: 350px;*/
-            margin-bottom: 60px;
-            -webkit-appearance: none;
-            appearance: none;
-            background-color: #11cb2a;
-            color: #000000;
-            font-weight: 600;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            transition: transform ease-in 0.1s, box-shadow ease-in 0.25s;
-            box-shadow: 0 2px 25px #11cb2a;
+        .author-info {
+            display: flex;
+            align-items: center;
+            font-family: Arial, sans-serif; /* Use your preferred font */
         }
 
-        .bubbly-button:focus {
-            outline: 0;
+        .author-info i {
+            color: #494e49; /* Example color (green), match this with your icon color */
+            margin-right: 8px;
+            font-size: 1.2em; /* Adjust the icon size if needed */
         }
 
-        .bubbly-button:before,
-        .bubbly-button:after {
-            position: absolute;
-            content: "";
-            display: block;
-            width: 140%;
-            height: 100%;
-            left: -20%;
-            z-index: -1000;
-            transition: all ease-in-out 0.5s;
-            background-repeat: no-repeat;
+        .author-name {
+            color: #494e49; /* Match the color with the icon */
+            text-decoration: none;
+            font-size: 1em; /* Adjust the font size if needed */
+            font-weight: bold; /* Bold text for emphasis */
+            transition: color 0.3s;
         }
 
-        .bubbly-button:before {
-            display: none;
-            /*top: -75%;*/
-            background-image: radial-gradient(circle, #11cb2a 20%, transparent 20%), radial-gradient(circle, transparent 20%, #11cb2a 20%, transparent 30%), radial-gradient(circle, #11cb2a 20%, transparent 20%), radial-gradient(circle, #11cb2a 20%, transparent 20%), radial-gradient(circle, transparent 10%, #00fffc 15%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%);
-            background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 10% 10%, 18% 18%;
+        .author-name:hover {
+            color: #494e49; /* Slightly darker shade on hover */
         }
 
-        .bubbly-button:after {
-            display: none;
-            /*bottom: -75%;*/
-            background-image: radial-gradient(circle, #11cb2a 20%, transparent 20%), radial-gradient(circle, #11cb2a 20%, transparent 20%), radial-gradient(circle, transparent 10%, #11cb2a 15%, transparent 20%), radial-gradient(circle, #11cb2a 20%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%), radial-gradient(circle, #00fffc 20%, transparent 20%);
-            background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%;
-        }
 
-        .bubbly-button:active {
-            transform: scale(0.9);
-            background-color: #11cb2a;
-            box-shadow: 0 2px 25px rgba(255, 0, 130, 0.2);
-        }
 
-        .bubbly-button.animate:before {
-            display: block;
-            animation: topBubbles ease-in-out 0.75s forwards;
-        }
-
-        .bubbly-button.animate:after {
-            display: block;
-            animation: bottomBubbles ease-in-out 0.75s forwards;
-        }
-
-        @keyframes topBubbles {
-            0% {
-                background-position: 5% 90%, 10% 90%, 10% 90%,
-                15% 90%, 25% 90%, 25% 90%,
-                40% 90%, 55% 90%, 70% 90%;
-            }
-            50% {
-                background-position: 0% 80%, 0% 20%, 10% 40%,
-                20% 0%, 30% 30%, 22% 50%,
-                50% 50%, 65% 20%, 90% 30%;
-            }
-            100% {
-                background-position: 0% 70%, 0% 10%, 10% 30%,
-                20% -10%, 30% 20%, 22% 40%,
-                50% 40%, 65% 10%, 90% 20%;
-                background-size: 0% 0%,
-                0% 0%, 0% 0%, 0% 0%,
-                0% 0%, 0% 0%;
-            }
-        }
-
-        @keyframes bottomBubbles {
-            0% {
-                background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%;
-            }
-            50% {
-                background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 0%;
-            }
-            100% {
-                background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%, 110% 10%;
-                background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
-            }
-        }
 
 
     </style>
@@ -392,133 +316,147 @@
 </nav>
 
 <section id="Post">
-    <div class="date">
-        <div class="calendar">
-            <i class="fa-solid fa-calendar-days"></i>
-            <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
-        </div>
-        <div class="like d-flex justify-content-start align-items-center">
-            <div th:if="${loggedIn!=null}">
-                <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}"
-                      method="post" class="like-form me-2">
-                    <button th:if="${!post.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <button th:if="${post.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-solid fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
+    <div class="date" style="display: flex; justify-content: space-between;">
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <div class="calendar">
+                <i class="fa-solid fa-calendar-days"></i>
+                <h5 th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></h5>
             </div>
+            <div class="like d-flex justify-content-start align-items-center">
+                <div th:if="${loggedIn!=null}">
+                    <form th:action="@{/{postId}/likes/{username}(postId=${post.id}, username=${loggedIn.username})}"
+                          method="post" class="like-form me-2">
+                        <button th:if="${!post.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <button th:if="${post.isLiked}" type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-solid fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${post.id}">
+                    </form>
+                </div>
 
-            <div th:if="${loggedIn==null}">
-                <form action="#" method="post" class="like-form me-2">
-                    <button type="submit" class="btn btn-link p-0 like-btn">
-                        <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
-                    </button>
-                    <input type="hidden" name="postId" th:value="${post.id}">
-                </form>
+                <div th:if="${loggedIn==null}">
+                    <form action="#" method="post" class="like-form me-2">
+                        <button type="submit" class="btn btn-link p-0 like-btn">
+                            <i class="fa-regular fa-thumbs-up text-dark like-icon"></i>
+                        </button>
+                        <input type="hidden" name="postId" th:value="${post.id}">
+                    </form>
+                </div>
+
+                <h5 th:text="${post.likesCount}"></h5>
             </div>
-
-            <h5 th:text="${post.likesCount}"></h5>
-        </div>
-        <div class="share-btn">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 viewBox="0 0 24 24"
-                 width="30px"
-                 height="30px"
-                 fill="currentColor"
-                 class="w-6 h-6">
-                <path fill-rule="evenodd"
-                      d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z"
-                      clip-rule="evenodd"
-                />
-            </svg>
-        </div>
-        <div class="up">
-            <button data-toggle1="true" class="card1">
+            <div class="share-btn">
                 <svg xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0,0,256,256"
+                     viewBox="0 0 24 24"
                      width="30px"
                      height="30px"
-                     fill-rule="nonzero"
-                     class="instagram"
-                     onclick="copyAndShareOnInstagram()">
-                    <g fill-rule="nonzero"
-                       stroke="none"
-                       stroke-width="1"
-                       stroke-linecap="butt"
-                       stroke-linejoin="miter"
-                       stroke-miterlimit="10"
-                       stroke-dasharray=""
-                       stroke-dashoffset="0"
-                       font-family="none"
-                       font-weight="bold"
-                       font-size="none"
-                       text-anchor="end"
-                       style="mix-blend-mode: normal">
-                        <g transform="scale(8,8)">
-                            <path d="M11.46875,5c-3.55078,0 -6.46875,2.91406 -6.46875,6.46875v9.0625c0,3.55078 2.91406,6.46875 6.46875,6.46875h9.0625c3.55078,0 6.46875,-2.91406 6.46875,-6.46875v-9.0625c0,-3.55078 -2.91406,-6.46875 -6.46875,-6.46875zM11.46875,7h9.0625c2.47266,0 4.46875,1.99609 4.46875,4.46875v9.0625c0,2.47266 -1.99609,4.46875 -4.46875,4.46875h-9.0625c-2.47266,0 -4.46875,-1.99609 -4.46875,-4.46875v-9.0625c0,-2.47266 1.99609,-4.46875 4.46875,-4.46875zM21.90625,9.1875c-0.50391,0 -0.90625,0.40234 -0.90625,0.90625c0,0.50391 0.40234,0.90625 0.90625,0.90625c0.50391,0 0.90625,-0.40234 0.90625,-0.90625c0,-0.50391 -0.40234,-0.90625 -0.90625,-0.90625zM16,10c-3.30078,0 -6,2.69922 -6,6c0,3.30078 2.69922,6 6,6c3.30078,0 6,-2.69922 6,-6c0,-3.30078 -2.69922,-6 -6,-6zM16,12c2.22266,0 4,1.77734 4,4c0,2.22266 -1.77734,4 -4,4c-2.22266,0 -4,-1.77734 -4,-4c0,-2.22266 1.77734,-4 4,-4z"></path>
+                     fill="currentColor"
+                     class="w-6 h-6">
+                    <path fill-rule="evenodd"
+                          d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z"
+                          clip-rule="evenodd"
+                    />
+                </svg>
+            </div>
+            <div class="up">
+                <button data-toggle1="true" class="card1">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="2,2,356,356"
+                         width="30px"
+                         height="30px"
+                         fill-rule="nonzero"
+                         class="instagram"
+                         onclick="copyAndShareOnInstagram()">
+                        <g fill-rule="nonzero"
+                           stroke="none"
+                           stroke-width="1"
+                           stroke-linecap="butt"
+                           stroke-linejoin="miter"
+                           stroke-miterlimit="10"
+                           stroke-dasharray=""
+                           stroke-dashoffset="0"
+                           font-family="none"
+                           font-weight="bold"
+                           font-size="none"
+                           text-anchor="end"
+                           style="mix-blend-mode: normal">
+                            <g transform="scale(8,8)">
+                                <!--                            <path d="M11.46875,5c-3.55078,0 -6.46875,2.91406 -6.46875,6.46875v9.0625c0,3.55078 2.91406,6.46875 6.46875,6.46875h9.0625c3.55078,0 6.46875,-2.91406 6.46875,-6.46875v-9.0625c0,-3.55078 -2.91406,-6.46875 -6.46875,-6.46875zM11.46875,7h9.0625c2.47266,0 4.46875,1.99609 4.46875,4.46875v9.0625c0,2.47266 -1.99609,4.46875 -4.46875,4.46875h-9.0625c-2.47266,0 -4.46875,-1.99609 -4.46875,-4.46875v-9.0625c0,-2.47266 1.99609,-4.46875 4.46875,-4.46875zM21.90625,9.1875c-0.50391,0 -0.90625,0.40234 -0.90625,0.90625c0,0.50391 0.40234,0.90625 0.90625,0.90625c0.50391,0 0.90625,-0.40234 0.90625,-0.90625c0,-0.50391 -0.40234,-0.90625 -0.90625,-0.90625zM16,10c-3.30078,0 -6,2.69922 -6,6c0,3.30078 2.69922,6 6,6c3.30078,0 6,-2.69922 6,-6c0,-3.30078 -2.69922,-6 -6,-6zM16,12c2.22266,0 4,1.77734 4,4c0,2.22266 -1.77734,4 -4,4c-2.22266,0 -4,-1.77734 -4,-4c0,-2.22266 1.77734,-4 4,-4z"></path>-->
+                                <!--                            <path d="M12 13.333l8.234-6.155c.298-.224.766-.478 1.152-.478.366 0 .614.18.614.631v11.603c0 .35-.373.906-.739.906h-17.497c-.367 0-.764-.542-.764-.902v-11.6c0-.467.27-.695.633-.695.375 0 .799.223 1.125.451l8.234 6.139zm0-3.333l-8.33-6.225c-.553-.412-1.358-.7-2.024-.7-.834 0-1.646.37-2.326 1.074-.714.74-1.068 1.767-1.068 2.914v13.666c0 1.125.271 2.145.908 2.78.564.563 1.453.91 2.506.91h17.497c1.007 0 1.91-.348 2.472-.92.63-.642.888-1.606.888-2.72v-13.666c0-1.15-.348-2.181-1.08-2.912-.654-.657-1.497-1.068-2.397-1.068-.692 0-1.496.267-2.021.66l-8.282 6.178z"/>-->
+
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+                                    <path fill="#E0E0E0" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/>
+                                    <path fill="#CFD8DC" d="M20 6L12 13 4 6z"/>
+                                    <path fill="#F44336" d="M4 6v12h16V6l-8 7z"/>
+                                </svg>
+
+                            </g>
                         </g>
-                    </g>
-                </svg>
-            </button>
-            <button data-toggle2="true" class="card2">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     viewBox="0 0 48 48"
-                     width="30px"
-                     height="30px"
-                     class="telegram"
-                     onclick="copyAndShareOnTelegram()">
-                    <path d="M24,4C12.972,4,4,12.972,4,24s8.972,20,20,20s20-8.972,20-20S35.028,4,24,4z M34.812,16.633L30.244,33.298 c-0.469,1.728-1.689,2.156-2.965,1.406l-4.095-3.02l-1.977,1.906c-0.219,0.219-0.401,0.401-0.82,0.401l0.292-4.119l7.482-6.759 c0.327-0.292-0.073-0.455-0.509-0.164l-9.243,5.813L12.73,25.97c-1.743-0.551-1.78-1.743,0.363-2.584l19.418-7.491 C34.274,15.346,35.56,15.987,34.812,16.633z"></path>
-                </svg>
-            </button>
+                    </svg>
+                </button>
+                <button data-toggle2="true" class="card2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 48 48"
+                         width="30px"
+                         height="30px"
+                         class="telegram"
+                         onclick="copyAndShareOnTelegram()">
+                        <path d="M24,4C12.972,4,4,12.972,4,24s8.972,20,20,20s20-8.972,20-20S35.028,4,24,4z M34.812,16.633L30.244,33.298 c-0.469,1.728-1.689,2.156-2.965,1.406l-4.095-3.02l-1.977,1.906c-0.219,0.219-0.401,0.401-0.82,0.401l0.292-4.119l7.482-6.759 c0.327-0.292-0.073-0.455-0.509-0.164l-9.243,5.813L12.73,25.97c-1.743-0.551-1.78-1.743,0.363-2.584l19.418-7.491 C34.274,15.346,35.56,15.987,34.812,16.633z"></path>
+                    </svg>
+                </button>
 
-            <button data-toggle4="true" class="card4">
-                <svg height="50px"
-                     width="30px"
-                     viewBox="0 0 25 25"
-                     xmlns="http://www.w3.org/2000/svg"
-                     class="facebook"
-                     onclick="copyAndShareOnFacebook()">
-                    <path d="M12 2C6.477 2 2 6.477 2 12c0 4.857 3.544 8.875 8.172 9.623v-6.825H7.57V12h2.602V9.633c0-2.576 1.534-3.994 3.882-3.994 1.125 0 2.307.2 2.307.2v2.538h-1.3c-1.278 0-1.675.794-1.675 1.604V12h2.855l-.456 3.798h-2.4v6.824C18.456 20.875 22 16.857 22 12c0-5.523-4.477-10-10-10z"></path>
-                </svg>
+                <button data-toggle4="true" class="card4">
+                    <svg height="50px"
+                         width="30px"
+                         viewBox="0 0 25 25"
+                         xmlns="http://www.w3.org/2000/svg"
+                         class="facebook"
+                         onclick="copyAndShareOnFacebook()">
+                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.857 3.544 8.875 8.172 9.623v-6.825H7.57V12h2.602V9.633c0-2.576 1.534-3.994 3.882-3.994 1.125 0 2.307.2 2.307.2v2.538h-1.3c-1.278 0-1.675.794-1.675 1.604V12h2.855l-.456 3.798h-2.4v6.824C18.456 20.875 22 16.857 22 12c0-5.523-4.477-10-10-10z"></path>
+                    </svg>
 
-            </button>
+                </button>
 
-            <button data-toggle3="true" class="card3">
-                <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        width="30px"
-                        height="30px"
-                        class="copy-paste"
-                        onclick="copyAndShare()"
-                >
-                    <path d="M19 3h-3.18c-.42-1.16-1.52-2-2.82-2s-2.4.84-2.82 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm6 16H5V5h2v1c0 .55.45 1 1 1s1-.45 1-1V5h6v1c0 .55.45 1 1 1s1-.45 1-1V5h2v14z"/>
-
-
-                </svg>
-            </button>
+                <button data-toggle3="true" class="card3">
+                    <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="30px"
+                            height="30px"
+                            class="copy-paste"
+                            onclick="copyAndShare()"
+                    >
+                        <path d="M19 3h-3.18c-.42-1.16-1.52-2-2.82-2s-2.4.84-2.82 2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm6 16H5V5h2v1c0 .55.45 1 1 1s1-.45 1-1V5h6v1c0 .55.45 1 1 1s1-.45 1-1V5h2v14z"/>
 
 
+                    </svg>
+                </button>
+
+
+            </div>
+
+        </div>
+
+        <div class="author-info">
+            <i class="fa-regular fa-user-circle"></i>
+            <a th:href="@{/posts/author/{username}(username=${author.username})}" th:text="${author.username}" class="author-name"></a>
         </div>
     </div>
+
+
+
     <h1 th:text="${post.title}"></h1>
     <div class="image">
         <img th:if="${post.hashedPhoto != null}" th:src="'data:image/png;base64,' + ${post.hashedPhoto}"
              alt="Post Image">
     </div>
-    <p th:text="${post.content}"></p>
+    <p th:utext="${post.content}"></p>
 
     <div class="tags" th:if="${tags!=null}" th:each="tag : ${tags}" style="display: flex; justify-content: start; align-items: center;">
         <a th:href="@{/posts/tags/{tagTitle}(tagTitle=${tag.title})}" th:text="'#' + ${tag.title}"
            style="font-size: 20px; "></a>
-    </div>
-
-    <div class="author">
-        <img  th:src="'data:image/png;base64,' + ${authorPhoto}">
-        <a th:href="@{/posts/author/{username}(username=${author.username})}" th:text="${author.username}"></a>
     </div>
 
 </section>
@@ -628,11 +566,11 @@
         dummy.select();
         document.execCommand("copy");
         document.body.removeChild(dummy);
-        window.location.href = `intent://send?text=${encodeURIComponent(text)}#Intent;scheme=instagram;package=com.instagram.android;end`;
-
+        const subject = encodeURIComponent("Check this out!");
+        // window.location.href = `instagram://sharesheet?text=${text}`
         setTimeout(function () {
             if (document.visibilityState === "visible") {
-                window.location.href = `https://www.instagram.com/direct`;
+                window.location.href = `mailto:?subject=${subject}&body=${text}`;
             }
         }, 100);
     }
@@ -648,11 +586,10 @@
         // window.location.href = `tg://share/msg?text=${encodeURIComponent(text)}`;
         setTimeout(function () {
             if (document.visibilityState === "visible") {
-                window.location.href = `https://t.me/share/url?url=${encodeURIComponent(text)}&text=${encodeURIComponent('Check this out!')}`;;
+                window.location.href = `https://t.me/share/url?url=${encodeURIComponent(text)}&text=${encodeURIComponent('Check this out!')}`;
             }
         }, 10);
     }
-
 
     function copyAndShareOnX() {
         const dummy = document.createElement("textarea");

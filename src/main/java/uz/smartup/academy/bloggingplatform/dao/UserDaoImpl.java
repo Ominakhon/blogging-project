@@ -30,7 +30,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    @Transactional
     public User save(User user) {
         entityManager.persist(user);
         return user;

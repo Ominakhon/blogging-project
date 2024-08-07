@@ -177,6 +177,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void registerUserWithConfirmation(UserDTO userDTO, List<Role> roles) {
         User user = dtoUtil.toEntity(userDTO);
         if (user.getPhoto() == null || user.getPhoto().length == 0) {

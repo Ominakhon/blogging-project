@@ -1,5 +1,6 @@
 package uz.smartup.academy.bloggingplatform.service;
 
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.dao.PostDao;
@@ -61,5 +62,10 @@ public class TagServiceImpl implements TagService {
     public List<TagDto> getTagsByPostId(int postId) {
         List<Tag> tags = tagDao.getTagsByPostId(postId);
         return tagDtoUtil.toDTOs(tags);
+    }
+
+    @Override
+    public TagDto getTagByName(String name) {
+        return tagDao.findTagByTitle(name) == null ? null : tagDtoUtil.toDto(tagDao.findTagByTitle(name));
     }
 }

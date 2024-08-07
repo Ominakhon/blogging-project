@@ -11,4 +11,5 @@ public interface TagService {
     List<TagDto> getAllTags();
     TagDto findTagById(int id);
     List<TagDto> getTagsByPostId(int postId);
+    TagDto getTagByName(String name);
 }

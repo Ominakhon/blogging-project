@@ -1,5 +1,6 @@
 package uz.smartup.academy.bloggingplatform.mvc;
-
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -7,16 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import uz.smartup.academy.bloggingplatform.config.CategoryConfiguration;
 import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.Post;
-import uz.smartup.academy.bloggingplatform.entity.Role;
 import uz.smartup.academy.bloggingplatform.service.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Controller
 public class IndexController {
@@ -80,6 +77,11 @@ public class IndexController {
         List<CategoryDto> categories = categoryService.getAllCategories();
 
         PostDto topPost = (posts != null && !posts.isEmpty()) ? posts.getFirst() : null;
+        if(topPost != null) {
+            String safeContent = Jsoup.clean(topPost.getContent(), Safelist.basic());
+            topPost.setContent(safeContent);
+        }
+
 
         model.addAttribute("topPost", topPost);
         model.addAttribute("posts", posts);
