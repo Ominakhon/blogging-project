@@ -1,6 +1,7 @@
 package uz.smartup.academy.bloggingplatform.mvc;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -87,13 +88,18 @@ public class IndexController {
         model.addAttribute("posts", posts);
         model.addAttribute("photo", photo);
         model.addAttribute("categories", categories);
-        model.addAttribute("loggedIn", getLoggedUser());
+        model.addAttribute("loggedIn", userDTO);
         return "index";
     }
 
     @GetMapping("/posts/{postId}")
     public String getPostById(@PathVariable("postId") int postId, Model model) {
         PostDto post = postService.getById(postId);
+
+        if((getLoggedUser() == null && post.getStatus() == Post.Status.DRAFT) || (post.getStatus() == Post.Status.DRAFT && !getLoggedUser().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_EDITOR")) )) {
+            return "redirect:/";
+        }
+
         post.setLikesCount(likeService.countLikesByPostId(postId));
         List<CommentDTO> comments = postService.getPostComments(postId);
         List<CategoryDto> categories = categoryService.getAllCategories();

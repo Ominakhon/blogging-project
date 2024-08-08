@@ -1,8 +1,12 @@
 package uz.smartup.academy.bloggingplatform.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import uz.smartup.academy.bloggingplatform.entity.PasswordResetToken;
 import uz.smartup.academy.bloggingplatform.entity.User;
@@ -10,6 +14,7 @@ import uz.smartup.academy.bloggingplatform.repository.PasswordResetTokenReposito
 import uz.smartup.academy.bloggingplatform.service.MailSenderService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 @Service
@@ -19,11 +24,12 @@ public class MailSenderServiceImpl implements MailSenderService {
 //    private final UserService userService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private static final int EXPIRATION_TIME_IN_MINUTES = 60 * 24;
+    private final CategoryService categoryService;
 
-    public MailSenderServiceImpl(JavaMailSender mailSender,  PasswordResetTokenRepository passwordResetTokenRepository) {
+    public MailSenderServiceImpl(JavaMailSender mailSender, PasswordResetTokenRepository passwordResetTokenRepository, CategoryService categoryService) {
         this.mailSender = mailSender;
-//        this.userService = userService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+        this.categoryService = categoryService;
     }
 
     @Override
@@ -117,6 +123,20 @@ public class MailSenderServiceImpl implements MailSenderService {
     @Override
     public PasswordResetToken findByToken(String token) {
         return passwordResetTokenRepository.findByToken(token);
+    }
+
+    @Override
+    public void sendEmailWithAttachment(String to, String subject, String text, String fileName, InputStreamSource inputStreamSource) throws IOException, MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(text);
+        helper.addAttachment(fileName, inputStreamSource);
+
+        mailSender.send(message);
+
     }
 }
 

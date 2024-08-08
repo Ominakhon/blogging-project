@@ -145,6 +145,7 @@ public class EditorMVC {
         List<String> tags = separate_string(postDto.getTagsString());
 
         for(String tag : tags) {
+            tag = tag.toLowerCase();
             TagDto tagDto = tagService.getTagByName(tag);
 
             if(tagDto == null) {

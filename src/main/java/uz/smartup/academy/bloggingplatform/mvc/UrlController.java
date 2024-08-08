@@ -1,12 +1,15 @@
 package uz.smartup.academy.bloggingplatform.mvc;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uz.smartup.academy.bloggingplatform.dto.UserDTO;
 import uz.smartup.academy.bloggingplatform.dto.UserDtoUtil;
@@ -14,8 +17,12 @@ import uz.smartup.academy.bloggingplatform.entity.PasswordChangeForm;
 import uz.smartup.academy.bloggingplatform.entity.PasswordResetToken;
 import uz.smartup.academy.bloggingplatform.entity.User;
 import uz.smartup.academy.bloggingplatform.repository.PasswordResetTokenRepository;
+import uz.smartup.academy.bloggingplatform.service.CategoryService;
 import uz.smartup.academy.bloggingplatform.service.MailSenderService;
 import uz.smartup.academy.bloggingplatform.service.UserService;
+
+import java.io.IOException;
+
 @Controller
 @RequestMapping
 public class UrlController {
@@ -25,13 +32,16 @@ public class UrlController {
     private final UserDtoUtil userDtoUtil;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder  passwordEncoder;
+    private final CategoryService categoryService;
 
-    public UrlController(UserService userService, MailSenderService mailSenderService, UserDtoUtil userDtoUtil, PasswordResetTokenRepository passwordResetTokenRepository, PasswordEncoder passwordEncoder) {
+
+    public UrlController(UserService userService, MailSenderService mailSenderService, UserDtoUtil userDtoUtil, PasswordResetTokenRepository passwordResetTokenRepository, PasswordEncoder passwordEncoder, CategoryService categoryService) {
         this.userService = userService;
         this.mailSenderService = mailSenderService;
         this.userDtoUtil = userDtoUtil;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordEncoder = passwordEncoder;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/password/reset")
@@ -106,6 +116,44 @@ public class UrlController {
             request.login(user.getUsername(), rawPassword);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/vacancy")
+    public String vacancy(Model model) {
+
+        String photo = "";
+        UserDTO userDTO = getLoggedUser() == null ? null : userService.getUserByUsername(getLoggedUser().getUsername());
+        if(userDTO != null){
+            photo = userService.encodePhotoToBase64(userDTO.getPhoto());
+        }
+
+
+        model.addAttribute("photo", photo);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("loggedIn", getLoggedUser());
+
+        return "vacancy";
+    }
+
+
+    @PostMapping("/sendEmail")
+    public String sendEmail(@RequestParam("username") String username, @RequestParam("cv") MultipartFile cv) {
+        try {
+            String subject = "Job Application: Post Editor";
+            String text = "Username: " + username + "\n\nAttached is the CV.";
+            mailSenderService.sendEmailWithAttachment(
+                    "greenwhitenews1@gmail.com",
+                    subject,
+                    text,
+                    cv.getOriginalFilename(),
+                    new ByteArrayResource(cv.getBytes())
+            );
+
+            return "redirect:/vacancy?success";
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+            return "redirect:/vacancy?error";
+        }
     }
 
     private UserDetails getLoggedUser() {

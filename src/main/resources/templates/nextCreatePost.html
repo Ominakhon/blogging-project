@@ -132,18 +132,18 @@
         </div>
         <div class="form-group">
             <label class="form-label">Tags</label>
-            <input th:field="*{tagsString}" type="text" class="form-control" placeholder="write tags with space, for example (law world ...)">
+            <input th:field="*{tagsString}" type="text" class="form-control" placeholder="write tags with space, for example: law world ...">
         </div>
         <input type="submit" class="btn btn-primary mt-3" name="action" value="Save as draft">
         <input type="submit" class="btn btn-success mt-3" name="action" value="Publish">
     </form>
 </div>
 
-<!--<form th:action="@{/editor/{username}/posts/new(username=${username})}" style="margin: 25px 10%;">-->
-<!--    <button class="btn btn-primary">-->
-<!--        Back-->
-<!--    </button>-->
-<!--</form>-->
+<form class="container mt-5" th:action="@{/editor/{username}/posts/new(username=${username})}">
+    <button class="btn btn-danger">
+        Back
+    </button>
+</form>
 
 <section id="Contact" class="mt-5">
     <div class="contact">
