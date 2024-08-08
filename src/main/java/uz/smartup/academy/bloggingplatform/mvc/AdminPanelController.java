@@ -5,7 +5,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import uz.smartup.academy.bloggingplatform.dao.UserDao;
 import uz.smartup.academy.bloggingplatform.dao.UserDaoImpl;
 import uz.smartup.academy.bloggingplatform.dto.*;
 import uz.smartup.academy.bloggingplatform.entity.Role;
@@ -104,6 +103,15 @@ public class AdminPanelController {
         return "admin_zip/user_table";
     }
 
+    @GetMapping("/admin/user/search")
+    public String getUserFirstname(@RequestParam(name = "search") String username, Model model){
+        model.addAttribute("userDTO", userService.getUserByUsername(username));
+
+        List<CategoryDto> categories = categoryService.getAllCategories();
+        model.addAttribute("categories",categories);
+        return "admin_zip/user_table";
+    }
+
     @GetMapping("/admin/user/{userId}/edit")
     public String editProfile(Model model, @PathVariable("userId") String  username) {
 
@@ -182,6 +190,12 @@ public class AdminPanelController {
         model.addAttribute("categories",categories);
 
         return "admin_zip/post_table";
+    }
+
+    @RequestMapping("/admin/post/delete/{id}")
+    public String deletePos(@PathVariable int id){
+        postService.delete(id);
+        return "redirect:/admin/post";
     }
 
     @GetMapping("/admin/comment")

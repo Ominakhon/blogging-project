@@ -63,4 +63,6 @@ public interface UserService {
 
     void unbanUsers();
     boolean userExists(String email, String userEmail);
+
+    List<UserDTO> UserByUsername(String username);
 }
