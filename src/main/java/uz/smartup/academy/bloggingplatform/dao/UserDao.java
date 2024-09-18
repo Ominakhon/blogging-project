@@ -1,11 +1,8 @@
 package uz.smartup.academy.bloggingplatform.dao;
 
-import uz.smartup.academy.bloggingplatform.entity.Post;
-
-import uz.smartup.academy.bloggingplatform.dto.CommentDTO;
-import uz.smartup.academy.bloggingplatform.entity.Comment;
-import uz.smartup.academy.bloggingplatform.entity.Role;
-import uz.smartup.academy.bloggingplatform.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import uz.smartup.academy.bloggingplatform.entity.*;
 
 import java.util.List;
 import java.util.Set;
@@ -13,18 +10,22 @@ import java.util.Set;
 
 public interface UserDao {
 
-    void save(User user);
+    User save(User user);
 
     List<User> getALlUsers();
 
     User getUserByUsername(String username);
 
+    User getUserByEmail(String email);
+
     User getUserById(int id);
+
+//    UserFollows getUserFollowsById(int user_id);
 
     void update(User user);
 
     void delete(User user);
-  
+
     List<Post> getUserAllPosts(int userId);
 
     List<Role> userFindByRoles(String userName);
@@ -32,6 +33,16 @@ public interface UserDao {
     Set<Role> getUserRoles(int userId);
 
     void updateUserComment(int userId, int postId, Comment comment);
+
+    User findByEmail(String email);
+
+    void saveRole(Role role);
+
+    List<User> findAllByEnabledIsNull();
+
+    List<User> userFindByUserName(String username);
+
+    Page<Notification> getAllNotification(Pageable pageable, int userId);
 
 
 }

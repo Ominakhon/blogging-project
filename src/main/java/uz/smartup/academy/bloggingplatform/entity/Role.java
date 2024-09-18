@@ -11,6 +11,14 @@ public class Role {
     @EmbeddedId
     private RoleKey id;
 
+    public RoleKey getId() {
+        return id;
+    }
+
+    public void setId(RoleKey id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return id.getUsername();
     }

@@ -4,11 +4,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Comment;
+import uz.smartup.academy.bloggingplatform.entity.Notification;
 
 import java.util.List;
 
 @Repository
-public class CommentDaoImpl implements CommentDao{
+public class CommentDaoImpl implements CommentDao {
 
     private final EntityManager entityManager;
 
@@ -51,6 +52,12 @@ public class CommentDaoImpl implements CommentDao{
     public List<Comment> getCommentsByPostId(int id) {
         TypedQuery<Comment> query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.post.id = :id", Comment.class);
         query.setParameter("id", id);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Notification> findNewComments() {
+        TypedQuery<Notification> query = entityManager.createQuery("FROM Notification n WHERE n.notify=true AND n.type='C'", Notification.class);
         return query.getResultList();
     }
 }

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <title>Admin Console</title>
+    <link rel="icon" th:href="@{/css/photos/gws_square.ico}" type="image/x-icon">
     <!-- Bootstrap core CSS -->
     <link th:href="@{/admin/css/bootstrap.min.css}" rel="stylesheet" >
     <link th:href="@{/admin/css/font-awesome.min.css}" rel="stylesheet" >
@@ -27,12 +28,14 @@
 
     <ul class="nav hide">
 
-        <li class="nav-item sign_box dropdown">
-            <a class="nav-link dropdown-toggle text-white  border-0" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img alt="abc" class="rounded-circle" width="30"height="30" th:src="@{admin/img/1.jpg}">Eget Nulla</a>
+        <li class="nav-item sign_box dropdown" th:each = "user: ${user}">
+            <a th:text="${user.first_name}" class="nav-link dropdown-toggle text-white border-0" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+            </a>
+
             <ul class="dropdown-menu drop_2" style="left:auto; right:0; min-width:200px;">
                 <li class="small" style="padding: 0.25rem 1rem;">Welcome !</li>
-                <li><a class="dropdown-item" href="#"><i class="fa fa-user"></i> My Account</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fa fa-sign-out"></i> Logout</a></li>
+                <li><a class="dropdown-item" th:href="@{@{/profile/{username}(username=${user.username})}}"><i class="fa fa-user"></i> My Account</a></li>
+                <li><a class="dropdown-item" th:href="@{/logout}"><i class="fa fa-sign-out"></i> Logout</a></li>
             </ul>
         </li>
 
@@ -115,17 +118,17 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Title</th>
-                                            <th>Active?</th>
+<!--                                            <th>Active?</th>-->
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr th:each = "tag: ${tagDTO}">
                                             <td th:text = "${tag.id}"></td>
                                             <td th:text = "${tag.title}"></td>
-                                            <td>
-                                                <h6 data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Edit" class="d-inline-block mb-0"><a th:href="@{/admin/post/edit/{id}(id=post.id)}"><i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa fa-edit col_3"></i></a></h6>
-                                                <h6 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Delete" class="d-inline-block mb-0"><a th:href="@{/admin/post/delete/{id}(id=post.id)}"><i class="fa fa-trash col_3"></i></a></h6>
-                                            </td>
+<!--                                            <td>-->
+<!--                                                <h6 data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Edit" class="d-inline-block mb-0"><a th:href="@{/admin/post/edit/{id}(id=post.id)}"><i style="vertical-align:middle; margin-left:5px;margin-right:5px;" class="fa fa-edit col_3"></i></a></h6>-->
+<!--                                                <h6 data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Delete" class="d-inline-block mb-0"><a th:href="@{/admin/post/delete/{id}(id=post.id)}"><i class="fa fa-trash col_3"></i></a></h6>-->
+<!--                                            </td>-->
                                         </tr>
                                         </tbody>
                                     </table>

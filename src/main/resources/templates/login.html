@@ -1,9 +1,13 @@
 <!DOCTYPE HTML>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page</title>
+    <title>GREEN WHITE NEWS</title>
+    <link rel="icon" th:href="@{/css/photos/gws_square.ico}" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         body, html {
             height: 100%;
@@ -13,16 +17,18 @@
             align-items: center;
             background: #ffffff;
             font-family: 'Arial', sans-serif;
+            padding: 0;
         }
         .form-background {
-            background: #11cb2a;
-            padding: 50px;
-            border-radius: 20px;
+            background: rgba(0,166,81,1);
+            /*border-radius: 20px;*/
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100%;
+            padding: 0 50px;
         }
         .form-container {
             background: #fff;
@@ -30,11 +36,8 @@
             border-radius: 15px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out;
-            width: 150%;
-            max-width: 500px;
-        }
-        .form-container:hover {
-            transform: scale(1.05);
+            width: 100%;
+            max-width: 450px;
         }
         .form-heading {
             margin-bottom: 30px;
@@ -43,6 +46,11 @@
             text-transform: uppercase;
             text-align: center;
             width: 100%;
+        }
+        .form-heading img {
+            margin-right: 10px;
+            height: 60px;
+            width: 60px;
         }
         .form-group {
             margin-bottom: 25px;
@@ -54,16 +62,16 @@
             border-radius: 30px;
             padding: 10px 25px;
             text-align: left;
-            transition: all 0.3s ease-in-out;
+            /*transition: all 0.3s ease-in-out;*/
             width: 100%;
             box-sizing: border-box;
         }
         .form-control:focus {
-            box-shadow: 0 0 10px rgb(17, 203, 42);
-            border-color: #11cb2a;
+            box-shadow: 0 0 10px rgba(0,166,81,1);
+            border-color: rgba(0,166,81,1);
         }
         .btn-primary {
-            background-color: #11cb2a;
+            background-color: rgba(0,166,81,1);
             border: none;
             border-radius: 30px;
             padding: 10px 20px;
@@ -71,7 +79,7 @@
             width: 100%;
         }
         .btn-primary:hover {
-            background-color: #0f9f25;
+            background-color: rgba(0,166,81,1);
         }
         .form-group.text-center {
             margin-top: 30px;
@@ -84,46 +92,131 @@
             color: #555;
         }
         .form-footer a {
-            color: #11cb2a;
+            color: rgba(0,166,81,1);
             text-decoration: none;
             transition: color 0.3s ease-in-out;
         }
         .form-footer a:hover {
-            color: #0f9f25;
+            color: rgba(0,166,81,1);
         }
         .input-group-text {
-            background-color: #11cb2a;
+            background-color: rgba(0,166,81,1);
             color: #fff;
             border: none;
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        .centered-heading {
+            text-align: center;
+        }
+        .green-text {
+            color: rgba(0,166,81,1);
+            font-weight: bold;
+        }
+        .bold-text {
+            font-weight: bold;
+        }
+        .welcome-back {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .password-reset {
+            font-size: 0.8rem;
+            color: #8cb176;
+            margin-bottom: 10px;
+            margin-left: 180px;
         }
     </style>
 </head>
 <body>
-<div class="form-background" th:action="@{/}">
+<div class="form-background">
     <div class="form-container">
-        <h3 class="form-heading">Log in</h3>
-        <form>
+
+        <div th:if="${message}" class="alert alert-success">
+            <p th:text="${message}"></p>
+        </div>
+
+        <div class="centered-heading">
+            <a th:href="@{/}" style="text-decoration: none; color: inherit;">
+                <h3>
+                    <span class="green-text">GREEN</span> <span class="bold-text">WHITE</span>
+                </h3>
+            </a>
+            <h5 class="welcome-back">Welcome back!</h5>
+        </div>
+        <div th:if="${param.success}" class="success-container">
+            <div class="alert alert-info alert-dismissible fade show">
+                <p th:text="${success}"></p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <div th:if="${errorValue}" class="error-container">
+            <div class="alert alert-danger alert-dismissible fade show">
+                <p th:text="${errorValue}"></p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+        <form th:action="@{/authenticate}" method="POST">
             <div class="input-group flex-nowrap mb-3">
                 <span class="input-group-text">📧</span>
-                <input type="text" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="addon-wrapping">
+                <input type="text" class="form-control" placeholder="Username or email" name="username" aria-label="Email" aria-describedby="addon-wrapping">
             </div>
             <div class="input-group flex-nowrap mb-3">
-                <span class="input-group-text">🔒</span>
-                <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="addon-wrapping">
+                <span class="input-group-text toggle-password" onclick="togglePassword()">🙈</span>
+                <input type="password" class="form-control" id="password" placeholder="Password" name="password" aria-label="Password" aria-describedby="addon-wrapping">
             </div>
+            <span>
+               <a th:href="@{/password/reset}">
+            <h5 class="password-reset">Forgot password?</h5>
+               </a>
+            </span>
             <div class="form-group text-center">
                 <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+
+            <div th:if="${param.error}">
+                <i class="text-danger">Sorry! You entered invalid username or password</i>
+            </div>
+
+            <div th:if="${error}">
+                <p class="text-danger" th:text="${error}"></p>
             </div>
 
         </form>
         <div class="form-footer text-center">
             <p>Don't have an account? <a th:href="@{/register}">Sign up</a></p>
         </div>
+
+        <div class="form-group text-center google">
+            <i class="fa-brands fa-google"></i>
+            <a th:href="@{/oauth2/authorization/google}" style="text-decoration: none;">Continue with Google</a>
+        </div>
+
     </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function togglePassword() {
+        var passwordField = document.getElementById("password");
+        var toggleIcon = document.querySelector(".toggle-password");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.textContent = "🙉";
+        } else {
+            passwordField.type = "password";
+            toggleIcon.textContent = "🙈";
+        }
+    }
+</script>
 </body>
 </html>
+    

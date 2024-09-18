@@ -1,7 +1,9 @@
 package uz.smartup.academy.bloggingplatform.entity;
 
 import jakarta.persistence.*;
+
 import java.sql.Timestamp;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +27,7 @@ public class Post {
     private String title;
 
     @Lob
-    @Column(name = "photo")
+    @Column(name = "photo", columnDefinition = "LONGBLOB")
     private byte[] photo;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
@@ -35,26 +37,29 @@ public class Post {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", nullable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")
     private User author;
 
+//    @Column(name = "new_notification")
+//    private Boolean notification;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-        name = "category_post",
-        joinColumns = @JoinColumn(name = "post_id"),
-        inverseJoinColumns = @JoinColumn(name = "category_id")
+            name = "category_post",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
 
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.EAGER)
     @JoinTable(
             name = "tag_post",
             joinColumns = @JoinColumn(name = "post_id"),
@@ -68,15 +73,19 @@ public class Post {
     @Transient
     private long commentsCount;
 
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private PostSchedule postSchedule;
+
+
     public void addCategories(Category category) {
-        if(categories.isEmpty())
+        if (categories == null || categories.isEmpty())
             categories = new ArrayList<>();
 
         categories.add(category);
     }
 
     public void addComments(Comment comment) {
-        if(comments.isEmpty())
+        if (comments.isEmpty())
             comments = new ArrayList<>();
 
         comments.add(comment);
@@ -84,27 +93,28 @@ public class Post {
     }
 
     public void removeComment(Comment comment) {
-        if(!comments.isEmpty())
+        if (!comments.isEmpty())
             comments.remove(comment);
     }
 
-    public void removeCategory(Comment comment) {
-        if(!comments.isEmpty())
-            comments.remove(comment);
+    public void removeCategory(Category category) {
+        if (!categories.isEmpty())
+            categories.remove(category);
     }
 
     public void addTag(Tag tag) {
-        if(tags.isEmpty())
+        if (tags == null || tags.isEmpty())
             tags = new ArrayList<>();
 
         tags.add(tag);
     }
 
     public void removeTag(Tag tag) {
-        if(!tags.isEmpty())
+        if (!tags.isEmpty() || tag != null)
             tags.remove(tag);
 
     }
+
 
     public enum Status {
         DRAFT,

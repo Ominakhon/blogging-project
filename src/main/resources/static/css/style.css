@@ -7,10 +7,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 94%;
-    margin: auto;
+    width: 100%;
+    padding: 0 3%;
     height: 80px;
-    background-color: none;
+    background-color: transparent;
     margin-bottom: 50px;
 }
 
@@ -19,6 +19,21 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.navbar .dropdown-toggle {
+    width: 120px;
+    /*border: 1px solid red;*/
+}
+
+.post {
+    /*box-shadow: 3px 3px 10px 3px rgb(0, 166, 81) ;*/
+}
+
+#Home .post {
+    box-shadow: none;
+}
+
+
 
 .navbar .login{
     display: flex;
@@ -32,11 +47,58 @@
     align-items: center;
 }
 
+.navbar h4 {
+    margin-bottom: 0;
+}
+
+
+.open {
+    width: 60px;
+    height: 60px;
+    padding: 0; /* Remove padding */
+    border: none; /* Remove border */
+    border-radius: 50%; /* Make the button circular */
+    overflow: hidden; /* Ensure the image fits within the button */
+}
+
+.open img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+.navbar .offcanvas-body form{
+    height: 40px;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.navbar .offcanvas-body form button {
+    background-color: white;
+    border: 0;
+    text-align: start;
+    color: black;
+    font-size: 20px;
+}
+
+.navbar .offcanvas-body form i {
+    font-size: 20px;
+    margin-left: 8px;
+    color: black;
+}
+
+
+
+
 .navbar-start .navbar-brand .image{
     width: 70px;
     height: 70px;
     background-color: rgb(0, 166, 81);
-    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -65,11 +127,19 @@
     color: black;
 }
 
+.navbar .offcanvas {
+    width: 300px;
+}
+
+
 section#Home {
-    width: 94%;
+    width: 92%;
     margin: auto;
 }
 
+section#Home .post .post_content {
+    width: 50%
+}
 
 section#Home .post {
     display: flex;
@@ -78,7 +148,7 @@ section#Home .post {
     /* cursor: pointer; */
 }
 
-section#Home .post a{
+section#Home .post .title{
     font-size: 40px;
     font-weight: 600;
     cursor: pointer;
@@ -87,13 +157,19 @@ section#Home .post a{
 }
 
 section#Home .post img{
-    width: 50%;
-    margin-right: 20px;
+    width: 100%;
+    height: 450px;
+}
+
+section#Home .post .post_content .date {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 section#Home .post .post_content .date h5{
     font-family: "Baskervville SC", serif;
-    font-weight: 600;
+    font-weight: 400;
     color: rgb(74, 73, 73);
     margin-left: 5px;
 }
@@ -117,32 +193,33 @@ section#Home .post .post_content .like i{
 }
 
 section#Home .post .post_content .like h5{
-    font-family: "Work Sans", sans-serif;
+    font-family: "Baskervville SC", serif;
     color: gray;
-    font-size: medium;
+    font-size: 20px;
+    padding-top: 4.5px;
 }
+
+
 
 section#Home .post .post_content p{
     color: gray;
 }
 
+section#Home .post .post_content .hover-text {
+    color: white;
+}
+
 section#News{
-    width: 94%;
+    width: 92%;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 40px;
-    margin-top: 50px;
-    margin-left: 3%;
-    margin-right: 3%;
-    /* height: 1250px; */
-    /* border: 1px solid black; */
-    /* align-items: center; */
+    margin: 50px 4%;
 }
 
 section#News .post {
-    height: 350px;
-    /* border: 1px solid red; */
-    /* padding-top: 25px; */
+    height: 279px;
+    padding-bottom: 0;
 }
 
 section#News .post a {
@@ -155,10 +232,11 @@ section#News .post a {
 
 section#News .post img {
     width: 100%;
-    height: 60%;
+    height: 70%;
 }
 
 section#News .post .date{
+    font-family: sans-serif;
     width: 100%;
     display: flex;
     justify-self: flex-start;
@@ -166,7 +244,7 @@ section#News .post .date{
 }
 
 section#News .post .date .calendar{
-    width: 50%;
+    width: 60%;
 }
 
 section#News .post .date .like {
@@ -188,10 +266,11 @@ section#News .post .date .calendar h5{
     font-family: "Baskervville SC", serif;
     font-size: medium;
     margin-right: 10px;
+    /*margin-left: 20px;*/
 }
 
 section#News .post h5 {
-    font-family: "Playfair Display", serif;
+    font-family: "Baskervville SC", serif;
     color: gray;
 }
 
@@ -199,6 +278,7 @@ section#News .post .line {
     height: 1px;
     width: 100%;
     background-color: gray;
+    margin-bottom: 0;
 }
 
 
@@ -288,11 +368,17 @@ section#Post p {
     font-size: 20px;
 }
 
+section#Post .tags a {
+    font-family: "Kanit", sans-serif;
+    font-weight: 600;
+    text-decoration: none;
+}
+
 section#Comments {
     margin: auto;
     margin-top: 60px;
     width: 92%;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid rgb(0, 166, 81);
     padding: 10px;
 }
@@ -301,10 +387,9 @@ section#Comments .comment-form {
     width: 100%;
     /* max-width: 600px; */
     margin: auto;
-    max-height: 300px;
     padding: 10px;
     /* border: 1px solid #ddd; */
-    border-radius: 5px;
+    border-radius: 7px;
     /* height: 200px; */
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
@@ -314,10 +399,9 @@ section#Comments .comment-form textarea{
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid rgb(0, 166, 81);
-    border-radius: 5px;
-    height: 10%;
+    border-radius: 7px;
     resize: vertical;
-    height: 70px;
+    height: 100px;
 }
 
 section#Comments .comment-form button{
@@ -326,7 +410,7 @@ section#Comments .comment-form button{
     /* background-color: #169532; */
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
 }
 
@@ -350,16 +434,16 @@ section#Comments .comments .comment{
 
 section#Comments .comments .comment .content{
     display: flex;
-    justify-content: flex-start;
     margin-bottom: 0;
 }
 
 section#Comments .comments .comment .content p{
     margin-left: 20px;
     color: gray;
+    margin-top: 5px;
 }
 
-section#Comments .comments .comment .content h5{
+section#Comments .comments .comment .content a{
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
@@ -455,6 +539,58 @@ section#EditForm .userEditForm .btn {
     width: 100%;
 }
 
+.google {
+    cursor: pointer;
+    border-radius: 0;
+    background-color:white;
+    border: 2px solid gray;
+    color: gray;
+    display: flex;
+    justify-content: center;
+    align-items:center;
+    height: 40px;
+}
 
+.google a {
+    background-color: none;
+    border-radius:0;
+    color: gray;
+    margin-left: 5px;
+}
 
+.google:hover {
+    border:2px solid rgb(0, 166, 81);
+    color: rgb(0, 166, 81);
+}
+
+.google:hover a {
+    color: rgb(0, 166, 81);
+}
+
+section#Post .author {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-top: 30px;
+}
+
+section#Post .author img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+section#Post .author a {
+    font-size: 25px;
+    color: rgb(0, 166, 81);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.title {
+    font-family: "Merriweather", serif;
+    font-weight: 700;
+    font-style: normal;
+}
 

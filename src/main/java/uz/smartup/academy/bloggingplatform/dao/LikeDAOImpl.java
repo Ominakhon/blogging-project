@@ -5,7 +5,8 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 import uz.smartup.academy.bloggingplatform.entity.Like;
-import uz.smartup.academy.bloggingplatform.entity.Post;
+import uz.smartup.academy.bloggingplatform.entity.Notification;
+import uz.smartup.academy.bloggingplatform.entity.NotificationTypes;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class LikeDAOImpl implements LikeDAO {
                 .setParameter("userId", userId)
                 .setParameter("postId", postId)
                 .getResultList();
-        return likes.isEmpty() ? null : likes.get(0);
+        return likes.isEmpty() ? null : likes.getFirst();
     }
 
     @Override
@@ -59,4 +60,26 @@ public class LikeDAOImpl implements LikeDAO {
 
         return query.getResultList();
     }
+
+    @Override
+    public List<Like> getLikesByPostId(int postId) {
+        TypedQuery<Like> query = entityManager.createQuery("SELECT l FROM Like l WHERE l.post.id = :postId", Like.class);
+        query.setParameter("postId", postId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Like> findNewLikesByPostId(int postId) {
+        TypedQuery<Like> query = entityManager.createQuery("SELECT l FROM Like l WHERE l.post.id = :postId AND l.newNotification = true", Like.class);
+        query.setParameter("postId", postId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Notification> findNewLikes() {
+        TypedQuery<Notification> query = entityManager.createQuery("SELECT l FROM Notification l WHERE l.notify = true AND l.type='L'", Notification.class);
+        return query.getResultList();
+    }
+
+
 }

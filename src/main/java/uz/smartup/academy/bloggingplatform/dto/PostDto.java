@@ -1,14 +1,15 @@
 package uz.smartup.academy.bloggingplatform.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import uz.smartup.academy.bloggingplatform.entity.Post;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 @Getter
+@Setter
 public class PostDto {
 
     private int id;
@@ -21,11 +22,24 @@ public class PostDto {
 
     private LocalDateTime createdAt;
 
+    private boolean isLiked;
+
     private long likesCount;
 
     private Post.Status status;
 
-    public PostDto() {}
+    private List<Integer> categories;
+
+    private List<Integer> tags;
+
+    private String tagsString;
+
+    private String hashedPhoto;
+
+    private LocalDateTime scheduleTime;
+
+    public PostDto() {
+    }
 
     public PostDto(Builder builder) {
         this.id = builder.id;
